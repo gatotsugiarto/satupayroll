@@ -38,6 +38,10 @@ class Calculate extends Component
         // GAJI_ACTUAL
         $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, display_order, generate_mode, status_id, created_at, created_by, updated_at, updated_by) SELECT t.employee_id, '$period_code' AS period_code, t3.code, t3.name, t2.code, SUM(CASE WHEN FIND_IN_SET(t.item_code, t2.item_code) > 0 THEN t.amount ELSE 0 END) AS amount, t3.type, t3.display_order, '$generate_mode', 1, NOW(), 1, NOW(), 1 FROM payroll_detail t INNER JOIN payroll_category t2 ON t2.display_order = 3 INNER JOIN payroll_item t3 ON t2.code = t3.code WHERE t.period_code = '$period_code' GROUP BY t.employee_id";
         \Yii::$app->db->createCommand($sql)->execute();
+
+        // EMPLOYER_BPJS
+        $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, trace, display_order, generate_mode, status_id, created_at, created_by, updated_at, updated_by) SELECT t2.id, '$period_code' AS period_code, t4.code, t4.name, t3.code, ROUND(t4.percent * LEAST(t.amount, COALESCE(t4.cap, t.amount)),0) AS amount, t4.type, CONCAT('base=',t.item_code,';percent=',t4.percent,';cap=',t4.cap) AS trace, t4.display_order, '$generate_mode', 1, NOW(), 1, NOW(), 1 FROM payroll_detail t INNER JOIN employee t2 ON t2.id = t.employee_id INNER JOIN payroll_category t3 ON t3.id = 3 INNER JOIN payroll_item t4 ON t4.category_id = t3.id WHERE t.period_code = '$period_code' AND t.item_code = 'INCOME_FIXED' AND ROUND(t4.percent * LEAST(t.amount, COALESCE(t4.cap, t.amount)),0) > 0";
+        \Yii::$app->db->createCommand($sql)->execute();
     }
 
     public static function PayrollGenerateSingle($employee_id, $period_code, $status_id, $user_id)
