@@ -1,0 +1,81 @@
+<?php
+use \yii\helpers\Url;
+
+$baseUrl = Yii::$app->request->baseUrl;
+?>
+
+<div class="container py-5">
+  <div class="row g-4">
+    
+    <!-- <div class="flash-message"></div>   -->
+
+    <!-- Employee -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <a href="<?=$baseUrl ?>/master/payrollprofile/index" class="text-decoration-none">
+        <div class="card menu-card text-center p-4 h-100">
+          <div class="menu-icon mb-2">
+            <i class="nc-icon nc-compass-05"></i>
+          </div>
+          <div class="menu-title fw-bold text-primary">Payroll Profiles</div>
+          <div class="menu-desc text-muted">Payroll structure and employee salary configuration</div>
+        </div>
+      </a>
+    </div>
+
+
+    <!-- Component -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <a href="<?=$baseUrl ?>/master/payrollitem/index" class="text-decoration-none">
+        <div class="card menu-card text-center p-4 h-100">
+          <div class="menu-icon mb-2">
+            <i class="nc-icon nc-notes"></i>
+          </div>
+          <div class="menu-title fw-bold text-primary">Payroll Components</div>
+          <div class="menu-desc text-muted">Configure salary components used in payroll calculations</div>
+        </div>
+      </a>
+    </div>
+
+
+    <!-- Category -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <a href="<?=$baseUrl ?>/master/payrollcategory/index" class="text-decoration-none">
+        <div class="card menu-card text-center p-4 h-100">
+          <div class="menu-icon mb-2">
+            <i class="nc-icon nc-layers-3"></i>
+          </div>
+          <div class="menu-title fw-bold text-primary">Payroll Categories</div>
+          <div class="menu-desc text-muted">Organize payroll components into structured categories</div>
+        </div>
+      </a>
+    </div>
+
+
+    <!-- PendingStatus  -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <a href="<?=$baseUrl ?>/master/employeepending/index" class="text-decoration-none">
+        <div class="card menu-card text-center p-4 h-100">
+          <div class="menu-icon mb-2">
+            <i class="nc-icon nc-time-alarm"></i>
+          </div>
+          <div class="menu-title fw-bold text-primary">Pending Status</div>
+          <div class="menu-desc text-muted">Employees with Pending Status</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Company -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <a href="<?=$baseUrl ?>/master/company/index" class="text-decoration-none">
+        <div class="card menu-card text-center p-4 h-100">
+          <div class="menu-icon mb-2">
+            <i class="nc-icon nc-bank"></i>
+          </div>
+          <div class="menu-title fw-bold text-primary">Master Company</div>
+          <div class="menu-desc text-muted">Stores company profile data</div>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
