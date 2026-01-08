@@ -13,25 +13,6 @@ use common\components\behaviors\LoggableBehavior;
 
 use common\modules\auth\models\User;
 
-/**
- * This is the model class for table "payroll_item".
- *
- * @property int $id
- * @property string|null $code
- * @property string|null $name
- * @property int|null $category_id
- * @property string|null $type
- * @property string|null $sign
- * @property int|null $affects_gross_tax
- * @property int|null $taxable
- * @property int|null $display_order
- * @property float|null $percent
- * @property float|null $cap
- * @property string|null $salary_type
- *
- * @property PayrollCategory $category
- * @property EmployeeComponentValue[] $employeeComponentValues
- */
 class PayrollItem extends \yii\db\ActiveRecord
 {
 
@@ -101,10 +82,10 @@ class PayrollItem extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['code', 'name', 'category_id', 'display_order', 'percent', 'cap'], 'default', 'value' => null],
+            [['code', 'name', 'category_id', 'display_order', 'percent', 'cap', 'item_code', 'base_multiplier'], 'default', 'value' => null],
             [['type'], 'default', 'value' => 'DATA'],
             [['sign'], 'default', 'value' => 'NONE'],
-            [['affects_gross_tax'], 'default', 'value' => 0],
+            [['affects_gross_tax', 'is_reprocessable'], 'default', 'value' => 0],
             [['taxable','status_id'], 'default', 'value' => 1],
             [['salary_type'], 'default', 'value' => 'RECURRING'],
             [['category_id', 'affects_gross_tax', 'taxable', 'display_order', 'created_by', 'updated_by'], 'integer'],
@@ -128,7 +109,7 @@ class PayrollItem extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'code' => 'Code',
+            'code' => 'Main Code',
             'name' => 'Payroll Component',
             'category_id' => 'Payroll Category',
             'type' => 'Type',
@@ -139,6 +120,9 @@ class PayrollItem extends \yii\db\ActiveRecord
             'percent' => 'Percent',
             'cap' => 'Capping / Maximum Cap',
             'salary_type' => 'Salary Type',
+            'is_reprocessable' => 'Reprocessable',
+            'item_code' => 'Var Component Code',
+            'base_multiplier' => 'Base Multiplier',
             'status_id' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',

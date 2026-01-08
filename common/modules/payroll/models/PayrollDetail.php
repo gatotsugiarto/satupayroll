@@ -54,7 +54,7 @@ class PayrollDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['trace', 'generate_mode', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'default', 'value' => null],
+            [['description', 'trace', 'generate_mode', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'default', 'value' => null],
             [['amount'], 'default', 'value' => 0.00],
             [['source'], 'default', 'value' => 'DATA'],
             [['display_order'], 'default', 'value' => 0],
@@ -63,7 +63,7 @@ class PayrollDetail extends \yii\db\ActiveRecord
             [['employee_id', 'display_order', 'status_id', 'created_by', 'updated_by'], 'integer'],
             [['amount'], 'number'],
             [['source', 'generate_mode'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['description', 'created_at', 'updated_at'], 'safe'],
             [['period_code'], 'string', 'max' => 10],
             [['item_code', 'category_code'], 'string', 'max' => 40],
             [['item_name'], 'string', 'max' => 120],
@@ -87,6 +87,7 @@ class PayrollDetail extends \yii\db\ActiveRecord
             'item_name' => 'Item Name',
             'category_code' => 'Category Code',
             'amount' => 'Amount',
+            'description' => 'Description',
             'source' => 'Source',
             'trace' => 'Trace',
             'display_order' => 'Display Order',

@@ -74,6 +74,8 @@ class PayrollItemSearch extends PayrollItem
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'type', $this->type])
             ->andFilterWhere(['like', 'sign', $this->sign])
+            ->andFilterWhere(['like', 'item_code', $this->item_code])
+            ->andFilterWhere(['like', 'base_multiplier', $this->base_multiplier])
             ->andFilterWhere(['like', 'salary_type', $this->salary_type]);
 
         return $dataProvider;

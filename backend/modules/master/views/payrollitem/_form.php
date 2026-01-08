@@ -35,6 +35,7 @@ $icon = $isNew ? 'fa-plus' : 'fa-edit';
     <div class="modal-body px-4 pb-4">
 
         <?= Html::hiddenInput('form_token', $formToken) ?>
+        <?= Html::hiddenInput('is_reprocessable', $formToken) ?>
 
         <div class="row">
             <div class="col-md-6">
@@ -109,6 +110,22 @@ $icon = $isNew ? 'fa-plus' : 'fa-edit';
             <div class="col-md-6">
                 <?= $form->field($model, 'cap')->textInput([
                     'placeholder' => 'Enter Capping / Maximum Cap',
+                    'class' => 'form-control form-control-custom'
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <?= $form->field($model, 'item_code')->textInput([
+                    'placeholder' => 'Var Component Code',
+                    'class' => 'form-control form-control-custom'
+                ]) ?>
+            </div>
+
+            <div class="col-md-6">
+                <?= $form->field($model, 'base_multiplier')->textInput([
+                    'placeholder' => 'Enter Base Multiplier',
                     'class' => 'form-control form-control-custom'
                 ]) ?>
             </div>

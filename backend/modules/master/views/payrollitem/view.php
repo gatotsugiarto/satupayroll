@@ -16,8 +16,8 @@ use yii\helpers\Html;
 
         <div class="row mb-3">
             <div class="col-md-6">
-                <span class="text-secondary small">Payroll Component</span><br>
-                <span class="fw-semibold"><?= Html::encode($model->code) ?> <?= Html::encode($model->name) ?></span>
+                <span class="text-secondary small">Component: <strong><?= Html::encode($model->name) ?></strong></span><br>
+                <span class="fw-semibold"><small>Code: <?= Html::encode($model->code) ?></small></span>
             </div>
             <div class="col-md-6">
                 <span class="text-secondary small">Payroll Category</span><br>
@@ -80,6 +80,17 @@ use yii\helpers\Html;
             </div>
         </div>
 
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <span class="text-secondary small">Component Code</span><br>
+                <span class="fw-semibold"><?= Html::encode($model->item_code) ?></span>
+            </div>
+            <div class="col-md-6">
+                <span class="text-secondary small">Base Multiplier</span><br>
+                <span class="fw-semibold"><?= Html::encode($model->base_multiplier) ?></span>
+            </div>
+        </div>
+        
         <hr class="my-2">
 
         <div class="row mb-2 small">
