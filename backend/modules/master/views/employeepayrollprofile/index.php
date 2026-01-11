@@ -6,6 +6,8 @@ use kartik\grid\GridView;
 use kartik\export\ExportMenu;
 use kartik\select2\Select2;
 
+use common\modules\master\models\PayrollProfile;
+
 $this->title = "Employee Payroll Profiles";
 $subtitle = "Employee information and payroll details.";
 ?>
@@ -84,9 +86,25 @@ $gridColumns = [
                 ]
             ),
         ],
+        // [
+        //     'attribute' => 'profile_id',
+        //     'value' => 'profile.profile_name',
+        // ],
         [
             'attribute' => 'profile_id',
             'value' => 'profile.profile_name',
+            'filter' => yii\helpers\ArrayHelper::map(PayrollProfile::find()->orderBy('id')->asArray()->all(),'id','profile_name'),
+            'filterType' => GridView::FILTER_SELECT2,
+            'filterWidgetOptions' => [
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'placeholder' => 'Payroll Profile',
+                ],
+                'options' => ['placeholder' => 'Payroll Profile'],
+            ],
+            'filterInputOptions' => ['class' => 'form-control'],
+            'contentOptions' => ['class' => 'text-left'],
+            'headerOptions' => ['class' => 'text-white bg-creative text-center'],
         ],
         //'status_id',
         //'created_at',

@@ -4,10 +4,23 @@ use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
 use kartik\number\NumberControl;
 
+use common\modules\master\models\PayrollItem;
+
 $isNew = $model->isNewRecord;
 $title = $isNew ? 'Create New Payroll Profile' : 'Edit Payroll Profile';
 $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
 ?>
+
+<style>
+    .select2-rows-5 .select2-results__options { 
+        max-height: calc(5 * 28px); /* 5 rows × tinggi per item */ 
+        overflow-y: auto; 
+    }
+    .select2-selection__rendered { 
+        white-space: normal !important; 
+        word-break: break-word; 
+    }
+</style>
 
 <div class="modal-header bg-default text-white rounded-top-4">
     <div>
@@ -45,14 +58,14 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
 
             <div class="col-md-6">
                 <?= $form->field($model, 'payroll_mode')->widget(Select2::class, [
-                    'data' => ['GROSS' => 'GROSS', 'GROSS_UP' => 'GROSS UP'],
+                    'data' => ['GROSS' => 'GROSS', 'GROSS_UP' => 'GROSS UP', 'NET' => 'NET'],
                     'options' => [
                         'placeholder' => 'Profile Mode',
                         'class' => 'select2-custom'
                     ],
                     'pluginOptions' => [
                         'allowClear' => true,
-                        'dropdownParent' => new \yii\web\JsExpression('$("#appModal")')
+                        // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")')
                     ],
                 ]) ?>
             </div>
@@ -71,7 +84,7 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                         ],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            'dropdownParent' => new \yii\web\JsExpression('$("#appModal")')
+                            // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")')
                         ],
                     ]) ?>
                 <?php endif; ?>
@@ -86,9 +99,36 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                     ],
                     'pluginOptions' => [
                         'allowClear' => true,
-                        'dropdownParent' => new \yii\web\JsExpression('$("#appModal")')
+                        // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")')
                     ],
                 ]) ?>
+            </div>
+        </div>
+
+        <?php
+        $model->item_id = $item_id;
+        ?>
+
+        <div class="row">
+            <div class="col-md-12">
+                <?php if ($isNew): ?>
+                    <?= $form->field($model, 'item_id')->hiddenInput(['value' => 1])->label(false) ?>
+                <?php else: ?>
+                    <?= $form->field($model, 'item_id')->widget(Select2::class, [
+                        'data' => common\modules\master\models\PayrollItem::dropdown(),
+                        'options' => [
+                            'placeholder' => 'Select component...',
+                            // 'class' => 'select2-custom'
+                            'multiple' => true,
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                            // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'),
+                            'dropdownCssClass' => 'select2-rows-5', // custom class
+                            'templateSelection' => new \yii\web\JsExpression(" function (data, container) { if (!data.id) return data.text; return data.text; } ")
+                        ],
+                    ]) ?>
+                <?php endif; ?>
             </div>
         </div>
 

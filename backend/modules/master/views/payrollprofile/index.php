@@ -6,6 +6,8 @@ use kartik\grid\GridView;
 use kartik\export\ExportMenu;
 use kartik\select2\Select2;
 
+
+
 $this->title = "Payroll Profiles";
 $subtitle = "Configure and oversee payroll profile structures and compensation records.";
 ?>
@@ -89,14 +91,14 @@ $gridColumns = [
         [
             'attribute' => 'payroll_mode',
             'value' => 'payroll_mode',
-            'filter' => ['GROSS' => 'GROSS', 'GROSS_UP' => 'GROSS UP'],
+            'filter' => ['GROSS' => 'GROSS', 'GROSS_UP' => 'GROSS UP', 'NET' => 'NET'],
             'filterType' => GridView::FILTER_SELECT2,
             'filterWidgetOptions' => [
                 'pluginOptions' => [
                     'allowClear' => true,
-                    'placeholder' => 'Payroll Profile',
+                    // 'placeholder' => 'Payroll Scheme',
                 ],
-                'options' => ['placeholder' => 'Payroll Profile'],
+                'options' => ['placeholder' => 'Payroll Scheme'],
             ],
             'filterInputOptions' => ['class' => 'form-control'],
             'contentOptions' => ['class' => 'text-left'],

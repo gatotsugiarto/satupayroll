@@ -43,7 +43,7 @@ class EmployeePayrollProfileSearch extends EmployeePayrollProfile
     {
         $query = EmployeePayrollProfile::find();
         $query->joinWith(['employee']);
-        $query->joinWith(['profile']);
+        // $query->joinWith(['profile']);
 
         // add conditions that should always apply here
 
@@ -70,6 +70,7 @@ class EmployeePayrollProfileSearch extends EmployeePayrollProfile
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'profile_id' => $this->profile_id,
             'status_id' => $this->status_id,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
@@ -81,12 +82,14 @@ class EmployeePayrollProfileSearch extends EmployeePayrollProfile
             $this->employee_id = preg_replace('/[ ]{2,}|[\t]/', ' ', trim($this->employee_id));
         }
 
-        if($this->profile_id){
-            $this->profile_id = preg_replace('/[ ]{2,}|[\t]/', ' ', trim($this->profile_id));
-        }
+        // if($this->profile_id){
+        //     $this->profile_id = preg_replace('/[ ]{2,}|[\t]/', ' ', trim($this->profile_id));
+        // }
 
-        $query->andFilterWhere(['like', 'payroll_profile.profile_name', $this->profile_id])
-            ->andFilterWhere(['like', 'employee.fullname', $this->employee_id]);
+        // $query->andFilterWhere(['like', 'payroll_profile.profile_name', $this->profile_id])
+        //     ->andFilterWhere(['like', 'employee.fullname', $this->employee_id]);
+
+        $query->andFilterWhere(['like', 'employee.fullname', $this->employee_id]);
 
         return $dataProvider;
     }

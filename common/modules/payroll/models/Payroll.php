@@ -112,7 +112,7 @@ class Payroll extends \yii\db\ActiveRecord
         $user_id = Yii::$app->user->id;
 
         if($generate_mode == 'Batch'){
-            Calculate::PayrollGenerateBatch($period_code, $status_id, $user_id);
+            Calculate::PayrollGenerateBatch($year, $month, $period_code, $status_id, $user_id);
         }else{
             Calculate::PayrollGenerateSingle($employee_id, $period_code, $status_id, $user_id);
         }

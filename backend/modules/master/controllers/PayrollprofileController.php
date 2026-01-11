@@ -6,6 +6,7 @@ use Yii;
 
 use common\modules\master\models\PayrollProfile;
 use common\modules\master\models\PayrollProfileSearch;
+use common\modules\master\models\PayrollProfileComponent;
 
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -55,12 +56,23 @@ class PayrollprofileController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-
-        if (Yii::$app->request->isAjax) {
-            return $this->renderAjax('view', ['model' => $model]);
+        $item_id = array();
+        $PayrollProfileComponent = PayrollProfileComponent::find()->where(['profile_id' => $id])->all();
+        foreach($PayrollProfileComponent as $rows){
+            $item_id[] = $rows->item->name.' ['.$rows->item->code.']';
         }
 
-        return $this->render('view', ['model' => $model]);
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('view', [
+                'model' => $model,
+                'item_id' => $item_id
+            ]);
+        }
+
+        return $this->render('view', [
+            'model' => $model,
+            'item_id' => $item_id
+        ]);
     }
 
     public function actionCreate()
@@ -71,14 +83,66 @@ class PayrollprofileController extends Controller
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
-                if ($model->validate()) {
-                    $model->save();
-                    $model->getBehavior('tokenProtection')->consumeToken();
+                // if ($model->validate()) {
+                //     $model->save();
+                //     $model->getBehavior('tokenProtection')->consumeToken();
 
-                    return [
-                        'success' => true,
-                        'message' => 'Payroll profile created successfully.',
-                    ];
+                //     return [
+                //         'success' => true,
+                //         'message' => 'Payroll profile created successfully.',
+                //     ];
+                // }
+
+                if ($model->validate() && $model->save()) {
+                    $model->getBehavior('tokenProtection')->consumeToken();
+                    if (!empty($model->item_id)) {
+
+                        $profile_id = $model->id;
+                        $item_idId = $model->item_id;
+                        $db = Yii::$app->db;
+                        $transaction = $db->beginTransaction();
+
+                        try {
+
+                            // 1️⃣ Hapus data lama
+                            PayrollProfileComponent::deleteAll([
+                                'profile_id' => $profile_id
+                            ]);
+
+                            // 2️⃣ Siapkan data batch insert
+                            $rows = [];
+                            foreach ($item_idId as $item_id) {
+                                $rows[] = [
+                                    $profile_id,
+                                    $item_id,
+                                    1,
+                                    date('Y-m-d H:i:s'),
+                                    Yii::$app->user->id,
+                                    date('Y-m-d H:i:s'),
+                                    Yii::$app->user->id
+                                ];
+                            }
+
+                            // 3️⃣ Batch insert
+                            $db->createCommand()->batchInsert(
+                                PayrollProfileComponent::tableName(),
+                                ['profile_id', 'item_id', 'status_id', 'created_at', 'created_by', 'updated_at', 'updated_by'],
+                                $rows
+                            )->execute();
+
+                            $transaction->commit();
+
+                            return [
+                                'success' => true,
+                                'message' => 'Payroll profile created successfully.',
+                            ];
+
+                        } catch (\Throwable $e) {
+                            $transaction->rollBack();
+                            Yii::error('PayrollProfileComponent insert failed: ' . $e->getMessage(), __METHOD__);
+                            throw $e;
+                        }
+                    }
                 }
 
                 return [
@@ -96,10 +160,60 @@ class PayrollprofileController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->save()) {
+            // if ($model->save()) {
+            //     $model->getBehavior('tokenProtection')->consumeToken();
+            //     Yii::$app->session->setFlash('success', 'Payroll profile created successfully.');
+            //     return $this->redirect(['index']);
+            // }
+
+            if ($model->validate() && $model->save()) {
                 $model->getBehavior('tokenProtection')->consumeToken();
-                Yii::$app->session->setFlash('success', 'Payroll profile created successfully.');
-                return $this->redirect(['index']);
+                if (!empty($model->item_id)) {
+                    $profile_id = $model->id;
+                    $item_idId = $model->item_id;
+                    $db = Yii::$app->db;
+                    $transaction = $db->beginTransaction();
+
+                    try {
+
+                        // 1️⃣ Hapus data lama
+                        PayrollProfileComponent::deleteAll([
+                            'profile_id' => $profile_id
+                        ]);
+
+                        // 2️⃣ Siapkan data batch insert
+                        $rows = [];
+                        foreach ($item_idId as $item_id) {
+                            $rows[] = [
+                                $profile_id,
+                                $item_id,
+                                1,
+                                date('Y-m-d H:i:s'),
+                                Yii::$app->user->id,
+                                date('Y-m-d H:i:s'),
+                                Yii::$app->user->id
+                            ];
+                        }
+
+                        // 3️⃣ Batch insert
+                        $db->createCommand()->batchInsert(
+                            PayrollProfileComponent::tableName(),
+                            ['profile_id', 'item_id', 'status_id', 'created_at', 'created_by', 'updated_at', 'updated_by'],
+                            $rows
+                        )->execute();
+
+                        $transaction->commit();
+
+                        $model->getBehavior('tokenProtection')->consumeToken();
+                        Yii::$app->session->setFlash('success', 'Payroll profile created successfully.');
+                        return $this->redirect(['index']);
+
+                    } catch (\Throwable $e) {
+                        $transaction->rollBack();
+                        Yii::error('PayrollProfileComponent insert failed: ' . $e->getMessage(), __METHOD__);
+                        throw $e;
+                    }
+                }
             }
         }
 
@@ -126,13 +240,60 @@ class PayrollprofileController extends Controller
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
-                if ($model->validate() && $model->save()) {
+                if ($model->save()) {
                     $model->getBehavior('tokenProtection')->consumeToken();
+                    if (!empty($model->item_id)) {
+                        $profile_id = $model->id;
+                        $item_idId = $model->item_id;
+                        $db = Yii::$app->db;
+                        $transaction = $db->beginTransaction();
 
-                    return [
-                        'success' => true,
-                        'message' => 'Payroll profile updated successfully.',
-                    ];
+                        try {
+
+                            // 1️⃣ Hapus data lama
+                            PayrollProfileComponent::deleteAll([
+                                'profile_id' => $profile_id
+                            ]);
+
+                            // 2️⃣ Siapkan data batch insert
+                            $rows = [];
+                            foreach ($item_idId as $item_id) {
+                                $rows[] = [
+                                    $profile_id,
+                                    $item_id,
+                                    1,
+                                    date('Y-m-d H:i:s'),
+                                    Yii::$app->user->id,
+                                    date('Y-m-d H:i:s'),
+                                    Yii::$app->user->id
+                                ];
+                            }
+
+                            // 3️⃣ Batch insert
+                            $db->createCommand()->batchInsert(
+                                PayrollProfileComponent::tableName(),
+                                ['profile_id', 'item_id', 'status_id', 'created_at', 'created_by', 'updated_at', 'updated_by'],
+                                $rows
+                            )->execute();
+
+                            $transaction->commit();
+
+                            return [
+                                'success' => true,
+                                'message' => 'Payroll profile updated successfully.',
+                            ];
+
+                        } catch (\Throwable $e) {
+                            $transaction->rollBack();
+                            Yii::error('PayrollProfileComponent insert failed: ' . $e->getMessage(), __METHOD__);
+                            throw $e;
+                        }
+                    }else{
+                        return [
+                            'success' => true,
+                            'message' => 'Payroll profile updated successfully.',
+                        ];
+                    }
                 }
 
                 return [
@@ -143,14 +304,71 @@ class PayrollprofileController extends Controller
             }
 
             $formToken = $model->getBehavior('tokenProtection')->generateToken(); // GET pertama kali buka modal → generate token baru
+            $item_id = array();
+            $PayrollProfileComponent = PayrollProfileComponent::find()->where(['profile_id' => $id])->asarray()->all();
+            foreach($PayrollProfileComponent as $rows){
+                $item_id[] = $rows['item_id'];
+            }
             return $this->renderAjax('_form', [
                 'model'     => $model,
+                'item_id' => $item_id,
                 'formToken' => $formToken,
             ]);
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            // if ($model->save()) {
+            //     $model->getBehavior('tokenProtection')->consumeToken();
+            //     Yii::$app->session->setFlash('success', 'Payroll profile updated successfully.');
+            //     return $this->redirect(['index']);
+            // }
+
             if ($model->save()) {
+                $model->getBehavior('tokenProtection')->consumeToken();
+                if (!empty($model->item_id)) {
+
+                    $profile_id = $model->id;
+                    $item_idId = $model->item_id;
+                    $db = Yii::$app->db;
+                    $transaction = $db->beginTransaction();
+
+                    try {
+
+                        // 1️⃣ Hapus data lama
+                        PayrollProfileComponent::deleteAll([
+                            'profile_id' => $profile_id
+                        ]);
+
+                        // 2️⃣ Siapkan data batch insert
+                        $rows = [];
+                        foreach ($item_idId as $item_id) {
+                            $rows[] = [
+                                $profile_id,
+                                $item_id,
+                                1,
+                                date('Y-m-d H:i:s'),
+                                Yii::$app->user->id,
+                                date('Y-m-d H:i:s'),
+                                Yii::$app->user->id
+                            ];
+                        }
+
+                        // 3️⃣ Batch insert
+                        $db->createCommand()->batchInsert(
+                            PayrollProfileComponent::tableName(),
+                            ['profile_id', 'item_id', 'status_id', 'created_at', 'created_by', 'updated_at', 'updated_by'],
+                            $rows
+                        )->execute();
+
+                        $transaction->commit();
+
+                    } catch (\Throwable $e) {
+                        $transaction->rollBack();
+                        Yii::error('PayrollProfileComponent insert failed: ' . $e->getMessage(), __METHOD__);
+                        throw $e;
+                    }
+                }
+
                 $model->getBehavior('tokenProtection')->consumeToken();
                 Yii::$app->session->setFlash('success', 'Payroll profile updated successfully.');
                 return $this->redirect(['index']);
@@ -158,8 +376,15 @@ class PayrollprofileController extends Controller
         }
 
         $formToken = $model->getBehavior('tokenProtection')->generateToken();
+        $item_id = array();
+        $PayrollProfileComponent = PayrollProfileComponent::find()->where(['profile_id' => $id])->asarray()->all();
+        foreach($PayrollProfileComponent as $rows){
+            $item_id[] = $rows['item_id'];
+        }
+
         return $this->render('_form', [
             'model'     => $model,
+            'item_id' => $item_id,
             'formToken' => $formToken,
         ]);
     }
@@ -174,7 +399,11 @@ class PayrollprofileController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
+        PayrollProfileComponent::deleteAll([
+            'profile_id' => $id
+        ]);
         $model->delete();
+        
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;

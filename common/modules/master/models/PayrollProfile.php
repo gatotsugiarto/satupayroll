@@ -21,6 +21,8 @@ class PayrollProfile extends \yii\db\ActiveRecord
      */
     const PAYROLL_MODE_GROSS = 'GROSS';
     const PAYROLL_MODE_GROSS_UP = 'GROSS_UP';
+    const PAYROLL_MODE_NET = 'NET';
+    public $item_id;
 
     /**
      * {@inheritdoc}
@@ -81,7 +83,7 @@ class PayrollProfile extends \yii\db\ActiveRecord
             [['payroll_mode'], 'required'],
             [['payroll_mode'], 'string'],
             [['status_id', 'created_by', 'updated_by'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['item_id', 'created_at', 'updated_at'], 'safe'],
             [['profile_name'], 'string', 'max' => 100],
             ['payroll_mode', 'in', 'range' => array_keys(self::optsPayrollMode())],
         ];
@@ -95,9 +97,10 @@ class PayrollProfile extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'profile_name' => 'Profile Name',
-            'payroll_mode' => 'Payroll Mode',
+            'payroll_mode' => 'Payroll Scheme',
             'is_default' => 'Set Default',
-            'status_id' => 'Status ID',
+            'status_id' => 'Status',
+            'item_id' => 'Components',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
@@ -206,6 +209,7 @@ class PayrollProfile extends \yii\db\ActiveRecord
         return [
             self::PAYROLL_MODE_GROSS => 'GROSS',
             self::PAYROLL_MODE_GROSS_UP => 'GROSS_UP',
+            self::PAYROLL_MODE_NET => 'NET',
         ];
     }
 
@@ -241,6 +245,19 @@ class PayrollProfile extends \yii\db\ActiveRecord
     public function setPayrollModeToGrossup()
     {
         $this->payroll_mode = self::PAYROLL_MODE_GROSS_UP;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPayrollModeGrossnet()
+    {
+        return $this->payroll_mode === self::PAYROLL_MODE_NET;
+    }
+
+    public function setPayrollModeToGrossnet()
+    {
+        $this->payroll_mode = self::PAYROLL_MODE_NET;
     }
 
     public static function dropdown()

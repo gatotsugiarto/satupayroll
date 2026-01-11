@@ -118,7 +118,7 @@ class PayrollItem extends \yii\db\ActiveRecord
             'taxable' => 'Taxable',
             'display_order' => 'Display Order',
             'percent' => 'Percent',
-            'cap' => 'Capping / Maximum Cap',
+            'cap' => 'Wage Ceiling',
             'salary_type' => 'Salary Type',
             'is_reprocessable' => 'Reprocessable',
             'item_code' => 'Var Component Code',

@@ -8,6 +8,17 @@ $title = $isNew ? 'Batch Employee Profile' : 'Edit Employee Profile';
 $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
 ?>
 
+<style>
+    .select2-rows-5 .select2-results__options { 
+        max-height: calc(5 * 28px); /* 5 rows × tinggi per item */ 
+        overflow-y: auto; 
+    }
+    .select2-selection__rendered { 
+        white-space: normal !important; 
+        word-break: break-word; 
+    }
+</style>
+
 <div class="modal-header bg-default text-white rounded-top-4">
     <div>
         <h5 class="text-primary fw-bold page-title mb-1">
@@ -37,24 +48,6 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
         <?php if($isNew): ?>
         <div class="row">
             <div class="col-md-12">
-                <?= $form->field($model, 'employee_id')->widget(Select2::classname(), [
-                    'data' => \common\modules\master\models\Employee::dropdown(),
-                    'options' => [
-                        'placeholder' => 'Employee',
-                        // 'id' => 'employee_id',
-                        'multiple' => true,
-                    ],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                        'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
-                        'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
-                    ],
-                ]) ?>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
                 <?= $form->field($model, 'profile_id')->widget(Select2::classname(), [
                     'data' => \common\modules\master\models\PayrollProfile::dropdown(),
                     'options' => [
@@ -64,8 +57,28 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                     ],
                     'pluginOptions' => [
                         'allowClear' => true,
-                        'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
+                        // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
                         'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
+                    ],
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <?= $form->field($model, 'employee_id')->widget(Select2::classname(), [
+                    'data' => \common\modules\master\models\Employee::dropdown(),
+                    'options' => [
+                        'placeholder' => 'Employee',
+                        // 'id' => 'employee_id',
+                        'multiple' => true,
+                    ],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
+                        'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
+                        'dropdownCssClass' => 'select2-rows-5', // custom class
+                            'templateSelection' => new \yii\web\JsExpression(" function (data, container) { if (!data.id) return data.text; return data.text; } ")
                     ],
                 ]) ?>
             </div>

@@ -23,7 +23,7 @@ $sub_title = "View detailed information and related records.";
                 <span class="fw-semibold"><?= Html::encode($model->profile_name) ?></span>
             </div>
             <div class="col-md-6">
-                <span class="text-secondary small">Payroll Mode</span><br>
+                <span class="text-secondary small">Payroll Scheme</span><br>
                 <span class="fw-semibold"><?= Html::encode($model->payroll_mode) ?>
                 </span>
             </div>
@@ -43,6 +43,40 @@ $sub_title = "View detailed information and related records.";
                     print '<i class="fa fa-times text-muted"></i>';
                 }
                 ?>
+            </div>
+        </div>
+
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <span class="text-secondary small">Components</span><br>
+                <div class="card">
+                  <div class="card-body">
+                    <div class="table-wrapper-80">
+                        <table class="ct-table">
+                          <thead>
+                            <tr>
+                              <th class="text-left">Component</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                            $i = 1;
+                            foreach($item_id as $rows){
+                            ?>
+                            <tr>
+                              <td class="card-category text-left"><i class="fa fa-check text-warning"></i> <?=$rows ?></td>
+                            </tr>
+                            <?php
+                            $i++;
+                            }
+                            ?>
+                          </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+
             </div>
         </div>
 
