@@ -86,9 +86,9 @@ class PayrollItem extends \yii\db\ActiveRecord
             [['type'], 'default', 'value' => 'DATA'],
             [['sign'], 'default', 'value' => 'NONE'],
             [['affects_gross_tax', 'is_reprocessable'], 'default', 'value' => 0],
-            [['taxable','status_id'], 'default', 'value' => 1],
+            [['monthly_exec', 'taxable','status_id'], 'default', 'value' => 1],
             [['salary_type'], 'default', 'value' => 'RECURRING'],
-            [['category_id', 'affects_gross_tax', 'taxable', 'display_order', 'created_by', 'updated_by'], 'integer'],
+            [['category_id', 'affects_gross_tax', 'taxable', 'display_order', 'monthly_exec', 'created_by', 'updated_by'], 'integer'],
             [['type', 'sign', 'salary_type'], 'string'],
             [['percent', 'cap'], 'number'],
             [['created_at', 'updated_at'], 'safe'],
@@ -122,6 +122,7 @@ class PayrollItem extends \yii\db\ActiveRecord
             'salary_type' => 'Salary Type',
             'is_reprocessable' => 'Reprocessable',
             'item_code' => 'Var Component Code',
+            'monthly_exec' => 'Month Execute',
             'base_multiplier' => 'Base Multiplier',
             'status_id' => 'Status',
             'created_at' => 'Created At',
@@ -355,6 +356,20 @@ class PayrollItem extends \yii\db\ActiveRecord
         if ($dropdown === null) {
             
             $models = static::find()->where(['type' => 'DATA'])->all();
+            foreach ($models as $model) {
+                $dropdown[$model->id] = $model->name.' ['.$model->code.']';
+            }
+        }
+            
+        return $dropdown;
+    }
+
+    public static function dropdownall()
+    {
+        static $dropdown;
+        if ($dropdown === null) {
+            
+            $models = static::find()->where(['status_id' => 1])->all();
             foreach ($models as $model) {
                 $dropdown[$model->id] = $model->name.' ['.$model->code.']';
             }

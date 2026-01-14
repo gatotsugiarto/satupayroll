@@ -115,9 +115,36 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                     <?= $form->field($model, 'item_id')->hiddenInput(['value' => 1])->label(false) ?>
                 <?php else: ?>
                     <?= $form->field($model, 'item_id')->widget(Select2::class, [
-                        'data' => common\modules\master\models\PayrollItem::dropdown(),
+                        'data' => common\modules\master\models\PayrollItem::dropdownall(),
                         'options' => [
                             'placeholder' => 'Select component...',
+                            // 'class' => 'select2-custom'
+                            'multiple' => true,
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                            // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'),
+                            'dropdownCssClass' => 'select2-rows-5', // custom class
+                            'templateSelection' => new \yii\web\JsExpression(" function (data, container) { if (!data.id) return data.text; return data.text; } ")
+                        ],
+                    ]) ?>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <?php
+        $model->employee_id = $employee_id;
+        ?>
+
+        <div class="row">
+            <div class="col-md-12">
+                <?php if ($isNew): ?>
+                    <?= $form->field($model, 'employee_id')->hiddenInput(['value' => 1])->label(false) ?>
+                <?php else: ?>
+                    <?= $form->field($model, 'employee_id')->widget(Select2::class, [
+                        'data' => common\modules\master\models\Employee::dropdown(),
+                        'options' => [
+                            'placeholder' => 'Select employee...',
                             // 'class' => 'select2-custom'
                             'multiple' => true,
                         ],

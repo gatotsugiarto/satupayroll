@@ -69,14 +69,18 @@ use yii\helpers\Html;
             </div>
         </div>
 
+        <?php
+        $monthly_exec = $model->monthly_exec ? $model->monthly_exec : '-';
+        ?>
+
         <div class="row mb-3">
             <div class="col-md-6">
                 <span class="text-secondary small">Status</span><br>
                 <span class="fw-semibold"><?= Html::encode($model->status->status_active ) ?></span>
             </div>
             <div class="col-md-6">
-                <span class="text-secondary small"></span><br>
-                <span class="fw-semibold"></span>
+                <span class="text-secondary small">Month Execute</span><br>
+                <span class="fw-semibold"><?= Html::encode($monthly_exec ) ?></span>
             </div>
         </div>
 

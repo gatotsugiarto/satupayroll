@@ -140,7 +140,10 @@ $icon = $isNew ? 'fa-plus' : 'fa-edit';
             </div>
 
             <div class="col-md-6">
-                &nbsp;
+                <?= $form->field($model, 'monthly_exec')->textInput([
+                    'placeholder' => 'Month Execute',
+                    'class' => 'form-control form-control-custom'
+                ]) ?>
             </div>
         </div>
 

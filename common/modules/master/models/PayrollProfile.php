@@ -22,7 +22,9 @@ class PayrollProfile extends \yii\db\ActiveRecord
     const PAYROLL_MODE_GROSS = 'GROSS';
     const PAYROLL_MODE_GROSS_UP = 'GROSS_UP';
     const PAYROLL_MODE_NET = 'NET';
+    
     public $item_id;
+    public $employee_id;
 
     /**
      * {@inheritdoc}
@@ -83,7 +85,7 @@ class PayrollProfile extends \yii\db\ActiveRecord
             [['payroll_mode'], 'required'],
             [['payroll_mode'], 'string'],
             [['status_id', 'created_by', 'updated_by'], 'integer'],
-            [['item_id', 'created_at', 'updated_at'], 'safe'],
+            [['employee_id', 'item_id', 'created_at', 'updated_at'], 'safe'],
             [['profile_name'], 'string', 'max' => 100],
             ['payroll_mode', 'in', 'range' => array_keys(self::optsPayrollMode())],
         ];
@@ -100,6 +102,7 @@ class PayrollProfile extends \yii\db\ActiveRecord
             'payroll_mode' => 'Payroll Scheme',
             'is_default' => 'Set Default',
             'status_id' => 'Status',
+            'employee_id' => 'Employees',
             'item_id' => 'Components',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -150,6 +153,94 @@ class PayrollProfile extends \yii\db\ActiveRecord
             ->select('id')
             ->where(['is_default' => 1])
             ->scalar(); // return id atau null
+    }
+
+    public function saveEmployees()
+    {
+        if (empty($this->employee_id)) {
+            return true;
+        }
+
+        $db = Yii::$app->db;
+        $transaction = $db->beginTransaction();
+
+        try {
+            // Hapus data lama
+            EmployeePayrollProfile::deleteAll(['profile_id' => $this->id]);
+
+            // Siapkan data batch insert
+            $rows = [];
+            foreach ($this->employee_id as $employee_id) {
+                $rows[] = [
+                    $this->id,
+                    $employee_id,
+                    1,
+                    date('Y-m-d H:i:s'),
+                    Yii::$app->user->id,
+                    date('Y-m-d H:i:s'),
+                    Yii::$app->user->id
+                ];
+            }
+
+            // Batch insert
+            $db->createCommand()->batchInsert(
+                EmployeePayrollProfile::tableName(),
+                ['profile_id', 'employee_id', 'status_id', 'created_at', 'created_by', 'updated_at', 'updated_by'],
+                $rows
+            )->execute();
+
+            $transaction->commit();
+            return true;
+
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            Yii::error('EmployeePayrollProfile insert failed: ' . $e->getMessage(), __METHOD__);
+            throw $e;
+        }
+    }
+
+    public function saveComponents()
+    {
+        if (empty($this->item_id)) {
+            return true;
+        }
+
+        $db = Yii::$app->db;
+        $transaction = $db->beginTransaction();
+
+        try {
+            // Hapus data lama
+            PayrollProfileComponent::deleteAll(['profile_id' => $this->id]);
+
+            // Siapkan data batch insert
+            $rows = [];
+            foreach ($this->item_id as $item_id) {
+                $rows[] = [
+                    $this->id,
+                    $item_id,
+                    1,
+                    date('Y-m-d H:i:s'),
+                    Yii::$app->user->id,
+                    date('Y-m-d H:i:s'),
+                    Yii::$app->user->id
+                ];
+            }
+
+            // Batch insert
+            $db->createCommand()->batchInsert(
+                PayrollProfileComponent::tableName(),
+                ['profile_id', 'item_id', 'status_id', 'created_at', 'created_by', 'updated_at', 'updated_by'],
+                $rows
+            )->execute();
+
+            $transaction->commit();
+            return true;
+
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            Yii::error('PayrollProfileComponent insert failed: ' . $e->getMessage(), __METHOD__);
+            throw $e;
+        }
     }
 
     /**
