@@ -107,10 +107,54 @@ class PayrollController extends Controller
     {
         $model = new Payroll();
 
-        $model->month = 1;
         $model->year = 2025;
+        
+        $model->month = 1;
         $generate_mode = 'Batch';
+        $model->PayrollGenerate($generate_mode);
 
+        $model->month = 2;
+        $generate_mode = 'Batch';
+        $model->PayrollGenerate($generate_mode);
+
+        $model->month = 3;
+        $generate_mode = 'Batch';
+        $model->PayrollGenerate($generate_mode);
+
+        $model->month = 4;
+        $generate_mode = 'Batch';
+        $model->PayrollGenerate($generate_mode);
+
+        $model->month = 5;
+        $generate_mode = 'Batch';
+        $model->PayrollGenerate($generate_mode);
+
+        $model->month = 6;
+        $generate_mode = 'Batch';
+        $model->PayrollGenerate($generate_mode);
+
+        $model->month = 7;
+        $generate_mode = 'Batch';
+        $model->PayrollGenerate($generate_mode);
+
+        $model->month = 8;
+        $generate_mode = 'Batch';
+        $model->PayrollGenerate($generate_mode);
+
+        $model->month = 9;
+        $generate_mode = 'Batch';
+        $model->PayrollGenerate($generate_mode);
+
+        $model->month = 10;
+        $generate_mode = 'Batch';
+        $model->PayrollGenerate($generate_mode);
+
+        $model->month = 11;
+        $generate_mode = 'Batch';
+        $model->PayrollGenerate($generate_mode);
+
+        $model->month = 12;
+        $generate_mode = 'Batch';
         $model->PayrollGenerate($generate_mode);
     }
 
