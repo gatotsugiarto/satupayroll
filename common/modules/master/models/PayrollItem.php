@@ -29,6 +29,13 @@ class PayrollItem extends \yii\db\ActiveRecord
     const SALARY_TYPE_RECURRING = 'RECURRING';
     const SALARY_TYPE_ONETIME = 'ONETIME';
 
+    const SLIP_DISPLAY_Y = 'Y';
+    const SLIP_DISPLAY_N = 'N';
+
+    const SLIP_POSITION_C = 'C';
+    const SLIP_POSITION_D = 'D';
+    const SLIP_POSITION_S = 'S';
+
     /**
      * {@inheritdoc}
      */
@@ -85,6 +92,8 @@ class PayrollItem extends \yii\db\ActiveRecord
             [['code', 'name', 'category_id', 'display_order', 'percent', 'cap', 'item_code', 'base_multiplier'], 'default', 'value' => null],
             [['type'], 'default', 'value' => 'DATA'],
             [['sign'], 'default', 'value' => 'NONE'],
+            [['slip_display'], 'default', 'value' => 'Y'],
+            [['slip_position'], 'default', 'value' => 'D'],
             [['affects_gross_tax', 'is_reprocessable'], 'default', 'value' => 0],
             [['monthly_exec', 'taxable','status_id'], 'default', 'value' => 1],
             [['salary_type'], 'default', 'value' => 'RECURRING'],
@@ -97,6 +106,8 @@ class PayrollItem extends \yii\db\ActiveRecord
             ['type', 'in', 'range' => array_keys(self::optsType())],
             ['sign', 'in', 'range' => array_keys(self::optsSign())],
             ['salary_type', 'in', 'range' => array_keys(self::optsSalaryType())],
+            ['slip_display', 'in', 'range' => array_keys(self::optsSlipDisplay())],
+            ['slip_position', 'in', 'range' => array_keys(self::optsSlipPosition())],
             [['code'], 'unique'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => PayrollCategory::class, 'targetAttribute' => ['category_id' => 'id']],
         ];
@@ -124,6 +135,8 @@ class PayrollItem extends \yii\db\ActiveRecord
             'item_code' => 'Var Component Code',
             'monthly_exec' => 'Month Execute',
             'base_multiplier' => 'Base Multiplier',
+            'slip_display' => 'Slip Display',
+            'slip_position' => 'Slip Position',
             'status_id' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -208,6 +221,32 @@ class PayrollItem extends \yii\db\ActiveRecord
             self::SALARY_TYPE_ONETIME => 'ONETIME',
         ];
     }
+
+    /**
+     * column generate_mode ENUM value labels
+     * @return string[]
+     */
+    public static function optsSlipDisplay()
+    {
+        return [
+            self::SLIP_DISPLAY_Y => 'Y',
+            self::SLIP_DISPLAY_N => 'N',
+        ];
+    }
+
+    /**
+     * column generate_mode ENUM value labels
+     * @return string[]
+     */
+    public static function optsSlipPosition()
+    {
+        return [
+            self::SLIP_POSITION_C => 'C',
+            self::SLIP_POSITION_D => 'D',
+            self::SLIP_POSITION_S => 'S',
+        ];
+    }
+
 
     /**
      * @return string

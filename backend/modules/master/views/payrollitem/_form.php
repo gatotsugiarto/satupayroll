@@ -147,6 +147,16 @@ $icon = $isNew ? 'fa-plus' : 'fa-edit';
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-6">
+                <?= $form->field($model, 'slip_display')->dropDownList([ 'Y' => 'Yes', 'N' => 'No', ], ['prompt' => '']) ?>
+            </div>
+
+            <div class="col-md-6">
+                <?= $form->field($model, 'slip_position')->dropDownList([ 'C' => 'Credit', 'D' => 'Debit', 'S' => 'Summary', ], ['prompt' => '']) ?>
+            </div>
+        </div>
+
         
     </div>
 </div>

@@ -40,6 +40,15 @@ class PayrollDetail extends \yii\db\ActiveRecord
     const GENERATE_MODE_BATCH = 'Batch';
     const GENERATE_MODE_SINGLE = 'Single';
 
+    const SLIP_DISPLAY_Y = 'Y';
+    const SLIP_DISPLAY_N = 'N';
+
+    const SLIP_POSITION_C = 'C';
+    const SLIP_POSITION_D = 'D';
+    const SLIP_POSITION_S = 'S';
+
+    
+
     /**
      * {@inheritdoc}
      */
@@ -56,13 +65,15 @@ class PayrollDetail extends \yii\db\ActiveRecord
         return [
             [['description', 'trace', 'generate_mode', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'default', 'value' => null],
             [['amount'], 'default', 'value' => 0.00],
+            [['slip_display'], 'default', 'value' => 'Y'],
+            [['slip_position'], 'default', 'value' => 'C'],
             [['source'], 'default', 'value' => 'DATA'],
             [['display_order'], 'default', 'value' => 0],
             [['status_id'], 'default', 'value' => 1],
             [['employee_id', 'period_code', 'item_code', 'item_name', 'category_code'], 'required'],
             [['employee_id', 'display_order', 'status_id', 'created_by', 'updated_by'], 'integer'],
             [['amount'], 'number'],
-            [['source', 'generate_mode'], 'string'],
+            [['slip_position', 'slip_display', 'source', 'generate_mode'], 'string'],
             [['description', 'created_at', 'updated_at'], 'safe'],
             [['period_code'], 'string', 'max' => 10],
             [['item_code', 'category_code'], 'string', 'max' => 40],
@@ -70,6 +81,8 @@ class PayrollDetail extends \yii\db\ActiveRecord
             [['trace'], 'string', 'max' => 255],
             ['source', 'in', 'range' => array_keys(self::optsSource())],
             ['generate_mode', 'in', 'range' => array_keys(self::optsGenerateMode())],
+            ['slip_display', 'in', 'range' => array_keys(self::optsSlipDisplay())],
+            ['slip_position', 'in', 'range' => array_keys(self::optsSlipPosition())],
             [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::class, 'targetAttribute' => ['employee_id' => 'id']],
         ];
     }
@@ -92,6 +105,8 @@ class PayrollDetail extends \yii\db\ActiveRecord
             'trace' => 'Trace',
             'display_order' => 'Display Order',
             'generate_mode' => 'Generate Mode',
+            'slip_display' => 'Slip Display',
+            'slip_position' => 'Slip Position',
             'status_id' => 'Status ID',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -135,6 +150,31 @@ class PayrollDetail extends \yii\db\ActiveRecord
         return [
             self::GENERATE_MODE_BATCH => 'Batch',
             self::GENERATE_MODE_SINGLE => 'Single',
+        ];
+    }
+
+    /**
+     * column generate_mode ENUM value labels
+     * @return string[]
+     */
+    public static function optsSlipDisplay()
+    {
+        return [
+            self::SLIP_DISPLAY_Y => 'Y',
+            self::SLIP_DISPLAY_N => 'N',
+        ];
+    }
+
+    /**
+     * column generate_mode ENUM value labels
+     * @return string[]
+     */
+    public static function optsSlipPosition()
+    {
+        return [
+            self::SLIP_POSITION_C => 'C',
+            self::SLIP_POSITION_D => 'D',
+            self::SLIP_POSITION_S => 'S',
         ];
     }
 
@@ -217,6 +257,22 @@ class PayrollDetail extends \yii\db\ActiveRecord
     public function displayGenerateMode()
     {
         return self::optsGenerateMode()[$this->generate_mode];
+    }
+
+    /**
+     * @return string
+     */
+    public function displaySlipDisplay()
+    {
+        return self::optsSlipDisplay()[$this->slip_display];
+    }
+
+    /**
+     * @return string
+     */
+    public function displaySlipPosition()
+    {
+        return self::optsSlipPosition()[$this->slip_position];
     }
 
     /**

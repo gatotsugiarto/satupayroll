@@ -94,6 +94,17 @@ use yii\helpers\Html;
                 <span class="fw-semibold"><?= Html::encode($model->base_multiplier) ?></span>
             </div>
         </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <span class="text-secondary small">Slip Display</span><br>
+                <span class="fw-semibold"><?= Html::encode($model->slip_display) ?></span>
+            </div>
+            <div class="col-md-6">
+                <span class="text-secondary small">Slip Position</span><br>
+                <span class="fw-semibold"><?= Html::encode($model->slip_position) ?></span>
+            </div>
+        </div>
         
         <hr class="my-2">
 
