@@ -23,9 +23,15 @@ class PayrollItem extends \yii\db\ActiveRecord
     const TYPE_RATE = 'RATE';
     const TYPE_FORMULA = 'FORMULA';
     const TYPE_SUMMARY = 'SUMMARY';
+
     const SIGN_PLUS = 'PLUS';
     const SIGN_MINUS = 'MINUS';
     const SIGN_NONE = 'NONE';
+    
+    const SIGN2_MULTIPLY = 'MULTIPLY';
+    const SIGN2_DEVIDE = 'DEVIDE';
+    const SIGN2_NONE = 'NONE';
+
     const SALARY_TYPE_RECURRING = 'RECURRING';
     const SALARY_TYPE_ONETIME = 'ONETIME';
 
@@ -91,20 +97,21 @@ class PayrollItem extends \yii\db\ActiveRecord
         return [
             [['code', 'name', 'category_id', 'display_order', 'percent', 'cap', 'item_code', 'base_multiplier'], 'default', 'value' => null],
             [['type'], 'default', 'value' => 'DATA'],
-            [['sign'], 'default', 'value' => 'NONE'],
+            [['sign','sign2'], 'default', 'value' => 'NONE'],
             [['slip_display'], 'default', 'value' => 'Y'],
             [['slip_position'], 'default', 'value' => 'D'],
             [['affects_gross_tax', 'is_reprocessable'], 'default', 'value' => 0],
             [['monthly_exec', 'taxable','status_id'], 'default', 'value' => 1],
             [['salary_type'], 'default', 'value' => 'RECURRING'],
             [['category_id', 'affects_gross_tax', 'taxable', 'display_order', 'monthly_exec', 'created_by', 'updated_by'], 'integer'],
-            [['type', 'sign', 'salary_type'], 'string'],
+            [['type', 'sign', 'sign2', 'salary_type'], 'string'],
             [['percent', 'cap'], 'number'],
             [['created_at', 'updated_at'], 'safe'],
             [['code'], 'string', 'max' => 40],
             [['name'], 'string', 'max' => 120],
             ['type', 'in', 'range' => array_keys(self::optsType())],
             ['sign', 'in', 'range' => array_keys(self::optsSign())],
+            ['sign2', 'in', 'range' => array_keys(self::optsSign2())],
             ['salary_type', 'in', 'range' => array_keys(self::optsSalaryType())],
             ['slip_display', 'in', 'range' => array_keys(self::optsSlipDisplay())],
             ['slip_position', 'in', 'range' => array_keys(self::optsSlipPosition())],
@@ -125,6 +132,7 @@ class PayrollItem extends \yii\db\ActiveRecord
             'category_id' => 'Payroll Category',
             'type' => 'Type',
             'sign' => 'Sign',
+            'sign2' => 'Sign Other',
             'affects_gross_tax' => 'Affects Gross Tax',
             'taxable' => 'Taxable',
             'display_order' => 'Display Order',
@@ -207,6 +215,19 @@ class PayrollItem extends \yii\db\ActiveRecord
             self::SIGN_PLUS => 'PLUS',
             self::SIGN_MINUS => 'MINUS',
             self::SIGN_NONE => 'NONE',
+        ];
+    }
+
+    /**
+     * column sign ENUM value labels
+     * @return string[]
+     */
+    public static function optsSign2()
+    {
+        return [
+            self::SIGN2_MULTIPLY => 'MULTIPLY',
+            self::SIGN2_DEVIDE => 'DEVIDE',
+            self::SIGN2_NONE => 'NONE',
         ];
     }
 
@@ -353,6 +374,53 @@ class PayrollItem extends \yii\db\ActiveRecord
     public function setSignToNone()
     {
         $this->sign = self::SIGN_NONE;
+    }
+
+    /**
+     * @return string
+     */
+    public function displaySign2()
+    {
+        return self::optsSign2()[$this->sign2];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSign2Multiply()
+    {
+        return $this->sign2 === self::SIGN2_MULTIPLY;
+    }
+
+    public function setSign2ToMultiply()
+    {
+        $this->sign2 = self::SIGN2_MULTIPLY;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSign2Devide()
+    {
+        return $this->sign2 === self::SIGN2_DEVIDE;
+    }
+
+    public function setSign2ToDevide()
+    {
+        $this->sign2 = self::SIGN2_DEVIDE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSign2None()
+    {
+        return $this->sign2 === self::SIGN2_NONE;
+    }
+
+    public function setSign2ToNone()
+    {
+        $this->sign = self::SIGN2_NONE;
     }
 
     /**

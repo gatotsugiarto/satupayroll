@@ -26,7 +26,7 @@ class Calculate extends Component
 
         self::sumByCategoryWithSign($item_id=46, $generate_mode, $period_code, $status_id, $user_id); // OTHER_INCOME
 
-        self::sumCode(0, 0, $item_id=11, $generate_mode, $period_code, $status_id, $user_id); // ACTUAL_SALARY
+        self::sumCodeMultiplier(0, 0, $item_id=11, $generate_mode, $period_code, $status_id, $user_id); // ACTUAL_SALARY
         
         /**
          * BPJS PERUSAHAAN
@@ -49,21 +49,21 @@ class Calculate extends Component
         $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, trace, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t2.id, '$period_code' AS period_code, t3.code, t3.name, t3.code, ROUND(t4.amount * t.amount,0) AS amount, t3.type, CONCAT('base=',t.item_code,';percent=',t3.percent,';cap=',t3.cap) AS trace, t3.display_order, 'Batch', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN v_employee t2 ON t2.id = t.employee_id INNER JOIN payroll_item t3 ON t3.status_id = 1 AND t3.id = 15 INNER JOIN jkk t4 ON t2.jkk_id = t4.id WHERE t.period_code = '$period_code' AND t.item_code = t3.base_multiplier";
         \Yii::$app->db->createCommand($sql)->execute();
 
-        self::sumCode(0, 0, $item_id=47, $generate_mode, $period_code, $status_id, $user_id); // EMPLOYER_BPJS
+        self::sumCodeMultiplier(0, 0, $item_id=47, $generate_mode, $period_code, $status_id, $user_id); // EMPLOYER_BPJS
         
-        self::sumCode(0, 0, $item_id=48, $generate_mode, $period_code, $status_id, $user_id); // EMPLOYEE_BPJS
+        self::sumCodeMultiplier(0, 0, $item_id=48, $generate_mode, $period_code, $status_id, $user_id); // EMPLOYEE_BPJS
         
-        self::sumCode($year, $month, $item_id=51, $generate_mode, $period_code, $status_id, $user_id); // EMPLOYEE_BPJS_YEAR_GROSS_UP
+        self::sumCodeMultiplier($year, $month, $item_id=51, $generate_mode, $period_code, $status_id, $user_id); // EMPLOYEE_BPJS_YEAR
 
-        self::sumCode(0, 0, $item_id=26, $generate_mode, $period_code, $status_id, $user_id); // BRUTO
-        
-        self::sumCode($year, $month, $item_id=49, $generate_mode, $period_code, $status_id, $user_id); // BRUTO_YEAR_PPH21_GROSS_UP
+        self::sumCodeMultiplier(0, 0, $item_id=26, $generate_mode, $period_code, $status_id, $user_id); // BRUTO
+
+        self::sumCodeMultiplier($year, $month, $item_id=49, $generate_mode, $period_code, $status_id, $user_id); // BRUTO_YEAR
 
         self::calculateWithCapAfterResult($year, $month, $item_id=50, $generate_mode, $period_code, $status_id, $user_id); // BIAYA_JABATAN
 
-        self::sumCode(0, 0, $item_id=27, $generate_mode, $period_code, $status_id, $user_id); // TOTAL_BEBAN_PERUSAHAAN
+        self::sumCodeMultiplier(0, 0, $item_id=27, $generate_mode, $period_code, $status_id, $user_id); // TOTAL_BEBAN_PERUSAHAAN
 
-        self::sumCode(0, 0, $item_id=28, $generate_mode, $period_code, $status_id, $user_id); // BRUTO_TAX
+        self::sumCodeMultiplier(0, 0, $item_id=28, $generate_mode, $period_code, $status_id, $user_id); // BRUTO_TAX
 
         
         // Ter  -> TER Category
@@ -74,37 +74,32 @@ class Calculate extends Component
         $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, trace, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t2.id, '$period_code' AS period_code, t3.code, t3.name, t3.code, CASE WHEN t3.monthly_exec = $month THEN 0 ELSE t4.ter END AS amount, t3.type, CONCAT('base=',t.item_code,';percent=',t3.percent,';cap=',t3.cap) AS trace, t3.display_order, 'Batch', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN v_employee t2 ON t2.id = t.employee_id INNER JOIN payroll_item t3 ON t3.status_id = 1 AND t3.id = 30 INNER JOIN ter_prosen t4 ON t2.ptkp_id = t4.ptkp_id AND t.amount BETWEEN t4.bruto_from AND t4.bruto_to INNER JOIN v_employee_profile_item t5 ON t2.id = t5.employee_id AND t5.item_id = t3.id WHERE t.period_code = '$period_code' AND t.item_code = t3.base_multiplier";
         \Yii::$app->db->createCommand($sql)->execute();
 
-        // NETO_YEAR_GROSS_UP
+        // NETO_YEAR
         self::sumCodeWithSign($year, $month, $item_id=52, $generate_mode, $period_code, $status_id, $user_id);
 
         // PKP
-        $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t2.id, '$period_code' AS period_code, t3.code, t3.name, t5.code, FLOOR((t.amount - t4.value) / 1000) * 1000 AS amount, t3.type, t3.display_order, 'Batch', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN v_employee t2 ON t2.id = t.employee_id INNER JOIN payroll_item t3 ON t3.status_id = 1 AND t3.id = 53 INNER JOIN ptkp t4 ON t2.ptkp_id = t4.id INNER JOIN payroll_category t5 ON t3.category_id = t5.id INNER JOIN v_employee_profile_item t6 ON t2.id = t6.employee_id AND t6.item_id = t3.id WHERE t.period_code = '$period_code' AND t.item_code = t3.base_multiplier AND t3.monthly_exec <> 0 AND t3.monthly_exec = $month";
+        $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t2.id, '$period_code' AS period_code, t3.code, t3.name, t5.code, FLOOR((t.amount - t4.value) / 1000) * 1000 AS amount, t3.type, t3.display_order, 'Batch', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN v_employee t2 ON t2.id = t.employee_id INNER JOIN payroll_item t3 ON t3.status_id = 1 AND t3.id = 53 INNER JOIN ptkp t4 ON t2.ptkp_id = t4.id INNER JOIN payroll_category t5 ON t3.category_id = t5.id INNER JOIN v_employee_profile_item t6 ON t2.id = t6.employee_id AND t6.item_id = t3.id WHERE t.period_code = '$period_code' AND t.item_code = t3.base_multiplier AND ( (t6.payroll_mode = 'GROSS_UP' AND t3.monthly_exec <> 0 AND t3.monthly_exec = $month) OR (t6.payroll_mode <> 'GROSS_UP') )";
         \Yii::$app->db->createCommand($sql)->execute();
 
         // PPH21_YEAR
-        $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t2.id, '$period_code' AS period_code, t3.code, t3.name, t5.code, SUM(CASE WHEN t.amount > pp.batas_bawah THEN LEAST(IFNULL(pp.batas_atas, t.amount),t.amount) - pp.batas_bawah ELSE 0 END * pp.tarif) AS amount, t3.type, t3.display_order, 'Batch', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN v_employee t2 ON t2.id = t.employee_id INNER JOIN payroll_item t3 ON t3.status_id = 1 AND t3.id = 54 INNER JOIN pph21_tarif_progresif pp ON t.amount > pp.batas_bawah
-
-        INNER JOIN payroll_category t5 ON t3.category_id = t5.id INNER JOIN v_employee_profile_item t6 ON t2.id = t6.employee_id AND t6.item_id = t3.id WHERE t.period_code = '$period_code' AND t.item_code = t3.base_multiplier AND t3.monthly_exec <> 0 AND t3.monthly_exec = $month GROUP BY t.employee_id";
+        $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t2.id, '$period_code' AS period_code, t3.code, t3.name, t5.code, SUM(CASE WHEN t.amount > pp.batas_bawah THEN LEAST(IFNULL(pp.batas_atas, t.amount),t.amount) - pp.batas_bawah ELSE 0 END * pp.tarif) AS amount, t3.type, t3.display_order, 'Batch', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN v_employee t2 ON t2.id = t.employee_id INNER JOIN payroll_item t3 ON t3.status_id = 1 AND t3.id = 54 INNER JOIN pph21_tarif_progresif pp ON t.amount > pp.batas_bawah INNER JOIN payroll_category t5 ON t3.category_id = t5.id INNER JOIN v_employee_profile_item t6 ON t2.id = t6.employee_id AND t6.item_id = t3.id WHERE t.period_code = '$period_code' AND t.item_code = t3.base_multiplier AND ( (t6.payroll_mode = 'GROSS_UP' AND t3.monthly_exec <> 0 AND t3.monthly_exec = $month) OR (t6.payroll_mode <> 'GROSS_UP') ) GROUP BY t.employee_id";
         \Yii::$app->db->createCommand($sql)->execute();
+
+        self::sumCodeMultiplier(0, 0, $item_id=39, $generate_mode, $period_code, $status_id, $user_id); // PPH21_GROSS
 
         // PPH21_JAN_NOV
         $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, trace, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t2.id, '$period_code' AS period_code, t3.code, t3.name, t3.code, SUM(t.amount) AS amount, t3.type, CONCAT('base=',t.item_code,';percent=',t3.percent,';cap=',t3.cap) AS trace, t3.display_order, 'Batch', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN v_employee t2 ON t2.id = t.employee_id INNER JOIN payroll_item t3 ON t3.status_id = 1 AND t3.id = 44 WHERE t.item_code = t3.base_multiplier AND t.period_code <> '$period_code' AND DATE_FORMAT(STR_TO_DATE(t.period_code, '%Y-%m'), '%Y') = $year AND t3.monthly_exec <> 0 AND t3.monthly_exec = $month GROUP BY t.employee_id";
         \Yii::$app->db->createCommand($sql)->execute();
 
-        // PPH21_TER_GROSS_UP
-        self::multiplyCode(0, 0, $item_id=31, $generate_mode, $period_code, $status_id, $user_id);
+        self::multiplyCode(0, 0, $item_id=31, $generate_mode, $period_code, $status_id, $user_id); // PPH21_TER_GROSS_UP
 
-        // PPH21_DEC_GROSS_UP
-        self::sumCodeWithSign($year, $month, $item_id=38, $generate_mode, $period_code, $status_id, $user_id);
+        self::sumCodeWithSign($year, $month, $item_id=38, $generate_mode, $period_code, $status_id, $user_id); // PPH21_DEC_GROSS_UP
 
-        // PPH21_GROSS_UP
-        self::sumCodeWithSign(0, 0, $item_id=43, $generate_mode, $period_code, $status_id, $user_id);
+        self::sumCodeWithSign(0, 0, $item_id=43, $generate_mode, $period_code, $status_id, $user_id); // PPH21_GROSS_UP
 
-        // TOTAL_POTONGAN
-        self::sumCode(0, 0, $item_id=36, $generate_mode, $period_code, $status_id, $user_id);
+        self::sumCodeMultiplier(0, 0, $item_id=36, $generate_mode, $period_code, $status_id, $user_id); // TOTAL_POTONGAN
 
-        // THP
-        self::sumCodeWithSign(0, 0, $item_id=37, $generate_mode, $period_code, $status_id, $user_id);
+        self::sumCodeWithSign(0, 0, $item_id=37, $generate_mode, $period_code, $status_id, $user_id); // THP
     }
 
     /**
@@ -142,12 +137,12 @@ class Calculate extends Component
     /**
      * Summary by Code
     */
-    public static function sumCode($year, $month, $item_id, $generate_mode, $period_code, $status_id, $user_id)
+    public static function sumCodeMultiplier($year, $month, $item_id, $generate_mode, $period_code, $status_id, $user_id)
     {
         if($month){
-            $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t.employee_id, '$period_code' AS period_code, t3.code, t3.name, t3.code, SUM(CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 THEN t.amount ELSE 0 END) * t3.period_multiplier AS amount, t3.type, t3.display_order, '$generate_mode', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN payroll_item t3 ON t.status_id = 1 AND t3.status_id = 1 AND t3.id = $item_id INNER JOIN v_employee_profile_item t5 ON t.employee_id = t5.employee_id AND t5.item_id = t3.id WHERE t.period_code = '$period_code' AND t3.monthly_exec <> 0 AND t3.monthly_exec = $month GROUP BY t.employee_id";
+            $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t.employee_id, '$period_code' AS period_code, t3.code, t3.name, t3.code, CASE WHEN t3.sign2 = 'MULTIPLY' THEN SUM(CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 THEN t.amount ELSE 0 END) * t3.period_multiplier WHEN t3.sign2 = 'DEVIDE' THEN SUM(CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 THEN t.amount ELSE 0 END) / NULLIF(t3.period_multiplier,0) ELSE SUM(CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 THEN t.amount ELSE 0 END) END AS amount, t3.type, t3.display_order, '$generate_mode', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN payroll_item t3 ON t.status_id = 1 AND t3.status_id = 1 AND t3.id = $item_id INNER JOIN v_employee_profile_item t5 ON t.employee_id = t5.employee_id AND t5.item_id = t3.id WHERE t.period_code = '$period_code' AND ( (t5.payroll_mode = 'GROSS_UP' AND t3.monthly_exec <> 0 AND t3.monthly_exec = $month) OR (t5.payroll_mode <> 'GROSS_UP') ) GROUP BY t.employee_id";
         }else{
-            $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t.employee_id, '$period_code' AS period_code, t3.code, t3.name, t3.code, SUM(CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 THEN t.amount ELSE 0 END) * t3.period_multiplier AS amount, t3.type, t3.display_order, '$generate_mode', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN payroll_item t3 ON t.status_id = 1 AND t3.status_id = 1 AND t3.id = $item_id WHERE t.period_code = '$period_code' GROUP BY t.employee_id";
+            $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t.employee_id, '$period_code' AS period_code, t3.code, t3.name, t3.code, CASE WHEN t3.sign2 = 'MULTIPLY' THEN SUM(CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 THEN t.amount ELSE 0 END) * t3.period_multiplier WHEN t3.sign2 = 'DEVIDE' THEN SUM(CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 THEN t.amount ELSE 0 END) / NULLIF(t3.period_multiplier,0) ELSE SUM(CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 THEN t.amount ELSE 0 END) END AS amount, t3.type, t3.display_order, '$generate_mode', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN payroll_item t3 ON t.status_id = 1 AND t3.status_id = 1 AND t3.id = $item_id INNER JOIN v_employee_profile_item t5 ON t.employee_id = t5.employee_id AND t5.item_id = t3.id WHERE t.period_code = '$period_code' GROUP BY t.employee_id";
         }
         \Yii::$app->db->createCommand($sql)->execute();
     }
@@ -158,7 +153,7 @@ class Calculate extends Component
     public static function sumCodeWithSign($year, $month, $item_id, $generate_mode, $period_code, $status_id, $user_id)
     {
         if($month){
-            $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t.employee_id, '$period_code' AS period_code, t3.code, t3.name, t3.code, SUM(CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 AND t2.sign = 'PLUS' THEN t.amount ELSE 0 END - CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 AND t2.sign = 'MINUS' THEN t.amount ELSE 0 END) AS amount, t3.type, t3.display_order, '$generate_mode', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN payroll_item t3 ON t.status_id = 1 AND t3.status_id = 1 AND t3.id = $item_id INNER JOIN payroll_item t2 ON t.item_code = t2.code INNER JOIN v_employee_profile_item t5 ON t.employee_id = t5.employee_id AND t5.item_id = t3.id WHERE t.period_code = '$period_code' AND t3.monthly_exec <> 0 AND t3.monthly_exec = $month GROUP BY t.employee_id";
+            $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t.employee_id, '$period_code' AS period_code, t3.code, t3.name, t3.code, SUM(CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 AND t2.sign = 'PLUS' THEN t.amount ELSE 0 END - CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 AND t2.sign = 'MINUS' THEN t.amount ELSE 0 END) AS amount, t3.type, t3.display_order, '$generate_mode', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN payroll_item t3 ON t.status_id = 1 AND t3.status_id = 1 AND t3.id = $item_id INNER JOIN payroll_item t2 ON t.item_code = t2.code INNER JOIN v_employee_profile_item t5 ON t.employee_id = t5.employee_id AND t5.item_id = t3.id WHERE t.period_code = '$period_code' AND ( (t5.payroll_mode = 'GROSS_UP' AND t3.monthly_exec <> 0 AND t3.monthly_exec = $month) OR (t5.payroll_mode <> 'GROSS_UP') ) GROUP BY t.employee_id";
         }else{
             $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t.employee_id, '$period_code' AS period_code, t3.code, t3.name, t3.code, SUM(CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 AND t2.sign = 'PLUS' THEN t.amount ELSE 0 END - CASE WHEN FIND_IN_SET(t.item_code, t3.item_code) > 0 AND t2.sign = 'MINUS' THEN t.amount ELSE 0 END) AS amount, t3.type, t3.display_order, '$generate_mode', t3.slip_display, t3.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN payroll_item t3 ON t.status_id = 1 AND t3.status_id = 1 AND t3.id = $item_id INNER JOIN payroll_item t2 ON t.item_code = t2.code INNER JOIN v_employee_profile_item t5 ON t.employee_id = t5.employee_id AND t5.item_id = t3.id WHERE t.period_code = '$period_code' GROUP BY t.employee_id";
         }
@@ -183,7 +178,7 @@ class Calculate extends Component
     public static function calculateWithCapAfterResult($year, $month, $item_id, $generate_mode, $period_code, $status_id, $user_id)
     {
         if($month){
-            $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, trace, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t2.id, '$period_code' AS period_code, pi.code, pi.name, pc.code, ROUND(LEAST(IFNULL(t.amount*pi.percent, 0), COALESCE(pi.cap, IFNULL(t.amount*pi.percent, 0))),0) AS amount,pi.type, CONCAT('base=',t.item_code,';percent=',pi.percent,';cap=',pi.cap) AS trace, pi.display_order, '$generate_mode', pi.slip_display, pi.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN employee t2 ON t2.id = t.employee_id INNER JOIN payroll_item pi ON pi.status_id = 1 AND pi.id = $item_id INNER JOIN payroll_category pc ON pi.category_id = pc.id INNER JOIN v_employee_profile_item t5 ON t.employee_id = t5.employee_id AND t5.item_id = pi.id WHERE t.period_code = '$period_code' AND t.item_code = pi.base_multiplier AND pi.monthly_exec <> 0 AND pi.monthly_exec = $month AND ROUND(pi.percent * LEAST(t.amount, COALESCE(pi.cap, t.amount)),0) > 0";
+            $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, trace, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t2.id, '$period_code' AS period_code, pi.code, pi.name, pc.code, ROUND(LEAST(IFNULL(t.amount*pi.percent, 0), COALESCE(pi.cap, IFNULL(t.amount*pi.percent, 0))),0) AS amount,pi.type, CONCAT('base=',t.item_code,';percent=',pi.percent,';cap=',pi.cap) AS trace, pi.display_order, '$generate_mode', pi.slip_display, pi.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN employee t2 ON t2.id = t.employee_id INNER JOIN payroll_item pi ON pi.status_id = 1 AND pi.id = $item_id INNER JOIN payroll_category pc ON pi.category_id = pc.id INNER JOIN v_employee_profile_item t5 ON t.employee_id = t5.employee_id AND t5.item_id = pi.id WHERE t.period_code = '$period_code' AND t.item_code = pi.base_multiplier AND ( (t5.payroll_mode = 'GROSS_UP' AND pi.monthly_exec <> 0 AND pi.monthly_exec = $month) OR (t5.payroll_mode <> 'GROSS_UP') ) AND ROUND(pi.percent * LEAST(t.amount, COALESCE(pi.cap, t.amount)),0) > 0";
         }else{
             $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, amount, source, trace, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t2.id, '$period_code' AS period_code, pi.code, pi.name, pc.code, ROUND(LEAST(IFNULL(t.amount*pi.percent, 0), COALESCE(pi.cap, IFNULL(t.amount*pi.percent, 0))),0) AS amount,pi.type, CONCAT('base=',t.item_code,';percent=',pi.percent,';cap=',pi.cap) AS trace, pi.display_order, '$generate_mode', pi.slip_display, pi.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail t INNER JOIN employee t2 ON t2.id = t.employee_id INNER JOIN payroll_item pi ON pi.status_id = 1 AND pi.id = $item_id INNER JOIN payroll_category pc ON pi.category_id = pc.id INNER JOIN v_employee_profile_item t5 ON t.employee_id = t5.employee_id AND t5.item_id = pi.id WHERE t.period_code = '$period_code' AND t.item_code = pi.base_multiplier AND ROUND(pi.percent * LEAST(t.amount, COALESCE(pi.cap, t.amount)),0) > 0";
         }

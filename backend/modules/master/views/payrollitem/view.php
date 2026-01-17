@@ -31,8 +31,8 @@ use yii\helpers\Html;
                 <span class="fw-semibold"><?= Html::encode($model->type) ?></span>
             </div>
             <div class="col-md-6">
-                <span class="text-secondary small">Sign</span><br>
-                <span class="fw-semibold"><?= Html::encode($model->sign) ?></span>
+                <span class="text-secondary small">Sign & Sign Other</span><br>
+                <span class="fw-semibold"><?= Html::encode($model->sign) ?> & <?= Html::encode($model->sign2) ?></span>
             </div>
         </div>
 

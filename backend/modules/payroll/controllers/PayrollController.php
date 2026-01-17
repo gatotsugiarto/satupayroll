@@ -103,7 +103,7 @@ class PayrollController extends Controller
         ]);
     }
 
-    public function actionRun()
+    public function actionRunall()
     {
         $model = new Payroll();
 
@@ -154,6 +154,17 @@ class PayrollController extends Controller
         $model->PayrollGenerate($generate_mode);
 
         $model->month = 12;
+        $generate_mode = 'Batch';
+        $model->PayrollGenerate($generate_mode);
+    }
+
+    public function actionRun()
+    {
+        $model = new Payroll();
+
+        $model->year = 2025;
+        
+        $model->month = 1;
         $generate_mode = 'Batch';
         $model->PayrollGenerate($generate_mode);
     }

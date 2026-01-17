@@ -84,6 +84,14 @@ $icon = $isNew ? 'fa-plus' : 'fa-edit';
         </div>
 
         <div class="row">
+            <div class="col-md-6"></div>
+
+            <div class="col-md-6">
+                <?= $form->field($model, 'sign2')->dropDownList([ 'MULTIPLY' => 'MULTIPLY', 'DEVIDE' => 'DEVIDE', 'NONE' => 'NONE', ], ['prompt' => '']) ?>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-md-6">
                 <?= $form->field($model, 'affects_gross_tax')->textInput([
                     'placeholder' => 'Enter Affects Gross Tax',
