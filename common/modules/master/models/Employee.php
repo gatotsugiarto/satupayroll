@@ -197,7 +197,7 @@ class Employee extends \yii\db\ActiveRecord
         return $no_salary;
     }
 
-    public static function employeepayrollprofile()
+    public static function employeepayrollprofile($employee_id)
     {
         $profile_id = PayrollProfile::getDefaultId();
         if($profile_id){
@@ -205,7 +205,7 @@ class Employee extends \yii\db\ActiveRecord
             if(!$EmployeePayrollProfile){
 
                 $model = new EmployeePayrollProfile();
-                $model->employee_id = $this->id;
+                $model->employee_id = $employee_id;
                 $model->profile_id = $profile_id;
                 $model->save();
             }

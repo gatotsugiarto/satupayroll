@@ -39,7 +39,7 @@ $sub_title = "View detailed information and related records.";
                 <span class="fw-semibold"><?= Html::encode($model->marital_status) ?> - <?= Html::encode($model->family_status) ?></span>
             </div>
             <div class="col-md-6">
-                <span class="text-secondary small">PTKP</span><br>
+                <span class="text-secondary small">PTKP - Cut-off January</span><br>
                 <span class="fw-semibold"><?= Html::encode($model->ptkp) ?>
                 </span>
             </div>

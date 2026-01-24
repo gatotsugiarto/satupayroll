@@ -93,8 +93,8 @@ $icon = $isNew ? 'fa-plus' : 'fa-edit';
 
         <div class="row">
             <div class="col-md-6">
-                <?= $form->field($model, 'affects_gross_tax')->textInput([
-                    'placeholder' => 'Enter Affects Gross Tax',
+                <?= $form->field($model, 'default_value')->textInput([
+                    'placeholder' => 'Enter Default Value',
                     'class' => 'form-control form-control-custom'
                 ]) ?>
             </div>

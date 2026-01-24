@@ -54,11 +54,6 @@ $sub_title = "View detailed information and related records.";
                   <div class="card-body">
                     <div class="table-wrapper-80">
                         <table class="ct-table">
-                          <thead>
-                            <tr>
-                              <th class="text-left">Component</th>
-                            </tr>
-                          </thead>
                           <tbody>
                             <?php
                             $i = 1;
@@ -80,7 +75,33 @@ $sub_title = "View detailed information and related records.";
             </div>
         </div>
 
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <span class="text-secondary small">Employees</span><br>
+                <div class="card">
+                  <div class="card-body">
+                    <div class="table-wrapper-80">
+                        <table class="ct-table">
+                          <tbody>
+                            <?php
+                            $i = 1;
+                            foreach($employee_id as $rows){
+                            ?>
+                            <tr>
+                              <td class="card-category text-left"><i class="fa fa-check text-warning"></i> <?=$rows ?></td>
+                            </tr>
+                            <?php
+                            $i++;
+                            }
+                            ?>
+                          </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
 
+            </div>
+        </div>
 
 
         <hr class="my-2">

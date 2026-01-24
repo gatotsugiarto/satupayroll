@@ -23,8 +23,8 @@ class PayrollProfile extends \yii\db\ActiveRecord
     const PAYROLL_MODE_GROSS_UP = 'GROSS_UP';
     const PAYROLL_MODE_NET = 'NET';
     
-    public $item_id;
-    public $employee_id;
+    public $item_id = [];
+    public $employee_id = [];
 
     /**
      * {@inheritdoc}
@@ -86,6 +86,7 @@ class PayrollProfile extends \yii\db\ActiveRecord
             [['payroll_mode'], 'string'],
             [['status_id', 'created_by', 'updated_by'], 'integer'],
             [['employee_id', 'item_id', 'created_at', 'updated_at'], 'safe'],
+            // [['employee_id', 'item_id'], 'each', 'rule' => ['integer']],
             [['profile_name'], 'string', 'max' => 100],
             ['payroll_mode', 'in', 'range' => array_keys(self::optsPayrollMode())],
         ];
@@ -166,7 +167,7 @@ class PayrollProfile extends \yii\db\ActiveRecord
 
         try {
             // Hapus data lama
-            EmployeePayrollProfile::deleteAll(['profile_id' => $this->id]);
+            EmployeePayrollProfile::deleteAll(['employee_id' => $this->employee_id]);
 
             // Siapkan data batch insert
             $rows = [];

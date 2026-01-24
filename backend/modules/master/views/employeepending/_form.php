@@ -51,7 +51,7 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                 ]) ?>
             </div>
             <div class="col-md-6">
-                <?= $form->field($model, 'pending_type')->dropDownList([ 'PAYROLL' => 'PAYROLL', 'PTKP' => 'PTKP', ], ['prompt' => '']) ?>
+                <?= $form->field($model, 'pending_type')->dropDownList([ 'PAYROLL' => 'PAYROLL', 'PTKP' => 'PTKP - Cut-off January', ], ['prompt' => '']) ?>
             </div>
         </div>
 

@@ -38,8 +38,8 @@ use yii\helpers\Html;
 
         <div class="row mb-3">
             <div class="col-md-6">
-                <span class="text-secondary small">Affects Gross Tax</span><br>
-                <span class="fw-semibold"><?= Html::encode($model->affects_gross_tax) ?></span>
+                <span class="text-secondary small">Default Value</span><br>
+                <span class="fw-semibold"><?= Html::encode($model->default_value) ?></span>
             </div>
             <div class="col-md-6">
                 <span class="text-secondary small">Taxable</span><br>

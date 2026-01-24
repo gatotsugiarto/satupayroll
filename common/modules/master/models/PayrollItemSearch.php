@@ -17,7 +17,7 @@ class PayrollItemSearch extends PayrollItem
     public function rules()
     {
         return [
-            [['id', 'category_id', 'affects_gross_tax', 'taxable', 'display_order', 'status_id'], 'integer'],
+            [['id', 'category_id', 'default_value', 'taxable', 'display_order', 'status_id'], 'integer'],
             [['code', 'name', 'type', 'sign', 'salary_type', 'created_at', 'updated_at'], 'safe'],
             [['percent', 'cap'], 'number'],
         ];
@@ -62,7 +62,7 @@ class PayrollItemSearch extends PayrollItem
         $query->andFilterWhere([
             'id' => $this->id,
             'category_id' => $this->category_id,
-            'affects_gross_tax' => $this->affects_gross_tax,
+            'default_value' => $this->default_value,
             'taxable' => $this->taxable,
             'display_order' => $this->display_order,
             'percent' => $this->percent,

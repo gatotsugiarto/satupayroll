@@ -21,7 +21,7 @@ $gridColumns = [
     'type',
     'status.status_active',
     //'sign',
-    //'affects_gross_tax',
+    //'default_value',
     //'taxable',
     //'display_order',
     //'percent',

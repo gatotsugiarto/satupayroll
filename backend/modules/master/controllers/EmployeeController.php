@@ -135,6 +135,7 @@ class EmployeeController extends Controller
             $affectedRows =\Yii::$app->db->createCommand($sql)->execute();
             if ($affectedRows > 0) {
 
+                $employee_id = Yii::$app->db->getLastInsertID();
                 $fullname = $upload->fullname;
                 $jabatan = $upload->jabatan;
                 
@@ -155,7 +156,7 @@ class EmployeeController extends Controller
                         
                 EmployeeUpload::adjust_salary_from_upload($id);
 
-                $employeepayrollprofile = Employee::employeepayrollprofile();
+                $employeepayrollprofile = Employee::employeepayrollprofile($employee_id);
 
                 $link_salary  = \Yii::$app->request->BaseUrl.'/master/salary/index';
                 $message = "Employee registered successfully. Payroll profile: $employeepayrollprofile. Please manage the salary details.";
