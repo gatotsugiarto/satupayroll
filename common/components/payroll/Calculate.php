@@ -68,9 +68,7 @@ class Calculate extends Component
 
         self::sumCodeWithSign(0, 0, $item_id=28, $generate_mode, $period_code, $status_id, $user_id); // BRUTO_TAX
         self::sumPeriodBaseMultiplier($year, $month, $item_id=61, $generate_mode, $period_code, $status_id, $user_id); // BRUTO_TAX_YEAR
-        
 
-        
         // TER  -> TER Category
         $sql = "INSERT INTO payroll_detail (employee_id, period_code, item_code, item_name, category_code, description, source, trace, display_order, generate_mode, slip_display, slip_position, status_id, created_at, created_by, updated_at, updated_by) SELECT t.id, '$period_code' AS period_code, t4.code, t4.name, t4.code, t3.ter, t4.type, NULL, t4.display_order, 'Batch', t4.slip_display, t4.slip_position, $status_id, NOW(), $user_id, NOW(), $user_id FROM v_employee t INNER JOIN ptkp t2 ON t2.id = t.ptkp_id INNER JOIN ter t3 ON t3.id = t2.ter_id INNER JOIN payroll_item t4 ON t4.status_id = 1 AND t4.id = 29 AND t4.monthly_exec <> $month INNER JOIN v_employee_profile_item t5 ON t.id = t5.employee_id AND t5.item_id = t4.id";
         \Yii::$app->db->createCommand($sql)->execute();
@@ -91,14 +89,6 @@ class Calculate extends Component
         \Yii::$app->db->createCommand($sql)->execute();
         
         self::sumPeriodBaseMultiplier($year, $month, $item_id=44, $generate_mode, $period_code, $status_id, $user_id); // PPH21_JAN_NOV
-
-        
-
-        
-
-        
-
-        
 
         // self::multiplyCode(0, 0, $item_id=31, $generate_mode, $period_code, $status_id, $user_id); // PPH21_TER_GROSS_UP
 
