@@ -5,7 +5,7 @@ use kartik\select2\Select2;
 use kartik\number\NumberControl;
 
 $isNew = $model->isNewRecord;
-$title = $isNew ? 'Batch Process' : 'Edit Payroll';
+$title = $isNew ? 'Approve Process' : 'Edit Payroll';
 $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
 ?>
 
@@ -16,7 +16,7 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
         </h5>
         <small class="text-muted">
             <?= $isNew
-                ? 'Please fill in the year and month period form below to process a new payroll.'
+                ? 'This payroll has received approval from the Finance department.'
                 : 'Update salary information below.' ?>
         </small>
     </div>
@@ -103,7 +103,7 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
 
     <!-- RIGHT: Submit -->
     <div>
-        <?= Html::submitButton('<i class="fa fa-save"></i> Process', [
+        <?= Html::submitButton('<i class="fa fa-save"></i> Approve', [
             'class' => 'btn btn-primary px-4',
             'style' => 'min-width:140px;',
         ]) ?>

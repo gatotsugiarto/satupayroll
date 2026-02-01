@@ -242,6 +242,16 @@ class Calculate extends Component
         \Yii::$app->db->createCommand($sql)->execute();
     }
 
+
+    public static function PayrollHeaderBatch($year, $month, $period_code, $status_id, $user_id)
+    {
+        $sql = "DELETE FROM payroll WHERE period_code = '$period_code' AND status_id = 1";
+        // \Yii::$app->db->createCommand($sql)->execute();
+
+        $sql = "INSERT INTO payroll (employee_id, month, year, period_code, gross, total_deduction, thp, status_id, created_at, created_by, updated_at, updated_by) SELECT employee_id, $month, $year, period_code, IFNULL(MAX(CASE WHEN item_code = 'BRUTO' THEN amount END),0) AS gross, IFNULL(MAX(CASE WHEN item_code = 'TOTAL_POTONGAN' THEN amount END),0) AS total_potongan, IFNULL(MAX(CASE WHEN item_code = 'THP' THEN amount END),0) AS thp, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail WHERE period_code = '$period_code' GROUP BY employee_id";
+        // \Yii::$app->db->createCommand($sql)->execute();
+    }
+
     public static function PayrollGenerateSingle($employee_id, $period_code, $status_id, $user_id)
     {
         $generate_mode = 'Single';

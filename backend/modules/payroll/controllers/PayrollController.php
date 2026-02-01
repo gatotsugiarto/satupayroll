@@ -13,8 +13,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-
 use yii\web\UploadedFile;
+use Mpdf\Mpdf;
 
 use common\modules\master\models\UploadForm;
 use common\modules\payroll\models\EmployeeUpload;
@@ -193,30 +193,112 @@ class PayrollController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+        $model = $this->findModel($id);
+
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('view', ['model' => $model]);
+        }
+
+        return $this->render('view', ['model' => $model]);
+    }
+
+    public function actionBatch()
+    {
+        $model = new Payroll();
+        $model->scenario = 'create';
+
+        if (Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+
+                if ($model->validate()) {
+                    $model->save();
+                    $model->getBehavior('tokenProtection')->consumeToken();
+
+                    return [
+                        'success' => true,
+                        'message' => 'Payroll component created successfully.',
+                    ];
+                }
+
+                return [
+                    'success' => false,
+                    'message' => 'Validation failed.',
+                    'errors' => ActiveForm::validate($model),
+                ];
+            }
+
+            $formToken = $model->getBehavior('tokenProtection')->generateToken();
+            return $this->renderAjax('_batch', [
+                'model'     => $model,
+                'formToken' => $formToken,
+            ]);
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $generate_mode = 'Batch';
+            $model->PayrollGenerate($generate_mode);
+            
+            $model->getBehavior('tokenProtection')->consumeToken();
+            Yii::$app->session->setFlash('success', 'Payroll component created successfully.');
+            return $this->redirect(['index']);
+            
+        }
+
+        $formToken = $model->getBehavior('tokenProtection')->generateToken();
+        return $this->render('_batch', [
+            'model'     => $model,
+            'formToken' => $formToken,
         ]);
     }
 
-    /**
-     * Creates a new Payroll model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
-     */
-    public function actionCreate()
+    public function actionApprove()
     {
         $model = new Payroll();
+        $model->scenario = 'create';
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+        if (Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+
+                if ($model->validate()) {
+                    $model->save();
+                    $model->getBehavior('tokenProtection')->consumeToken();
+
+                    return [
+                        'success' => true,
+                        'message' => 'Payroll component created successfully.',
+                    ];
+                }
+
+                return [
+                    'success' => false,
+                    'message' => 'Validation failed.',
+                    'errors' => ActiveForm::validate($model),
+                ];
             }
-        } else {
-            $model->loadDefaultValues();
+
+            $formToken = $model->getBehavior('tokenProtection')->generateToken();
+            return $this->renderAjax('_approve', [
+                'model'     => $model,
+                'formToken' => $formToken,
+            ]);
         }
 
-        return $this->render('create', [
-            'model' => $model,
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $generate_mode = 'Batch';
+            $model->PayrollGenerate($generate_mode);
+            
+            $model->getBehavior('tokenProtection')->consumeToken();
+            Yii::$app->session->setFlash('success', 'Payroll component created successfully.');
+            return $this->redirect(['index']);
+            
+        }
+
+        $formToken = $model->getBehavior('tokenProtection')->generateToken();
+        return $this->render('_approve', [
+            'model'     => $model,
+            'formToken' => $formToken,
         ]);
     }
 
@@ -252,6 +334,63 @@ class PayrollController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionSlip($id=0)
+    {
+        $model = $this->findModel($id);
+        $detailC = PayrollDetail::find()
+        ->where([
+            'employee_id' => $model->employee_id, 
+            'period_code' => $model->period_code,
+            'slip_display' => 'Y',
+            'slip_position' => 'C',
+        ])
+        ->orderBy(['display_order' => SORT_ASC])
+        ->all();
+
+        $detailD = PayrollDetail::find()
+        ->where([
+            'employee_id' => $model->employee_id, 
+            'period_code' => $model->period_code,
+            'slip_display' => 'Y',
+            'slip_position' => 'D',
+        ])
+        ->orderBy(['display_order' => SORT_ASC])
+        ->all();
+
+        // // Render partial 
+        // return $this->renderPartial('slip', [
+        //     'model' => $model,
+        //     'detailC' => $detailC,
+        //     'detailD' => $detailD,
+        // ]);
+        
+        
+        // PDF
+        $html = $this->renderPartial('slip', [
+            'model' => $model,
+            'detailC' => $detailC,
+            'detailD' => $detailD,
+        ]);
+
+        $mpdf = new Mpdf([
+            'orientation' => 'L' // 'L' untuk landscape, 'P' untuk portrait (default)
+        ]);
+
+        // 🔐 Password PDF
+        // if($action){
+            $mpdf->SetProtection(
+                ['print'],   // boleh print saja
+                '1234567',      // password buka PDF
+                '1234567'       // password owner
+            );
+        // }
+
+        // Output PDF ke browser
+        $mpdf->WriteHTML($html);
+        $filename = 'Slip_Gaji_'.$model->rmonth->month.'_'.$model->year.'_'.str_replace('.', '', $model->employee->e_number).'.pdf';
+        return $mpdf->Output($filename, 'D');    
     }
 
     /**
