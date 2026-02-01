@@ -87,5 +87,18 @@ $baseUrl = Yii::$app->request->baseUrl;
       </a>
     </div>
 
+    <!-- L3 Summary -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <a href="<?=$baseUrl ?>/payroll/payrolldetaill3/index" class="text-decoration-none">
+        <div class="card menu-card text-center p-4 h-100">
+          <div class="menu-icon mb-2">
+            <i class="nc-icon nc-chart-bar-32"></i>
+          </div>
+          <div class="menu-title fw-bold text-primary">L3 - Summary</div>
+          <div class="menu-desc text-muted">Consolidated Payroll Overview</div>
+        </div>
+      </a>
+    </div>
+
   </div>
 </div>
