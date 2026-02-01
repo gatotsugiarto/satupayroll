@@ -13,6 +13,7 @@ use common\components\behaviors\TokenProtectedFormBehavior;
 use common\components\behaviors\LoggableBehavior;
 
 use common\components\payroll\Calculate;
+use common\components\payroll\ReportSummary;
 
 /**
  * This is the model class for table "payroll".
@@ -113,8 +114,10 @@ class Payroll extends \yii\db\ActiveRecord
 
         if($generate_mode == 'Batch'){
             Calculate::PayrollGenerateBatch($year, $month, $period_code, $status_id, $user_id);
+            ReportSummary::BatchL1($year, $month, $period_code, $status_id, $user_id);
         }else{
-            Calculate::PayrollGenerateSingle($employee_id, $period_code, $status_id, $user_id);
+            Calculate::PayrollGenerateSingle($employee_id, $year, $month, $period_code, $status_id, $user_id);
+            ReportSummary::SingleL1($employee_id, $year, $month, $period_code, $status_id, $user_id);
         }
     }
 
