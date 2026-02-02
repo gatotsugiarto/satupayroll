@@ -16,15 +16,36 @@ use yii\helpers\Html;
 
         <div class="row mb-3">
             <div class="col-md-6">
-                <span class="text-secondary small">Code</span><br>
-                <span class="fw-semibold"><?= Html::encode($model->code) ?></span>
+                <span class="text-secondary small">NPWP</span><br>
+                <span class="fw-semibold"><?= Html::encode($model->npwp) ?></span>
             </div>
             <div class="col-md-6">
                 <span class="text-secondary small">Company Name</span><br>
-                <span class="fw-semibold"><?= Html::encode($model->company) ?></span>
+                <span class="fw-semibold"><?= Html::encode($model->company) ?> [<?= Html::encode($model->code) ?>]</span>
             </div>
         </div>
 
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <span class="text-secondary small">Address</span><br>
+                <span class="fw-semibold"><?= Html::encode($model->address) ?></span>
+            </div>
+            <div class="col-md-6">
+                <span class="text-secondary small">Nama Pejabat - Formulir 1721-A1</span><br>
+                <span class="fw-semibold"><?= Html::encode($model->nama_pejabat) ?></span>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <span class="text-secondary small">Sign Name - Formulir 1721-A1</span><br>
+                <span class="fw-semibold"><?= Html::encode($model->sign_name) ?></span>
+            </div>
+            <div class="col-md-6">
+                <span class="text-secondary small">Sign - Image - Formulir 1721-A1</span><br>
+                <span class="fw-semibold"><?= Html::encode($model->sign_image) ?></span>
+            </div>
+        </div>
         <div class="row mb-3">
             <div class="col-md-6">
                 <span class="text-secondary small">Description</span><br>

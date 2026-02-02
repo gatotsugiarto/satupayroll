@@ -165,6 +165,15 @@ $icon = $isNew ? 'fa-plus' : 'fa-edit';
             </div>
         </div>
 
+
+        <div class="row">
+            <div class="col-md-6">
+                <?= $form->field($model, 'tax_nature')->dropDownList([ 'TERATUR' => 'TERATUR', 'TIDAK_TERATUR' => 'TIDAK_TERATUR', ], ['prompt' => '']) ?>
+            </div>
+
+            <div class="col-md-6"></div>
+        </div>
+
         
     </div>
 </div>

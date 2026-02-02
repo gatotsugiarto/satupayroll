@@ -100,7 +100,7 @@ if (isset($menuMap[$urlMenu])) {
             <div class="sidebar-wrapper">
                 <div class="logo">
                     <a href="<?=$baseUrl?>/site/index" class="simple-text">
-                        Creative Tim
+                        Payroll App v.1.0.7
                     </a>
                 </div>
                 <ul class="nav">
@@ -304,7 +304,7 @@ if (isset($menuMap[$urlMenu])) {
                             <script>
                                 document.write(new Date().getFullYear())
                             </script>
-                            <a href="http://www.creative-tim.com">Creative Tim</a>, made with love for a better web
+                            <a href="http://www.creative-tim.com">Satu Payroll Indonesia</a>, Accurate and Efficient Payroll Management
                         </p>
                     </nav>
                 </div>

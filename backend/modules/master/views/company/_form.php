@@ -54,12 +54,53 @@ $icon = $isNew ? 'fa-plus' : 'fa-edit';
 
         <div class="row">
             <div class="col-md-6">
-                <?= $form->field($model, 'description')->textInput([
-                    'maxlength' => true,
-                    'placeholder' => 'Optional description',
+                <?= $form->field($model, 'address')->textInput([
+                    'placeholder' => 'Enter Company Address',
                     'class' => 'form-control form-control-custom'
                 ]) ?>
             </div>
+
+            <div class="col-md-6">
+                <?= $form->field($model, 'npwp')->textInput([
+                    'placeholder' => 'Enter NPWP',
+                    'class' => 'form-control form-control-custom'
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <?= $form->field($model, 'description')->textInput([
+                    'placeholder' => 'Enter Company Description',
+                    'class' => 'form-control form-control-custom'
+                ]) ?>
+            </div>
+
+            <div class="col-md-6">
+                <?= $form->field($model, 'nama_pejabat')->textInput([
+                    'placeholder' => 'Enter Nama Pejabat - Formulir 1721-A1',
+                    'class' => 'form-control form-control-custom'
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <?= $form->field($model, 'sign_name')->textInput([
+                    'placeholder' => 'Enter Sign Name - Formulir 1721-A1',
+                    'class' => 'form-control form-control-custom'
+                ]) ?>
+            </div>
+
+            <div class="col-md-6">
+                <?= $form->field($model, 'sign_image')->textInput([
+                    'placeholder' => 'Enter Sign - Image - Formulir 1721-A1',
+                    'class' => 'form-control form-control-custom'
+                ]) ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6"></div>
 
             <div class="col-md-6">
                 <?php if ($isNew): ?>

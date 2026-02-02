@@ -10,7 +10,7 @@ use yii\db\Expression;
 
 class ReportSummary extends Component
 {
-    public static function BatchL1($year, $month, $period_code, $status_id, $user_id)
+    public static function BatchL3($year, $month, $period_code, $status_id, $user_id)
     {
         if($month == 12){
             $tax_info = 'PROGRESIF';
@@ -49,5 +49,38 @@ class ReportSummary extends Component
             }
             
         }
+    }
+
+    public static function BatchL1($year, $month, $period_code, $status_id, $user_id)
+    {
+        $report_item_id = 1; // Beban Perusahaan
+        $sql = "DELETE FROM payroll_detail_l1 WHERE period_code = '$period_code' AND report_item_id = $report_item_id";
+        \Yii::$app->db->createCommand($sql)->execute(); 
+        $sql = "INSERT INTO payroll_detail_l1 SELECT 0, $report_item_id, '$period_code', 'Beban Perusahaan', IFNULL(SUM(amount),0) AS amount, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail WHERE period_code = '$period_code' AND item_code = 'EMPLOYER_COST'";
+        \Yii::$app->db->createCommand($sql)->execute(); 
+
+        $report_item_id = 2; // Status Pegawai
+        $sql = "DELETE FROM payroll_detail_l1 WHERE period_code = '$period_code' AND report_item_id = $report_item_id";
+        \Yii::$app->db->createCommand($sql)->execute(); 
+        $sql = "INSERT INTO payroll_detail_l1 SELECT 0, $report_item_id, '$period_code', es.employee_status, COUNT(*) AS amount, $status_id, NOW(), $user_id, NOW(), $user_id FROM employee_status es LEFT JOIN employee e ON es.id = e.employee_status_id GROUP BY es.employee_status";
+        \Yii::$app->db->createCommand($sql)->execute(); 
+
+        $report_item_id = 3; // Overtime
+        $sql = "DELETE FROM payroll_detail_l1 WHERE period_code = '$period_code' AND report_item_id = $report_item_id";
+        \Yii::$app->db->createCommand($sql)->execute(); 
+        $sql = "INSERT INTO payroll_detail_l1 SELECT 0, $report_item_id, '$period_code', 'Overtime', IFNULL(SUM(amount),0) AS amount, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail WHERE period_code = '$period_code' AND item_code = 'OVERTIME'";
+        \Yii::$app->db->createCommand($sql)->execute();
+
+        $report_item_id = 4; // THP
+        $sql = "DELETE FROM payroll_detail_l1 WHERE period_code = '$period_code' AND report_item_id = $report_item_id";
+        \Yii::$app->db->createCommand($sql)->execute(); 
+        $sql = "INSERT INTO payroll_detail_l1 SELECT 0, $report_item_id, '$period_code', 'THP', IFNULL(SUM(amount),0) AS amount, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail WHERE period_code = '$period_code' AND item_code = 'THP'";
+        \Yii::$app->db->createCommand($sql)->execute(); 
+
+        $report_item_id = 5; // CUT_ABSENSI
+        $sql = "DELETE FROM payroll_detail_l1 WHERE period_code = '$period_code' AND report_item_id = $report_item_id";
+        \Yii::$app->db->createCommand($sql)->execute(); 
+        $sql = "INSERT INTO payroll_detail_l1 SELECT 0, $report_item_id, '$period_code', 'CUT_ABSENSI', IFNULL(SUM(amount),0) AS amount, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail WHERE period_code = '$period_code' AND item_code = 'CUT_ABSENSI'";
+        \Yii::$app->db->createCommand($sql)->execute(); 
     }
 }

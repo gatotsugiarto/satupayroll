@@ -105,6 +105,14 @@ use yii\helpers\Html;
                 <span class="fw-semibold"><?= Html::encode($model->slip_position) ?></span>
             </div>
         </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <span class="text-secondary small">Tax Nature</span><br>
+                <span class="fw-semibold"><?= Html::encode($model->tax_nature) ?></span>
+            </div>
+            <div class="col-md-6"></div>
+        </div>
         
         <hr class="my-2">
 

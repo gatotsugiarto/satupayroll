@@ -42,6 +42,9 @@ class PayrollItem extends \yii\db\ActiveRecord
     const SLIP_POSITION_D = 'D';
     const SLIP_POSITION_S = 'S';
 
+    const TAX_NATURE_TERATUR = 'TERATUR';
+    const TAX_NATURE_TIDAK_TERATUR = 'TIDAK_TERATUR';
+
     /**
      * {@inheritdoc}
      */
@@ -115,6 +118,7 @@ class PayrollItem extends \yii\db\ActiveRecord
             ['salary_type', 'in', 'range' => array_keys(self::optsSalaryType())],
             ['slip_display', 'in', 'range' => array_keys(self::optsSlipDisplay())],
             ['slip_position', 'in', 'range' => array_keys(self::optsSlipPosition())],
+            ['tax_nature', 'in', 'range' => array_keys(self::optsTaxNature())],
             [['code'], 'unique'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => PayrollCategory::class, 'targetAttribute' => ['category_id' => 'id']],
         ];
@@ -265,6 +269,14 @@ class PayrollItem extends \yii\db\ActiveRecord
             self::SLIP_POSITION_C => 'C',
             self::SLIP_POSITION_D => 'D',
             self::SLIP_POSITION_S => 'S',
+        ];
+    }
+
+    public static function optsTaxNature()
+    {
+        return [
+            self::TAX_NATURE_TERATUR => 'TERATUR',
+            self::TAX_NATURE_TIDAK_TERATUR => 'TIDAK_TERATUR',
         ];
     }
 

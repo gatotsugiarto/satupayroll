@@ -4,215 +4,342 @@
 
 $this->title = 'My Yii Application';
 ?>
-<div class="site-index">
 
+<?php
+$labels_1 = [];
+$dataAmount = [];
+
+foreach ($bebanPerusahaan as $row) {
+    $labels_1[] = $row['period_code'];
+    $dataAmount_1[] = (float)$row['amount'];
+}
+?>
+
+<?php
+// Siapkan data untuk Chart.js
+$labels_2 = [];
+$dataProbation = [];
+$dataPKWT = [];
+$dataPermanent = [];
+
+foreach ($statusPegawai as $row) {
+    if (!in_array($row['period_code'], $labels_2)) {
+        $labels_2[] = $row['period_code'];
+    }
+    switch ($row['label']) {
+        case 'Probation':
+            $dataProbation[] = (float)$row['amount'];
+            break;
+        case 'PKWT':
+            $dataPKWT[] = (float)$row['amount'];
+            break;
+        case 'Permanent':
+            $dataPermanent[] = (float)$row['amount'];
+            break;
+    }
+}
+?>
+
+<?php
+$labels_3 = [];
+$dataAmount_3 = [];
+
+foreach ($overtime as $row) {
+    $labels_3[] = $row['period_code'];
+    $dataAmount_3[] = (float)$row['amount'];
+}
+?>
+
+<?php
+$labels_4 = [];
+$dataAmount_4 = [];
+
+foreach ($thp as $row) {
+    $labels_4[] = $row['period_code'];
+    $dataAmount_4[] = (float)$row['amount'];
+}
+?>
+
+<?php
+$labels_5 = [];
+$dataAmount_5 = [];
+
+foreach ($late as $row) {
+    $labels_5[] = $row['period_code'];
+    $dataAmount_5[] = (float)$row['amount'];
+}
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="site-index">
     <div class="content">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card ">
-                                <div class="card-header ">
-                                    <h4 class="card-title">Email Statistics</h4>
-                                    <p class="card-category">Last Campaign Performance</p>
-                                </div>
-                                <div class="card-body ">
-                                    <div id="chartPreferences" class="ct-chart ct-perfect-fourth"></div>
-                                    <div class="legend">
-                                        <i class="fa fa-circle text-info"></i> Open
-                                        <i class="fa fa-circle text-danger"></i> Bounce
-                                        <i class="fa fa-circle text-warning"></i> Unsubscribe
-                                    </div>
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="fa fa-clock-o"></i> Campaign sent 2 days ago
-                                    </div>
-                                </div>
-                            </div>
+        <div class="container-fluid">
+                    
+            <div class="row">
+                <!-- Beban Perusahaan -->
+                <div class="col-md-6">
+                    <div class="card ">
+                        <div class="card-header ">
+                            <h4 class="card-title">Employer Payroll Cost</h4>
+                            <p class="card-category">Summary of employer payroll costs</p>
                         </div>
-                        <div class="col-md-8">
-                            <div class="card ">
-                                <div class="card-header ">
-                                    <h4 class="card-title">Users Behavior</h4>
-                                    <p class="card-category">24 Hours performance</p>
-                                </div>
-                                <div class="card-body ">
-                                    <div id="chartHours" class="ct-chart"></div>
-                                </div>
-                                <div class="card-footer ">
-                                    <div class="legend">
-                                        <i class="fa fa-circle text-info"></i> Open
-                                        <i class="fa fa-circle text-danger"></i> Click
-                                        <i class="fa fa-circle text-warning"></i> Click Second Time
-                                    </div>
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="fa fa-history"></i> Updated 3 minutes ago
-                                    </div>
-                                </div>
+                        <div class="card-body ">
+                            <canvas id="bebanPerusahaanChart"></canvas>
+                        </div>
+                        <div class="card-footer ">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-history"></i> Updated 3 minutes ago
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card ">
-                                <div class="card-header ">
-                                    <h4 class="card-title">2017 Sales</h4>
-                                    <p class="card-category">All products including Taxes</p>
-                                </div>
-                                <div class="card-body ">
-                                    <div id="chartActivity" class="ct-chart"></div>
-                                </div>
-                                <div class="card-footer ">
-                                    <div class="legend">
-                                        <i class="fa fa-circle text-info"></i> Tesla Model S
-                                        <i class="fa fa-circle text-danger"></i> BMW 5 Series
-                                    </div>
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="fa fa-check"></i> Data information certified
-                                    </div>
-                                </div>
-                            </div>
+                </div>
+
+                <!-- Status Pegawai -->
+                <div class="col-md-6">
+                    <div class="card ">
+                        <div class="card-header ">
+                            <h4 class="card-title">Employee Status</h4>
+                            <p class="card-category">Employee status overview</p>
                         </div>
-                        <div class="col-md-6">
-                            <div class="card  card-tasks">
-                                <div class="card-header ">
-                                    <h4 class="card-title">Tasks</h4>
-                                    <p class="card-category">Backend development</p>
-                                </div>
-                                <div class="card-body ">
-                                    <div class="table-full-width">
-                                        <table class="table">
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox" value="">
-                                                                <span class="form-check-sign"></span>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Sign contract for "What are conference organizers afraid of?"</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-info btn-simple btn-link">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-link">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox" value="" checked>
-                                                                <span class="form-check-sign"></span>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Lines From Great Russian Literature? Or E-mails From My Boss?</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-info btn-simple btn-link">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-link">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox" value="" checked>
-                                                                <span class="form-check-sign"></span>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit
-                                                    </td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-info btn-simple btn-link">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-link">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox" checked>
-                                                                <span class="form-check-sign"></span>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Create 4 Invisible User Experiences you Never Knew About</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-info btn-simple btn-link">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-link">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox" value="">
-                                                                <span class="form-check-sign"></span>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Read "Following makes Medium better"</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-info btn-simple btn-link">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-link">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox" value="" disabled>
-                                                                <span class="form-check-sign"></span>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Unfollow 5 enemies from twitter</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-info btn-simple btn-link">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-link">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="card-footer ">
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
-                                    </div>
-                                </div>
+                        <div class="card-body ">
+                            <canvas id="statusPegawaiChart"></canvas>
+                        </div>
+                        <div class="card-footer ">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-history"></i> Updated 3 minutes ago
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-    
+
+            <div class="row">
+                <!-- Overtime -->
+                <div class="col-md-6">
+                    <div class="card ">
+                        <div class="card-header ">
+                            <h4 class="card-title">Overtime</h4>
+                            <p class="card-category">Overtime hours and compensation overview</p>
+                        </div>
+                        <div class="card-body ">
+                            <canvas id="overtimeChart"></canvas>
+                        </div>
+                        <div class="card-footer ">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-history"></i> Updated 3 minutes ago
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- THP -->
+                <div class="col-md-6">
+                    <div class="card ">
+                        <div class="card-header ">
+                            <h4 class="card-title">Take Home Pay</h4>
+                            <p class="card-category">Final salary after deductions</p>
+                        </div>
+                        <div class="card-body ">
+                            <canvas id="thpChart"></canvas>
+                        </div>
+                        <div class="card-footer ">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-history"></i> Updated 3 minutes ago
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Potongan Keterlambatan -->
+                <div class="col-md-6">
+                    <div class="card ">
+                        <div class="card-header ">
+                            <h4 class="card-title">Attendance Deduction</h4>
+                            <p class="card-category">Deduction due to late attendance</p>
+                        </div>
+                        <div class="card-body ">
+                            <canvas id="lateChart"></canvas>
+                        </div>
+                        <div class="card-footer ">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-history"></i> Updated 3 minutes ago
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- THP -->
+                <!-- <div class="col-md-6">
+                    <div class="card ">
+                        <div class="card-header ">
+                            <h4 class="card-title">Take Home Pay</h4>
+                            <p class="card-category">Final salary after deductions</p>
+                        </div>
+                        <div class="card-body ">
+                            <canvas id="thpChart"></canvas>
+                        </div>
+                        <div class="card-footer ">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-history"></i> Updated 3 minutes ago
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+
+        </div>
+    </div>
 </div>
+
+<script>
+const ctx_1 = document.getElementById('bebanPerusahaanChart').getContext('2d');
+const bebanPerusahaanChart = new Chart(ctx_1, {
+    type: 'line',
+    data: {
+        labels: <?= json_encode($labels_1) ?>,
+        datasets: [{
+            label: 'Employer Payroll Cost',
+            data: <?= json_encode($dataAmount_1) ?>,
+            borderColor: '#ff8d72',
+            backgroundColor: 'rgba(255,141,114,0.2)',
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' }
+        },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+
+<script>
+const ctx = document.getElementById('statusPegawaiChart').getContext('2d');
+const statusPegawaiChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: <?= json_encode($labels_2) ?>,
+        datasets: [
+            {
+                label: 'Probation',
+                data: <?= json_encode($dataProbation) ?>,
+                backgroundColor: '#1d8cf8'
+            },
+            {
+                label: 'PKWT',
+                data: <?= json_encode($dataPKWT) ?>,
+                backgroundColor: '#e14eca'
+            },
+            {
+                label: 'Permanent',
+                data: <?= json_encode($dataPermanent) ?>,
+                backgroundColor: '#00f2c3'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' }
+        },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+
+<script>
+const ctx_3 = document.getElementById('overtimeChart').getContext('2d');
+const overtimeChart = new Chart(ctx_3, {
+    type: 'line',
+    data: {
+        labels: <?= json_encode($labels_3) ?>,
+        datasets: [{
+            label: 'Employer Overtime',
+            data: <?= json_encode($dataAmount_3) ?>,
+            borderColor: '#1d8cf8',
+            backgroundColor: 'rgba(29,140,248,0.2)',
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' }
+        },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+
+<script>
+const ctx_4 = document.getElementById('thpChart').getContext('2d');
+const thpChart = new Chart(ctx_4, {
+    type: 'line',
+    data: {
+        labels: <?= json_encode($labels_4) ?>,
+        datasets: [{
+            label: 'Employee Net Pay Summary',
+            data: <?= json_encode($dataAmount_4) ?>,
+            borderColor: '#00f2c3',
+            backgroundColor: 'rgba(0,242,195,0.2)',
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' }
+        },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+
+<script>
+const ctx_5 = document.getElementById('lateChart').getContext('2d');
+const lateChart = new Chart(ctx_5, {
+    type: 'line',
+    data: {
+        labels: <?= json_encode($labels_5) ?>,
+        datasets: [{
+            label: 'Deduction for Late Arrival',
+            data: <?= json_encode($dataAmount_5) ?>,
+            borderColor: '#e14eca',
+            backgroundColor: 'rgba(225,78,202,0.2)',
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' }
+        },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>

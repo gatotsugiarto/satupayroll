@@ -14,6 +14,7 @@ use common\components\behaviors\LoggableBehavior;
 
 use common\components\payroll\Calculate;
 use common\components\payroll\ReportSummary;
+use common\components\payroll\OtherDoc;
 
 use common\modules\master\models\Employee;
 use common\modules\master\models\Month;
@@ -189,8 +190,11 @@ class Payroll extends \yii\db\ActiveRecord
 
         if($generate_mode == 'Batch'){
             Calculate::PayrollGenerateBatch($year, $month, $period_code, $status_id, $user_id);
-            ReportSummary::BatchL1($year, $month, $period_code, $status_id, $user_id);
+            ReportSummary::BatchL3($year, $month, $period_code, $status_id, $user_id);
             Calculate::PayrollHeaderBatch($year, $month, $period_code, $status_id, $user_id);
+            OtherDoc::BuktiPotong($year, $month, $period_code, $status_id, $user_id);
+            ReportSummary::BatchL1($year, $month, $period_code, $status_id, $user_id);
+
         }else{
             Calculate::PayrollGenerateSingle($employee_id, $year, $month, $period_code, $status_id, $user_id);
             ReportSummary::SingleL1($employee_id, $year, $month, $period_code, $status_id, $user_id);

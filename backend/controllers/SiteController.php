@@ -5,6 +5,9 @@ namespace backend\controllers;
 use common\models\LoginForm;
 use common\models\User;
 use common\models\Member;
+use common\modules\payroll\models\PayrollDetailL1;
+
+
 use Yii;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -64,7 +67,53 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $bebanPerusahaan = PayrollDetailL1::find()
+            ->select(['period_code', 'label', 'amount'])
+            ->where(['report_item_id' => 1])
+            ->orderBy(['period_code' => SORT_DESC, 'label' => SORT_DESC])
+            ->limit(6)
+            ->asArray()
+            ->all();
+
+        $statusPegawai = PayrollDetailL1::find()
+            ->select(['period_code', 'label', 'amount'])
+            ->where(['report_item_id' => 2])
+            ->orderBy(['period_code' => SORT_DESC, 'label' => SORT_DESC])
+            ->limit(12)
+            ->asArray()
+            ->all();
+
+        $overtime = PayrollDetailL1::find()
+            ->select(['period_code', 'label', 'amount'])
+            ->where(['report_item_id' => 3])
+            ->orderBy(['period_code' => SORT_DESC, 'label' => SORT_DESC])
+            ->limit(6)
+            ->asArray()
+            ->all();
+
+        $thp = PayrollDetailL1::find()
+            ->select(['period_code', 'label', 'amount'])
+            ->where(['report_item_id' => 4])
+            ->orderBy(['period_code' => SORT_DESC, 'label' => SORT_DESC])
+            ->limit(6)
+            ->asArray()
+            ->all();
+
+        $late = PayrollDetailL1::find()
+            ->select(['period_code', 'label', 'amount'])
+            ->where(['report_item_id' => 5])
+            ->orderBy(['period_code' => SORT_DESC, 'label' => SORT_DESC])
+            ->limit(6)
+            ->asArray()
+            ->all();    
+
+        return $this->render('index', [
+            'statusPegawai' => $statusPegawai,
+            'bebanPerusahaan' => $bebanPerusahaan,
+            'overtime' => $overtime,
+            'thp' => $thp,
+            'late' => $late,
+        ]);
     }
 
     /**

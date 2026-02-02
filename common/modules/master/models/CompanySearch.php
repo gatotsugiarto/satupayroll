@@ -18,7 +18,7 @@ class CompanySearch extends Company
     {
         return [
             [['id', 'status_id', 'created_by', 'updated_by'], 'integer'],
-            [['code', 'company', 'description', 'created_at', 'updated_at'], 'safe'],
+            [['npwp', 'code', 'company', 'description', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -78,6 +78,7 @@ class CompanySearch extends Company
 
         $query->andFilterWhere(['like', 'code', $this->code])
             ->andFilterWhere(['like', 'company', $this->company])
+            ->andFilterWhere(['like', 'npwp', $this->npwp])
             ->andFilterWhere(['like', 'description', $this->description]);
 
         // 🔍 Debug SQL here

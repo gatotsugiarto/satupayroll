@@ -100,5 +100,18 @@ $baseUrl = Yii::$app->request->baseUrl;
       </a>
     </div>
 
+    <!-- Bukti Potong PPh21 -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <a href="<?=$baseUrl ?>/payroll/buktipotongpph21/index" class="text-decoration-none">
+        <div class="card menu-card text-center p-4 h-100">
+          <div class="menu-icon mb-2">
+            <i class="nc-icon nc-single-copy-04"></i>
+          </div>
+          <div class="menu-title fw-bold text-primary">Bukti Potong PPh21</div>
+          <div class="menu-desc text-muted">Form 1721-A1 / A2. Bukti Resmi Pemotongan PPh Pasal 21</div>
+        </div>
+      </a>
+    </div>
+
   </div>
 </div>

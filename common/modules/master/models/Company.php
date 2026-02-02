@@ -63,10 +63,12 @@ class Company extends ActiveRecord
     public function rules()
     {
         return [
-            [['code', 'company'], 'required'],
+            [['code', 'company', 'npwp'], 'required'],
             [['status_id', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['description'], 'string', 'max' => 255],
+            [['nama_pejabat'], 'string', 'max' => 50],
+            [['sign_name'], 'string', 'max' => 150],
+            [['sign_image', 'address', 'description'], 'string', 'max' => 255],
             [['code'], 'string', 'max' => 10],
             [['company'], 'string', 'max' => 150],
             [['status_id'], 'default', 'value' => 1],
@@ -79,6 +81,11 @@ class Company extends ActiveRecord
             'id' => 'ID',
             'code' => 'Code',
             'company' => 'Company',
+            'npwp' => 'NPWP',
+            'address' => 'Address',
+            'nama_pejabat' => 'Nama Pejabat - Formulir 1721-A1',
+            'sign_name' => 'Sign Name - Formulir 1721-A1',
+            'sign_image' => 'Sign - Image - Formulir 1721-A1',
             'description' => 'Description',
             'status_id' => 'Status',
             'created_at' => 'Created At',
