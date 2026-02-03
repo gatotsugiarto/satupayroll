@@ -194,6 +194,7 @@ class Payroll extends \yii\db\ActiveRecord
             Calculate::PayrollHeaderBatch($year, $month, $period_code, $status_id, $user_id);
             OtherDoc::BuktiPotong($year, $month, $period_code, $status_id, $user_id);
             ReportSummary::BatchL1($year, $month, $period_code, $status_id, $user_id);
+            OtherDoc::Formulir1721($year, $month, $period_code, $status_id, $user_id);
 
         }else{
             Calculate::PayrollGenerateSingle($employee_id, $year, $month, $period_code, $status_id, $user_id);

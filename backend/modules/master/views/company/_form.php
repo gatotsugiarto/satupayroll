@@ -1,7 +1,9 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
+use kartik\file\FileInput;
 
 $isNew = $model->isNewRecord;
 $title = $isNew ? 'Create New Company' : 'Edit Company';
@@ -92,11 +94,49 @@ $icon = $isNew ? 'fa-plus' : 'fa-edit';
                 ]) ?>
             </div>
 
+            <?php
+            if($model->isNewRecord){
+                $allimage = array();
+                $return_json = array();
+                $initialPreview = null;
+            }else{
+                $allimage = array();
+                $return_json = array();
+                if($model->sign_image){
+                    $photos=explode('**',trim($model->sign_image));
+                    //$image=$model->attachment; // Single
+                    foreach($photos as $image){
+                        $initialPreview[] = Yii::$app->params['uploadDomain'] . Yii::$app->params['uploadAttachment'] . $image;
+                        $allimage[] = Yii::$app->params['uploadAttachment'] . $image;
+                        $return_json[] = [
+                            'key'=> array($model->id.'###'.$image)
+                        ];
+                    }
+                }else{
+                    $initialPreview = null;
+                }
+            }
+            ?>
             <div class="col-md-6">
-                <?= $form->field($model, 'sign_image')->textInput([
-                    'placeholder' => 'Enter Sign - Image - Formulir 1721-A1',
-                    'class' => 'form-control form-control-custom'
-                ]) ?>
+                <?= $form->field($model, 'file')->widget(FileInput::classname(), [
+                    'options'=>[
+                        'multiple' => true,
+                        'layout' => 'horizontal',
+                        'accept' => 'image/*'
+                    ],
+                    'pluginOptions'=>[
+                        'allowedFileExtensions'=>['jpg','jpeg','gif','png'],
+                        'showRemove'=> false,
+                        'showUpload' => false,
+                        'showCancel' => false,
+                        'maxFileSize' => 700,
+                        'initialPreview'=> $allimage,
+                        'initialPreviewAsData'=>true,
+                        'initialPreviewConfig'=> $return_json,
+                        'overwriteInitial' => false,
+                        'deleteUrl' => Url::to(['/master/company/deleteattachment']),
+                    ]
+                ]);?>
             </div>
         </div>
         <div class="row">

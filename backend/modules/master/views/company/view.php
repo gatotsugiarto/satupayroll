@@ -43,7 +43,24 @@ use yii\helpers\Html;
             </div>
             <div class="col-md-6">
                 <span class="text-secondary small">Sign - Image - Formulir 1721-A1</span><br>
-                <span class="fw-semibold"><?= Html::encode($model->sign_image) ?></span>
+                <span class="fw-semibold">
+                    <?php
+                    if($model->sign_image){   
+                        $photos=explode('**',trim($model->sign_image));
+                        foreach($photos as $image){
+                            if($image) {
+                                echo Html::img(Yii::$app->params['uploadAttachment'] . $image, [
+                                    'alt'   => 'Company Logo',
+                                    'class' => 'img-fluid',
+                                    'width' => 120,
+                                ]);
+                            }else{
+                                $images = "";
+                            }
+                        }
+                    }
+                    ?>
+                </span>
             </div>
         </div>
         <div class="row mb-3">

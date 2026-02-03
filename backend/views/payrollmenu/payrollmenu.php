@@ -113,5 +113,18 @@ $baseUrl = Yii::$app->request->baseUrl;
       </a>
     </div>
 
+    <!-- Formulir 1721-A1 -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <a href="<?=$baseUrl ?>/payroll/formulir1721a1/index" class="text-decoration-none">
+        <div class="card menu-card text-center p-4 h-100">
+          <div class="menu-icon mb-2">
+            <i class="nc-icon nc-single-copy-04"></i>
+          </div>
+          <div class="menu-title fw-bold text-primary">Formulir 1721-A1</div>
+          <div class="menu-desc text-muted">Bukti Pemotongan PPh Pasal 21 Pegawai Tetap</div>
+        </div>
+      </a>
+    </div>
+
   </div>
 </div>

@@ -8,6 +8,7 @@ use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
+use yii\web\UploadedFile;
 
 use common\components\behaviors\TokenProtectedFormBehavior;
 use common\components\behaviors\LoggableBehavior;
@@ -19,6 +20,8 @@ use common\modules\auth\models\User;
 
 class Company extends ActiveRecord
 {
+    public $file;
+
     public static function tableName()
     {
         return 'company';
@@ -68,6 +71,7 @@ class Company extends ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['nama_pejabat'], 'string', 'max' => 50],
             [['sign_name'], 'string', 'max' => 150],
+            [['file'], 'file','maxFiles' => 6],
             [['sign_image', 'address', 'description'], 'string', 'max' => 255],
             [['code'], 'string', 'max' => 10],
             [['company'], 'string', 'max' => 150],
@@ -137,5 +141,53 @@ class Company extends ActiveRecord
         }
         
         return $dropdown;
+    }
+
+    public function afterSave($isNew, $old) {
+        /* Upload Image */
+        if($isNew){
+            $sign_image = $this->uploadAttachment();
+            self::updateAll(['sign_image' => $sign_image], ['id' => $this->id]);
+        }else{
+            $sign_image = $this->uploadUpdateAttachment();
+            self::updateAll(['sign_image' => $sign_image], ['id' => $this->id]);
+        }
+    }
+
+    public function uploadAttachment() {
+        $this->file = UploadedFile::getInstances($this, 'file');
+        if (empty($this->file)) {
+            return false;
+        }else{
+            $attachment_array = array();
+            foreach ($this->file as $key => $file) {
+                $filename = $this->cleanspecialchar($file->baseName) . '.' . $file->extension;
+                $filename = $this->id.'_'.time().'_'.$filename;
+                $file->saveAs(Yii::$app->params['uploadPathAttachment'] . $filename);
+                array_push($attachment_array, $filename);
+            }
+            return implode('###', $attachment_array);
+        }
+    }
+
+    public function uploadUpdateAttachment() {
+        $this->file = UploadedFile::getInstances($this, 'file');
+        if($this->sign_image){
+            $attachment_array = explode('###', $this->sign_image);
+        }else{
+            $attachment_array = array();
+        }
+        foreach ($this->file as $key => $file) {
+            $filename = $this->cleanspecialchar($file->baseName) . '.' . $file->extension;
+            $filename = $this->id.'_'.time().'_'.$filename;
+            $file->saveAs(Yii::$app->params['uploadPathAttachment'] . $filename); //Upload files to server
+            array_push($attachment_array, $filename);
+        }
+        return implode('###', $attachment_array);
+    }
+
+    function cleanspecialchar($string) {
+        $string = str_replace(' ', '-', $string); //Replaces all spaces
+        return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
     }
 }

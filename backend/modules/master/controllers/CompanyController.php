@@ -260,6 +260,50 @@ class CompanyController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionUploadattachment()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $model = new Company();
+        $imageLink = Yii::$app->params['uploadDomain'] . Yii::$app->params['uploadAttachment'];
+        $targetDir = Yii::$app->params['uploadPathAttachment'];
+
+        $outData = $model->doUpload('Company', $targetDir, $imageLink);
+        echo json_encode($outData);
+        exit(); // terminate
+    }
+
+    public function actionDeleteattachment()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $key = Yii::$app->request->post('key');
+        $keys = explode('###', $key);
+        $id = $keys[0];
+        $destination = $keys[1];
+
+        $model = $this->findModel($id);
+
+        $source = explode('**', $model->sign_image);
+        $result = array_diff($source,array($destination));
+
+        $photo = "";
+        $new_photo = "";
+        if (empty($result)) {
+            $new_photo = NULL;
+        }else{
+            $new_photo = implode('**', $result);
+        }
+
+        $model->sign_image = $new_photo;
+        if($model->save()){
+            @unlink(Yii::$app->params['uploadPathAttachment'] . $destination);
+            return [];
+        }else{
+            echo 'Attachment cannot be blank.';
+            return [];
+            //return json_encode(array());
+        }
+    }
+
 
     /**
      * Finds the Company model based on its primary key value.
