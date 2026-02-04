@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 
-$this->title = "Detail Payroll";
+$this->title = "Detail THR";
 $sub_title = "Employee payroll processing results.";
 ?>
 
@@ -23,7 +23,7 @@ $sub_title = "Employee payroll processing results.";
                 <span class="fw-semibold"><?= Html::encode($model->employee->fullname) ?></span>
             </div>
             <div class="col-md-6">
-                <span class="text-secondary small">Payroll Period</span><br>
+                <span class="text-secondary small">THR Period</span><br>
                 <span class="fw-semibold"><?= Html::encode($model->period_code) ?>
                 </span>
             </div>
@@ -35,8 +35,8 @@ $sub_title = "Employee payroll processing results.";
                 <span class="fw-semibold">Rp. <?= number_format($model->gross, 2, ',', '.')?>
             </div>
             <div class="col-md-6">
-                <span class="text-secondary small">Deduction</span><br>
-                <span class="fw-semibold">Rp. <?= number_format($model->total_deduction, 2, ',', '.')?>
+                <span class="text-secondary small">THR Accrual</span><br>
+                <span class="fw-semibold">Rp. <?= number_format($model->thr_accrual, 2, ',', '.')?>
                 </span>
             </div>
         </div>
@@ -47,9 +47,9 @@ $sub_title = "Employee payroll processing results.";
                 <span class="fw-semibold"><?= Html::encode($model->status->status_payroll) ?></span>
             </div>
             <div class="col-md-6">
-                <span class="text-secondary small">THP</span><br>
+                <!-- <span class="text-secondary small">THP</span><br>
                 <span class="fw-semibold">Rp. <?= number_format($model->thp, 2, ',', '.')?>
-                </span>
+                </span> -->
             </div>
         </div>
 
