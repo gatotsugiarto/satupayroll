@@ -212,12 +212,14 @@ class PayrollController extends Controller
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
                 if ($model->validate()) {
-                    $model->save();
                     $model->getBehavior('tokenProtection')->consumeToken();
+
+                    $generate_mode = 'Batch';
+                    $model->PayrollGenerate($generate_mode);
 
                     return [
                         'success' => true,
-                        'message' => 'Payroll component created successfully.',
+                        'message' => 'Payroll processing has been completed successfully. All employee payroll data has been finalized and recorded.',
                     ];
                 }
 
@@ -240,7 +242,7 @@ class PayrollController extends Controller
             $model->PayrollGenerate($generate_mode);
             
             $model->getBehavior('tokenProtection')->consumeToken();
-            Yii::$app->session->setFlash('success', 'Payroll component created successfully.');
+            Yii::$app->session->setFlash('success', 'Payroll processing has been completed successfully. All employee payroll data has been finalized and recorded.');
             return $this->redirect(['index']);
             
         }
@@ -255,19 +257,21 @@ class PayrollController extends Controller
     public function actionApprove()
     {
         $model = new Payroll();
-        $model->scenario = 'create';
+        $model->scenario = 'approve';
 
         if (Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
                 if ($model->validate()) {
-                    $model->save();
+                    $period_code = $model->year . '-' . str_pad($model->month, 2, '0', STR_PAD_LEFT);
+                    $generate_mode = 'Batch';
+                    $model->PayrollApprove($generate_mode);
                     $model->getBehavior('tokenProtection')->consumeToken();
 
                     return [
                         'success' => true,
-                        'message' => 'Payroll component created successfully.',
+                        'message' => "The payroll period $period_code has been reviewed and approved by the Finance department and is now finalized.",
                     ];
                 }
 
@@ -287,16 +291,121 @@ class PayrollController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $generate_mode = 'Batch';
-            $model->PayrollGenerate($generate_mode);
+            $model->PayrollApprove($generate_mode);
+            $period_code = $model->year . '-' . str_pad($model->month, 2, '0', STR_PAD_LEFT);
             
             $model->getBehavior('tokenProtection')->consumeToken();
-            Yii::$app->session->setFlash('success', 'Payroll component created successfully.');
+            Yii::$app->session->setFlash('success', "The payroll period $period_code has been reviewed and approved by the Finance department and is now finalized.");
             return $this->redirect(['index']);
             
         }
 
         $formToken = $model->getBehavior('tokenProtection')->generateToken();
         return $this->render('_approve', [
+            'model'     => $model,
+            'formToken' => $formToken,
+        ]);
+    }
+
+    public function actionCreate()
+    {
+        $model = new Payroll();
+        $model->scenario = 'single';
+
+        if (Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+
+                if ($model->validate()) {
+                    $model->getBehavior('tokenProtection')->consumeToken();
+
+                    $generate_mode = 'Single';
+                    $model->PayrollGenerate($generate_mode, $model->arr_employee_id);
+
+                    return [
+                        'success' => true,
+                        'message' => 'Payroll processing has been successfully revised. All payroll data for the selected period has been updated and reprocessed accordingly.',
+                    ];
+                }
+
+                return [
+                    'success' => false,
+                    'message' => 'Validation failed.',
+                    'errors' => ActiveForm::validate($model),
+                ];
+            }
+
+            $formToken = $model->getBehavior('tokenProtection')->generateToken();
+            return $this->renderAjax('_form', [
+                'model'     => $model,
+                'formToken' => $formToken,
+            ]);
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $generate_mode = 'Single';
+            $model->PayrollGenerate($generate_mode, $model->arr_employee_id);
+            
+            $model->getBehavior('tokenProtection')->consumeToken();
+            Yii::$app->session->setFlash('success', 'Payroll processing has been successfully revised. All payroll data for the selected period has been updated and reprocessed accordingly.');
+            return $this->redirect(['index']);
+            
+        }
+
+        $formToken = $model->getBehavior('tokenProtection')->generateToken();
+        return $this->render('_form', [
+            'model'     => $model,
+            'formToken' => $formToken,
+        ]);
+    }
+
+    public function actionCancel()
+    {
+        $model = new Payroll();
+        $model->scenario = 'cancel';
+
+        if (Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+
+                if ($model->validate()) {
+                    $model->getBehavior('tokenProtection')->consumeToken();
+
+                    $generate_mode = 'Batch';
+                    $model->PayrollCancel($generate_mode);
+
+                    return [
+                        'success' => true,
+                        'message' => 'Payroll processing has been cancelled successfully. All payroll data for the selected period has been stopped and will not be processed further.',
+                    ];
+                }
+
+                return [
+                    'success' => false,
+                    'message' => 'Validation failed.',
+                    'errors' => ActiveForm::validate($model),
+                ];
+            }
+
+            $formToken = $model->getBehavior('tokenProtection')->generateToken();
+            return $this->renderAjax('_cancel', [
+                'model'     => $model,
+                'formToken' => $formToken,
+            ]);
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $generate_mode = 'Batch';
+            $model->PayrollCancel($generate_mode);
+            
+            $model->getBehavior('tokenProtection')->consumeToken();
+            Yii::$app->session->setFlash('success', 'Payroll processing has been cancelled successfully. All payroll data for the selected period has been stopped and will not be processed further.');
+            return $this->redirect(['index']);
+            
+        }
+
+        $formToken = $model->getBehavior('tokenProtection')->generateToken();
+        return $this->render('_cancel', [
             'model'     => $model,
             'formToken' => $formToken,
         ]);

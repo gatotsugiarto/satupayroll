@@ -5,18 +5,18 @@ use kartik\select2\Select2;
 use kartik\number\NumberControl;
 
 $isNew = $model->isNewRecord;
-$title = $isNew ? 'Approve Process' : 'Edit Payroll';
+$title = $isNew ? 'Cancel Payroll' : 'Edit Payroll';
 $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
 ?>
 
 <div class="modal-header bg-default text-white rounded-top-4">
     <div>
-        <h5 class="text-danger fw-bold page-title mb-1">
+        <h5 class="text-warning fw-bold page-title mb-1">
             <i class="fa <?= $icon ?> mr-2"></i> <?= $title ?>
         </h5>
         <small class="text-muted">
             <?= $isNew
-                ? 'This payroll has received approval from the Finance department.'
+                ? 'This action will cancel the selected payroll period. Once cancelled, the payroll cannot be processed unless it is revised or recreated.'
                 : 'Update salary information below.' ?>
         </small>
     </div>
@@ -26,7 +26,7 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
     'id' => 'salary-form',
     'enableAjaxValidation' => false,
     // 'validationUrl' => ['salary/validate'],
-    'action' => $isNew ? ['payroll/approve'] : ['payroll/update', 'id' => $model->id],
+    'action' => $isNew ? ['payroll/cancel'] : ['payroll/update', 'id' => $model->id],
     'options' => ['data-pjax' => 0],
 ]); ?>
 
@@ -103,8 +103,8 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
 
     <!-- RIGHT: Submit -->
     <div>
-        <?= Html::submitButton('<i class="fa fa-save"></i> Approve', [
-            'class' => 'btn btn-danger px-4',
+        <?= Html::submitButton('<i class="fa fa-save"></i> Cancel', [
+            'class' => 'btn btn-warning px-4',
             'style' => 'min-width:140px;',
         ]) ?>
     </div>

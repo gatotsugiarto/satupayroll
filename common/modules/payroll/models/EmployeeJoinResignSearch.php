@@ -46,6 +46,14 @@ class EmployeeJoinResignSearch extends EmployeeJoinResign
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 30,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC,
+                ],
+            ],
         ]);
 
         $this->load($params);

@@ -7,46 +7,127 @@ use kartik\export\ExportMenu;
 use kartik\select2\Select2;
 
 
-$this->title = "Data Payroll";
-$subtitle = "Employee payroll processing results.";
+$this->title = "BPJS Records";
+$subtitle = "Employee BPJS records and contribution details.";
 ?>
 
 <?php Pjax::begin(['id' => 'w0-pjax']); ?>
 
 <?php
 $gridColumns = [
-    ['class' => 'yii\grid\SerialColumn'],
-    'employee.fullname',
-    // 'month',
-    [
-        'attribute' => 'month',
-        'format' => 'raw',
-        'value' => function ($model) {
-            return date('F', mktime(0, 0, 0, $model->month, 1));
-        },
-    ],
-    'year',
-    [
-        'attribute' => 'gross',
-        'width' => '150px',
-        'hAlign' => 'right',
-        'format' => ['decimal', 2],
-        'pageSummary' => true,
-    ],
-    [
-        'attribute' => 'total_deduction',
-        'width' => '150px',
-        'hAlign' => 'right',
-        'format' => ['decimal', 2],
-        'pageSummary' => true,
-    ],
-    [
-        'attribute' => 'thp',
-        'width' => '150px',
-        'hAlign' => 'right',
-        'format' => ['decimal', 2],
-        'pageSummary' => true,
-    ],
+    // ['class' => 'yii\grid\SerialColumn'],
+        // 'id',
+        [
+            'attribute' => 'employee_id',
+            'format' => 'raw',
+            'value' => function ($model) {
+                return $model->employee->fullname;
+            },
+        ],
+        [
+            'attribute' => 'month',
+            'format' => 'raw',
+            'value' => function ($model) {
+                return date('F', mktime(0, 0, 0, $model->month, 1));
+            },
+        ],
+        'year',
+        // 'period_code',
+        //'basic',
+        [
+            'attribute' => 'basic',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'kes_perush',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'kes_kary',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'total_kes',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'jht_perush',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'jht_kary',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'total_jht',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'jp_perush',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'jp_kary',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'total_jp',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'jkk',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'jkm',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'total',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        'tanggal_bayar',
+        'va',
+        'bpi',
 ];
 ?>
 
@@ -65,45 +146,20 @@ $gridColumns = [
             'columns' => $gridColumns,
             'bsVersion' => '4',
             'bootstrap' => true,
-            'filename' => 'Payroll_Employee_Export_'.date('YmdHis'),
+            'filename' => 'BPJS_Records_'.date('YmdHis'),
             'showColumnSelector' => false,
             'dropdownOptions' => [
                 'label' => '<i class="fa fa-download"></i> Export',
                 'class' => 'btn btn-sm btn-success rounded-pill shadow-sm',
-                'style' => 'min-width:140px;',
+                'style' => 'min-width:160px;',
                 'encodeLabel' => false,
             ],
         ]) ?>
-
-        <?= Html::button('<i class="fa fa-times"></i> Cancel ', [
-            'class' => 'btn btn-warning btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:140px;',
-            'data-url' => Url::to(['cancel']),
-        ]) ?>
-
-        <?= Html::button('<i class="fa fa-edit"></i> Revise ', [
-            'class' => 'btn btn-outline-secondary btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:140px;',
-            'data-url' => Url::to(['create']),
-        ]) ?>
-
-        <?= Html::button('<i class="fa fa-plus"></i> Batch Process', [
-            'class' => 'btn btn-primary btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:140px;',
-            'data-url' => Url::to(['batch']),
-        ]) ?>
-
-        <?= Html::button('<i class="fa fa-check"></i> Approve', [
-            'class' => 'btn btn-danger btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:140px;',
-            'data-url' => Url::to(['approve']),
-        ]) ?>
-
-        
     </div>
 </div>
 
 <!-- GRIDVIEW -->
+<div style="overflow-x:auto; width:100%;">
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel'  => $searchModel,
@@ -120,14 +176,9 @@ $gridColumns = [
         [
             'attribute' => 'employee_id',
             'format' => 'raw',
-            'value' => fn($model) => Html::a(
-                Html::encode($model->employee->fullname),
-                'javascript:void(0);',
-                [
-                    'class' => 'text-primary view-data',
-                    'data-url' => Url::to(['view', 'id' => $model->id]),
-                ]
-            ),
+            'value' => function ($model) {
+                return $model->employee->fullname;
+            },
         ],
         [
             'attribute' => 'month',
@@ -155,7 +206,7 @@ $gridColumns = [
                     'allowClear' => true,
                     'placeholder' => 'All Type',
                 ],
-                'options' => ['placeholder' => 'All Type'],
+                'options' => ['placeholder' => 'select'],
             ],
             'filterInputOptions' => ['class' => 'form-control'],
             'contentOptions' => ['class' => 'text-left'],
@@ -163,129 +214,127 @@ $gridColumns = [
         ],
         'year',
         [
-            'attribute' => 'gross',
-            'width' => '150px',
-            'hAlign' => 'right',
-            'format' => ['decimal', 2],
-            'pageSummary' => true,
-        ],
-        [
-            'attribute' => 'total_deduction',
-            'width' => '150px',
-            'hAlign' => 'right',
-            'format' => ['decimal', 2],
-            'pageSummary' => true,
-        ],
-        [
-            'attribute' => 'thp',
+            'attribute' => 'basic',
             'width' => '150px',
             'hAlign' => 'right',
             'format' => ['decimal', 2],
             'pageSummary' => true,
         ],
         // [
-        //     'attribute' => 'payroll_item_id',
-        //     'value' => 'payrollItem.name',
-        //     'filter' => yii\helpers\ArrayHelper::map(\common\modules\master\models\PayrollItem::find()->where(['type' => 'DATA'])->orderBy('id')->asArray()->all(),'id','name'),
-        //     'filterType' => GridView::FILTER_SELECT2,
-        //     'filterWidgetOptions' => [
-        //         'pluginOptions' => [
-        //             'allowClear' => true,
-        //             'placeholder' => 'Payroll Component',
-        //         ],
-        //         'options' => ['placeholder' => 'Payroll Component'],
-        //     ],
-        //     'filterInputOptions' => ['class' => 'form-control'],
-        //     'contentOptions' => ['class' => 'text-left'],
-        //     'headerOptions' => ['class' => 'text-white bg-creative text-center'],
-        // ],
-        // [
-        //     'attribute' => 'amount',
+        //     'attribute' => 'kes_perush',
         //     'width' => '150px',
         //     'hAlign' => 'right',
         //     'format' => ['decimal', 2],
         //     'pageSummary' => true,
         // ],
         // [
-        //     'attribute' => 'salary_type',
-        //     'format' => 'raw',
-        //     'value' => function ($model) {
-        //         return $model->payrollItem->salary_type;
-        //     },
-        //     'filterType' => GridView::FILTER_SELECT2,
-        //     'filter' => ['RECURRING' => 'RECURRING', 'ONETIME' => 'ONETIME'],
-        //     'filterWidgetOptions' => [
-        //         'pluginOptions' => [
-        //             'allowClear' => true,
-        //             'placeholder' => 'All Type',
-        //         ],
-        //         'options' => ['placeholder' => 'All Type'],
-        //     ],
-        //     'filterInputOptions' => ['class' => 'form-control'],
-        //     'contentOptions' => ['class' => 'text-center'],
-        //     'headerOptions' => ['class' => 'text-white bg-creative text-center'],
+        //     'attribute' => 'kes_kary',
+        //     'width' => '150px',
+        //     'hAlign' => 'right',
+        //     'format' => ['decimal', 2],
+        //     'pageSummary' => true,
         // ],
-        // 'insert_by',
         [
-            'attribute' => 'status_id',
-            'format' => 'raw',
-            'value' => function ($model) {
-                if ($model->status_id == 1) {
-                    return Html::a(
-                        Html::tag('span', 'Draft', ['class' => 'badge badge-warning'])
-                    );
-                } else if ($model->status_id == 2) {
-                    return Html::a(
-                        Html::tag('span', 'Approved', ['class' => 'badge badge-success'])
-                    );
-                } else {
-                    return Html::a(
-                        Html::tag('span', 'Pending', ['class' => 'badge badge-danger'])
-                    );
-                }
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => [1 => 'Draft', 2 => 'Approved', 3 => 'Pending'],
-            'filterWidgetOptions' => [
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'placeholder' => 'All Status',
-                ],
-                'options' => ['placeholder' => 'All Status'],
-            ],
-            'filterInputOptions' => ['class' => 'form-control'],
-            'contentOptions' => ['class' => 'text-center'],
-            'headerOptions' => ['class' => 'text-white bg-creative text-center'],
+            'attribute' => 'total_kes',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
         ],
-        //'is_processed',
-        //'processed_at',
+        // [
+        //     'attribute' => 'jht_perush',
+        //     'width' => '150px',
+        //     'hAlign' => 'right',
+        //     'format' => ['decimal', 2],
+        //     'pageSummary' => true,
+        // ],
+        // [
+        //     'attribute' => 'jht_kary',
+        //     'width' => '150px',
+        //     'hAlign' => 'right',
+        //     'format' => ['decimal', 2],
+        //     'pageSummary' => true,
+        // ],
+        [
+            'attribute' => 'total_jht',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        // [
+        //     'attribute' => 'jp_perush',
+        //     'width' => '150px',
+        //     'hAlign' => 'right',
+        //     'format' => ['decimal', 2],
+        //     'pageSummary' => true,
+        // ],
+        // [
+        //     'attribute' => 'jp_kary',
+        //     'width' => '150px',
+        //     'hAlign' => 'right',
+        //     'format' => ['decimal', 2],
+        //     'pageSummary' => true,
+        // ],
+        [
+            'attribute' => 'total_jp',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'jkk',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'jkm',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'total',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        'tanggal_bayar',
+        'va',
+        'bpi',
+
         //'created_at',
         //'created_by',
         //'updated_at',
         //'updated_by',
-        [
-            'class' => 'yii\grid\ActionColumn',
-            'header' => 'Action',
-            'template' => '{slip}',
-            'contentOptions' => ['class' => 'text-center'],
-            'buttons' => [
-                'slip' => function ($url, $model) {
-                    return Html::a(
-                        '<i class="fa fa-print"></i>',
-                        Url::to(['slip', 'id' => $model->id]),
-                        [
-                            'class' => 'btn btn-sm btn-outline-warning rounded-circle',
-                            'title' => 'Print Slip',
-                            'target' => '_blank', // 🔥 open new tab
-                            'data-pjax' => 0,     // 🔥 penting biar PJAX gak intercept
-                        ]
-                    );
-                },
-            ],
-        ],
+        // [
+        //     'class' => 'yii\grid\ActionColumn',
+        //     'header' => 'Action',
+        //     'template' => '{slip}',
+        //     'contentOptions' => ['class' => 'text-center'],
+        //     'buttons' => [
+        //         'slip' => function ($url, $model) {
+        //             return Html::a(
+        //                 '<i class="fa fa-print"></i>',
+        //                 Url::to(['slip', 'id' => $model->id]),
+        //                 [
+        //                     'class' => 'btn btn-sm btn-outline-warning rounded-circle',
+        //                     'title' => 'Print Slip',
+        //                     'target' => '_blank', // 🔥 open new tab
+        //                     'data-pjax' => 0,     // 🔥 penting biar PJAX gak intercept
+        //                 ]
+        //             );
+        //         },
+        //     ],
+        // ],
     ],
 ]) ?>
-
+</div>
 <?php Pjax::end(); ?>
 
 

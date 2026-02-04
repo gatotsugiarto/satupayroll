@@ -230,4 +230,22 @@ class Employee extends \yii\db\ActiveRecord
             
         return $dropdown;
     }
+
+    public static function dropdown_payroll()
+    {
+        static $dropdown;
+        if ($dropdown === null) {
+            
+            // $models = static::find()->all();
+            $models = Employee::find()->alias('e')
+            ->innerJoin('v_employee ve', 've.id = e.id')
+            ->select(['e.*'])
+            ->all();
+            foreach ($models as $model) {
+                $dropdown[$model->id] = $model->fullname.' ['.$model->e_number.']';
+            }
+        }
+            
+        return $dropdown;
+    }
 }

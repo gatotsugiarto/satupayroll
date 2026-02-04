@@ -109,6 +109,8 @@ $gridColumns = [
 </div>
 
 <!-- GRIDVIEW -->
+<div style="overflow-x:auto; width:100%;">
+
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel'  => $searchModel,
@@ -310,7 +312,7 @@ $gridColumns = [
         // ],
     ],
 ]) ?>
-
+</div>
 <?php Pjax::end(); ?>
 
 

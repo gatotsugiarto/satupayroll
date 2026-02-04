@@ -89,9 +89,9 @@ foreach ($late as $row) {
                         </div>
                         <div class="card-footer ">
                             <hr>
-                            <div class="stats">
+                            <!-- <div class="stats">
                                 <i class="fa fa-history"></i> Updated 3 minutes ago
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -108,9 +108,9 @@ foreach ($late as $row) {
                         </div>
                         <div class="card-footer ">
                             <hr>
-                            <div class="stats">
+                            <!-- <div class="stats">
                                 <i class="fa fa-history"></i> Updated 3 minutes ago
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -129,9 +129,9 @@ foreach ($late as $row) {
                         </div>
                         <div class="card-footer ">
                             <hr>
-                            <div class="stats">
+                            <!-- <div class="stats">
                                 <i class="fa fa-history"></i> Updated 3 minutes ago
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -148,9 +148,9 @@ foreach ($late as $row) {
                         </div>
                         <div class="card-footer ">
                             <hr>
-                            <div class="stats">
+                            <!-- <div class="stats">
                                 <i class="fa fa-history"></i> Updated 3 minutes ago
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -169,9 +169,9 @@ foreach ($late as $row) {
                         </div>
                         <div class="card-footer ">
                             <hr>
-                            <div class="stats">
+                            <!-- <div class="stats">
                                 <i class="fa fa-history"></i> Updated 3 minutes ago
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -199,7 +199,7 @@ foreach ($late as $row) {
         </div>
     </div>
 </div>
-
+<?php if(isset($dataAmount_1)){ ?>
 <script>
 const ctx_1 = document.getElementById('bebanPerusahaanChart').getContext('2d');
 const bebanPerusahaanChart = new Chart(ctx_1, {
@@ -226,6 +226,7 @@ const bebanPerusahaanChart = new Chart(ctx_1, {
     }
 });
 </script>
+<?php } ?>
 
 <script>
 const ctx = document.getElementById('statusPegawaiChart').getContext('2d');
@@ -262,7 +263,7 @@ const statusPegawaiChart = new Chart(ctx, {
     }
 });
 </script>
-
+<?php if(isset($dataAmount_3)){ ?>
 <script>
 const ctx_3 = document.getElementById('overtimeChart').getContext('2d');
 const overtimeChart = new Chart(ctx_3, {
@@ -289,7 +290,8 @@ const overtimeChart = new Chart(ctx_3, {
     }
 });
 </script>
-
+<?php } ?>
+<?php if(isset($dataAmount_4)){ ?>
 <script>
 const ctx_4 = document.getElementById('thpChart').getContext('2d');
 const thpChart = new Chart(ctx_4, {
@@ -316,7 +318,8 @@ const thpChart = new Chart(ctx_4, {
     }
 });
 </script>
-
+<?php } ?>
+<?php if(isset($dataAmount_5)){ ?>
 <script>
 const ctx_5 = document.getElementById('lateChart').getContext('2d');
 const lateChart = new Chart(ctx_5, {
@@ -343,3 +346,4 @@ const lateChart = new Chart(ctx_5, {
     }
 });
 </script>
+<?php } ?>

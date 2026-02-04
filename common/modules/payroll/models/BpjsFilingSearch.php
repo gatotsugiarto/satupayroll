@@ -4,12 +4,12 @@ namespace common\modules\payroll\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\modules\payroll\models\Payroll;
+use common\modules\payroll\models\BpjsFiling;
 
 /**
- * PayrollSearch represents the model behind the search form of `common\modules\payroll\models\Payroll`.
+ * BpjsFilingSearch represents the model behind the search form of `common\modules\payroll\models\BpjsFiling`.
  */
-class PayrollSearch extends Payroll
+class BpjsFilingSearch extends BpjsFiling
 {
     /**
      * {@inheritdoc}
@@ -18,8 +18,8 @@ class PayrollSearch extends Payroll
     {
         return [
             [['id', 'month', 'year', 'status_id', 'created_by', 'updated_by'], 'integer'],
-            [['employee_id', 'period_code', 'reason', 'approved_at', 'created_at', 'updated_at'], 'safe'],
-            [['gross', 'total_deduction', 'thp', 'thr_accrual'], 'number'],
+            [['employee_id', 'period_code', 'tanggal_bayar', 'va', 'bpi', 'created_at', 'updated_at'], 'safe'],
+            [['basic', 'kes_perush', 'kes_kary', 'total_kes', 'jht_perush', 'jht_kary', 'total_jht', 'jp_perush', 'jp_kary', 'total_jp', 'jkk', 'jkm', 'total'], 'number'],
         ];
     }
 
@@ -42,7 +42,7 @@ class PayrollSearch extends Payroll
      */
     public function search($params, $formName = null)
     {
-        $query = Payroll::find();
+        $query = BpjsFiling::find();
         $query->joinWith(['employee']);
 
         // add conditions that should always apply here
@@ -73,11 +73,20 @@ class PayrollSearch extends Payroll
             // 'employee_id' => $this->employee_id,
             'month' => $this->month,
             'year' => $this->year,
-            'gross' => $this->gross,
-            'total_deduction' => $this->total_deduction,
-            'thp' => $this->thp,
-            'thr_accrual' => $this->thr_accrual,
-            'approved_at' => $this->approved_at,
+            'basic' => $this->basic,
+            'kes_perush' => $this->kes_perush,
+            'kes_kary' => $this->kes_kary,
+            'total_kes' => $this->total_kes,
+            'jht_perush' => $this->jht_perush,
+            'jht_kary' => $this->jht_kary,
+            'total_jht' => $this->total_jht,
+            'jp_perush' => $this->jp_perush,
+            'jp_kary' => $this->jp_kary,
+            'total_jp' => $this->total_jp,
+            'jkk' => $this->jkk,
+            'jkm' => $this->jkm,
+            'total' => $this->total,
+            'tanggal_bayar' => $this->tanggal_bayar,
             'status_id' => $this->status_id,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
@@ -86,8 +95,9 @@ class PayrollSearch extends Payroll
         ]);
 
         $query->andFilterWhere(['like', 'period_code', $this->period_code])
+            ->andFilterWhere(['like', 'va', $this->va])
             ->andFilterWhere(['like', 'employee.fullname', $this->employee_id])
-            ->andFilterWhere(['like', 'reason', $this->reason]);
+            ->andFilterWhere(['like', 'bpi', $this->bpi]);
 
         return $dataProvider;
     }

@@ -48,6 +48,14 @@ class Formulir1721A1Search extends Formulir1721A1
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 30,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC,
+                ],
+            ],
         ]);
 
         $this->load($params, $formName);

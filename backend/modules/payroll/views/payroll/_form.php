@@ -5,18 +5,18 @@ use kartik\select2\Select2;
 use kartik\number\NumberControl;
 
 $isNew = $model->isNewRecord;
-$title = $isNew ? 'Batch Process' : 'Edit Payroll';
+$title = $isNew ? 'Payroll Revise' : 'Edit Payroll';
 $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
 ?>
 
 <div class="modal-header bg-default text-white rounded-top-4">
     <div>
-        <h5 class="text-primary fw-bold page-title mb-1">
+        <h5 class="text-secondary fw-bold page-title mb-1">
             <i class="fa <?= $icon ?> mr-2"></i> <?= $title ?>
         </h5>
         <small class="text-muted">
             <?= $isNew
-                ? 'Please fill in the year and month period form below to process a new payroll.'
+                ? 'Please fill in the employee, year and month period form below to process a revise payroll.'
                 : 'Update salary information below.' ?>
         </small>
     </div>
@@ -26,7 +26,7 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
     'id' => 'salary-form',
     'enableAjaxValidation' => false,
     // 'validationUrl' => ['salary/validate'],
-    'action' => $isNew ? ['payroll/batch'] : ['payroll/update', 'id' => $model->id],
+    'action' => $isNew ? ['payroll/create'] : ['payroll/update', 'id' => $model->id],
     'options' => ['data-pjax' => 0],
 ]); ?>
 
@@ -34,7 +34,6 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
     <div class="modal-body px-4 pb-4">
         
         <?= Html::hiddenInput('form_token', $formToken) ?>
-        <?= $form->field($model, 'employee_id')->HiddenInput()->label(false) ?>
 
         <?php
         if($model->isNewRecord){
@@ -42,6 +41,24 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
             $model->year = date('Y');
         }
         ?>
+
+        <div class="row">
+            <div class="col-md-12">
+                <?= $form->field($model, 'arr_employee_id')->widget(Select2::classname(), [
+                    'data' => \common\modules\master\models\Employee::dropdown_payroll(),
+                    'options' => [
+                        'placeholder' => 'Employee',
+                        // 'id' => 'employee_id',
+                        'multiple' => true,
+                    ],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
+                        // 'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
+                    ],
+                ]) ?>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-md-6">
@@ -103,8 +120,8 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
 
     <!-- RIGHT: Submit -->
     <div>
-        <?= Html::submitButton('<i class="fa fa-save"></i> Process', [
-            'class' => 'btn btn-primary px-4',
+        <?= Html::submitButton('<i class="fa fa-save"></i> Revise', [
+            'class' => 'btn btn-outline-secondary px-4',
             'style' => 'min-width:140px;',
         ]) ?>
     </div>
