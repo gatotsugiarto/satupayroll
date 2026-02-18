@@ -259,7 +259,9 @@
                     ?>
                     <tr>
                         <td class="left_label"><?= $item_name ?></td>
-                        <td class="left_amount"><?= $amount ?></td>
+                        <td class="left_amount">
+                            Rp <?= number_format($amount, 0, ',', '.') ?>
+                        </td>
                     </tr>
                     <?php
                     }
@@ -279,7 +281,9 @@
                     ?>
                     <tr>
                         <td class="right_label"><?= $item_name ?></td>
-                        <td class="left_amount"><?= $amount ?></td>
+                        <td class="left_amount">
+                            Rp <?= number_format($amount, 0, ',', '.') ?>
+                        </td>
                     </tr>
                     <?php
                     }
@@ -291,9 +295,9 @@
     </table>
 
     <?php
-    $biaya_perusahaan = number_format($model->gross, 2, ',', '.');
-    $total_potongan = number_format($model->total_deduction, 2, ',', '.');
-    $thp = number_format($model->thp, 2, ',', '.');
+    $biaya_perusahaan = number_format($model->gross, 0, ',', '.');
+    $total_potongan = number_format($model->total_deduction, 0, ',', '.');
+    $thp = number_format($model->thp, 0, ',', '.');
     ?>
 
     <table class="content">

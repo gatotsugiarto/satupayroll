@@ -87,6 +87,7 @@ $gridColumns = [
             ),
         ],
         'pending_type',
+        'pending_date',
         // [
         //     'attribute' => 'payroll_item_id',
         //     'value' => 'payrollItem.name',

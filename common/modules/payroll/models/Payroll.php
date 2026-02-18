@@ -90,6 +90,7 @@ class Payroll extends \yii\db\ActiveRecord
             [['period_code'], 'string', 'max' => 10],
             [['reason'], 'string', 'max' => 255],
             ['month', 'validateStatusCreate', 'on' => 'create'],
+            [['arr_employee_id'], 'required', 'on' => 'single'],
             ['month', 'validateStatusCreateSingle', 'on' => 'single'],
             ['month', 'validateApprove', 'on' => 'approve'],
             ['month', 'validateCancel', 'on' => 'cancel'],
@@ -162,6 +163,7 @@ class Payroll extends \yii\db\ActiveRecord
             'thp' => 'Thp',
             'thr_accrual' => 'THR Accrual',
             'reason' => 'Reason',
+            'arr_employee_id' => 'Employee(s)',
             'approved_at' => 'Approved At',
             'status_id' => 'Status ID',
             'created_at' => 'Created At',
@@ -214,20 +216,22 @@ class Payroll extends \yii\db\ActiveRecord
 
         if($employee_id){
             $generate_mode = 'Single';
-            Calculate::PayrollCancelBatch($year, $month, $period_code, $status_id, $user_id, $employee_id);
+            Calculate::PayrollCancel($year, $month, $period_code, $status_id, $user_id, $employee_id);
             Calculate::PayrollGenerateSingle($employee_id, $year, $month, $period_code, $status_id, $user_id);
             ReportSummary::BatchL3($year, $month, $period_code, $status_id, $user_id, $employee_id);
-            Calculate::PayrollHeaderBatch($year, $month, $period_code, $status_id, $user_id, $employee_id);
+            Calculate::PayrollHeader($year, $month, $period_code, $status_id, $user_id, $employee_id);
+            Calculate::AdditionalBenefitHeader($year, $month, $period_code, $status_id, $user_id, $employee_id);
             OtherDoc::BuktiPotong($year, $month, $period_code, $status_id, $user_id, $employee_id);
             ReportSummary::BatchL1($year, $month, $period_code, $status_id, $user_id);
             OtherDoc::Formulir1721($year, $month, $period_code, $status_id, $user_id, $employee_id);
             OtherDoc::BPJSFiling($year, $month, $period_code, $status_id, $user_id, $employee_id);
         }else{
             $generate_mode = 'Batch';
-            Calculate::PayrollCancelBatch($year, $month, $period_code, $status_id, $user_id);
+            Calculate::PayrollCancel($year, $month, $period_code, $status_id, $user_id);
             Calculate::PayrollGenerateBatch($year, $month, $period_code, $status_id, $user_id);
             ReportSummary::BatchL3($year, $month, $period_code, $status_id, $user_id);
-            Calculate::PayrollHeaderBatch($year, $month, $period_code, $status_id, $user_id);
+            Calculate::PayrollHeader($year, $month, $period_code, $status_id, $user_id);
+            Calculate::AdditionalBenefitHeader($year, $month, $period_code, $status_id, $user_id);
             OtherDoc::BuktiPotong($year, $month, $period_code, $status_id, $user_id);
             ReportSummary::BatchL1($year, $month, $period_code, $status_id, $user_id);
             OtherDoc::Formulir1721($year, $month, $period_code, $status_id, $user_id);
@@ -266,7 +270,7 @@ class Payroll extends \yii\db\ActiveRecord
         $user_id = Yii::$app->user->id;
 
         if($generate_mode == 'Batch'){
-            Calculate::PayrollCancelBatch($year, $month, $period_code, $status_id, $user_id);
+            Calculate::PayrollCancel($year, $month, $period_code, $status_id, $user_id);
         }
     }
 

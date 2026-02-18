@@ -41,12 +41,17 @@ use yii\helpers\Html;
                 <span class="text-secondary small">Default Value</span><br>
                 <span class="fw-semibold"><?= Html::encode($model->default_value) ?></span>
             </div>
+            <?php
+            $taxable = ($model->taxable == 2) ? 'No' : 'Yes';
+            ?>
             <div class="col-md-6">
                 <span class="text-secondary small">Taxable</span><br>
-                <span class="fw-semibold"><?= Html::encode($model->taxable) ?></span>
+                <span class="fw-semibold"><?= Html::encode($taxable) ?></span>
             </div>
         </div>
-
+        <?php
+        $percent = $model->percent ? $model->percent : '-';
+        ?>
         <div class="row mb-3">
             <div class="col-md-6">
                 <span class="text-secondary small">Display Orders</span><br>
@@ -54,14 +59,16 @@ use yii\helpers\Html;
             </div>
             <div class="col-md-6">
                 <span class="text-secondary small">Percentage</span><br>
-                <span class="fw-semibold"><?= Html::encode($model->percent) ?></span>
+                <span class="fw-semibold"><?= Html::encode($percent) ?></span>
             </div>
         </div>
-
+        <?php
+        $cap = $model->cap ? $model->cap : '-';
+        ?>
         <div class="row mb-3">
             <div class="col-md-6">
                 <span class="text-secondary small">CAP</span><br>
-                <span class="fw-semibold"><?= Html::encode($model->cap) ?></span>
+                <span class="fw-semibold"><?= Html::encode($cap) ?></span>
             </div>
             <div class="col-md-6">
                 <span class="text-secondary small">Salary Type</span><br>
@@ -100,10 +107,16 @@ use yii\helpers\Html;
                 <span class="text-secondary small">Slip Display</span><br>
                 <span class="fw-semibold"><?= Html::encode($model->slip_display) ?></span>
             </div>
+            <?php
+            if($model->slip_display == 'Y'){
+            ?>
             <div class="col-md-6">
                 <span class="text-secondary small">Slip Position</span><br>
                 <span class="fw-semibold"><?= Html::encode($model->slip_position) ?></span>
             </div>
+            <?php
+            }
+            ?>
         </div>
 
         <div class="row mb-3">

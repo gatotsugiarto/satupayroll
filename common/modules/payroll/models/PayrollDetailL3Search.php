@@ -17,8 +17,8 @@ class PayrollDetailL3Search extends PayrollDetailL3
     public function rules()
     {
         return [
-            [['id', 'employee_id', 'status_id', 'created_by', 'updated_by'], 'integer'],
-            [['period_code', 'payroll_mode', 'generate_mode', 'ter', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'status_id', 'created_by', 'updated_by'], 'integer'],
+            [['employee_id', 'period_code', 'payroll_mode', 'generate_mode', 'ter', 'created_at', 'updated_at'], 'safe'],
             [['basic', 'position_allow', 'ops_allow', 'fixed_income', 'overtime_allow', 'accodtn_allow', 'so_allow', 'ig_allow', 'doublepos_allow', 'misc_allow', 'var_income', 'actual_salary', 'jht_perusahaan', 'jp_perusahaan', 'jkm', 'jkk', 'bpjs_kes_perusahaan', 'employer_bpjs', 'thr', 'bonus', 'tunj_keseh', 'lembur', 'rev_absensi', 'tunj_pph21', 'cut_unpaid', 'cut_absensi', 'cut_alpha', 'other_income', 'bruto', 'employer_cost', 'bruto_tax', 'ter_rate', 'pph21_dec_net', 'bruto_tax_year', 'biaya_jabatan_year', 'jp_jht_kary_year', 'ptkp', 'pkp', 'neto_year', 'pph21_year', 'pph21_jan_nov', 'pph21_net_employer', 'pph21', 'jht_kary', 'jp_kary', 'bpjs_kes_kary', 'ded_misc', 'total_potongan', 'thp'], 'number'],
         ];
     }
@@ -43,6 +43,7 @@ class PayrollDetailL3Search extends PayrollDetailL3
     public function search($params, $formName = null)
     {
         $query = PayrollDetailL3::find();
+        $query->joinWith(['employee']);
 
         // add conditions that should always apply here
 
@@ -69,7 +70,7 @@ class PayrollDetailL3Search extends PayrollDetailL3
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'employee_id' => $this->employee_id,
+            // 'employee_id' => $this->employee_id,
             'basic' => $this->basic,
             'position_allow' => $this->position_allow,
             'ops_allow' => $this->ops_allow,
@@ -129,6 +130,7 @@ class PayrollDetailL3Search extends PayrollDetailL3
         $query->andFilterWhere(['like', 'period_code', $this->period_code])
             ->andFilterWhere(['like', 'payroll_mode', $this->payroll_mode])
             ->andFilterWhere(['like', 'generate_mode', $this->generate_mode])
+            ->andFilterWhere(['like', 'employee.fullname', $this->employee_id])
             ->andFilterWhere(['like', 'ter', $this->ter]);
 
         return $dataProvider;

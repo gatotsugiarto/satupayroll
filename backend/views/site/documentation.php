@@ -1,0 +1,398 @@
+<?php
+
+$baseUrl = Yii::$app->request->baseUrl;
+?>
+<style>
+	html { 
+		scroll-behavior: smooth; 
+	}
+</style>
+
+<!-- Main Content -->
+<div class="container my-0">
+  <div class="row">
+    
+	<!-- Top Navigation -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	  <div class="container-fluid">
+	    <div class="collapse navbar-collapse" id="navbarNav">
+	      <ul class="navbar-nav ms-auto">
+	        <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
+	        <li class="nav-item"><a class="nav-link" href="#usermanagement">User Management</a></li>
+	        <li class="nav-item"><a class="nav-link" href="#payrollmanagement">Payroll Management</a></li>
+	        <li class="nav-item"><a class="nav-link" href="#masterdata">Master Data</a></li>
+	        <li class="nav-item"><a class="nav-link" href="#logactivity">Log Activity</a></li>
+	      </ul>
+	    </div>
+	  </div>
+	</nav>
+
+
+	<!-- Documentation Content -->
+	<section class="col-md-12">
+	  <h2 id="dashboard">Payroll Dashboard Documentation</h2>
+	  <p class="text-muted">
+	    This documentation provides detailed explanations of each dashboard component, including purpose, data sources, visualization methods, interpretation, and technical notes.
+	  </p>
+	  <img src="<?=$baseUrl?>/img/documentation/dashboard.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+
+	  <!-- Employer Payroll Cost -->
+	  <h3 id="employer-payroll-cost">1. Employer Payroll Cost</h3>
+	  <img src="<?=$baseUrl?>/img/documentation/Employer-Payroll-Cost.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+	  <ul>
+	    <li><strong>Purpose:</strong> Displays the total payroll expenses borne by the company each month.</li>
+	    <li><strong>Data Source:</strong> Aggregated from base salary, allowances, deductions, and employer contributions (BPJS, tax, etc.).</li>
+	    <li><strong>Visualization:</strong> Monthly bar chart.</li>
+	    <li><strong>Interpretation:</strong> Stable values around ±65,000,000 in January and February 2026, providing a quick overview of monthly payroll consistency.</li>
+	    <li><strong>Technical Notes:</strong> 
+	      <ul>
+	        <li>Data should be pulled from the finalized payroll table (after deductions validation).</li>
+	        <li>Use <code>DECIMAL(15,2)</code> to avoid rounding errors.</li>
+	      </ul>
+	    </li>
+	  </ul>
+
+	  <!-- Employee Status -->
+	  <h3 id="employee-status">2. Employee Status</h3>
+	  <img src="<?=$baseUrl?>/img/documentation/Employee-Status.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+	  <ul>
+	    <li><strong>Purpose:</strong> Shows the distribution of employees by employment status.</li>
+	    <li><strong>Categories:</strong> Probation, PKWT (fixed-term contract), Permanent.</li>
+	    <li><strong>Visualization:</strong> Monthly bar chart.</li>
+	    <li><strong>Interpretation:</strong> Majority are Permanent employees (7 people), with smaller numbers in Probation and PKWT categories.</li>
+	    <li><strong>Technical Notes:</strong> 
+	      <ul>
+	        <li>Data sourced from the employee master table (<code>employee_status</code>).</li>
+	        <li>Ensure status values are validated and standardized.</li>
+	      </ul>
+	    </li>
+	  </ul>
+
+	  <!-- Overtime -->
+	  <h3 id="overtime">3. Overtime</h3>
+	  <img src="<?=$baseUrl?>/img/documentation/Overtime.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+	  <ul>
+	    <li><strong>Purpose:</strong> Displays overtime hours and compensation.</li>
+	    <li><strong>Data Source:</strong> Overtime timesheets combined with payroll overtime formula.</li>
+	    <li><strong>Visualization:</strong> Bar chart showing hours and compensation.</li>
+	    <li><strong>Interpretation:</strong> Overtime values are relatively low (&lt; 1.0 hours/compensation), indicating minimal overtime activity in January–February 2026.</li>
+	    <li><strong>Technical Notes:</strong> 
+	      <ul>
+	        <li>Overtime formula should follow regulations (e.g., 1.5x normal hourly rate).</li>
+	        <li>Store overtime hours as <code>DECIMAL(5,2)</code> for precision.</li>
+	      </ul>
+	    </li>
+	  </ul>
+
+	  <!-- Take Home Pay -->
+	  <h3 id="take-home-pay">4. Take Home Pay</h3>
+	  <img src="<?=$baseUrl?>/img/documentation/thp.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+	  <ul>
+	    <li><strong>Purpose:</strong> Displays the net salary employees receive after deductions.</li>
+	    <li><strong>Data Source:</strong> Final payroll (base salary + allowances – tax/BPJS deductions).</li>
+	    <li><strong>Visualization:</strong> Monthly bar chart.</li>
+	    <li><strong>Interpretation:</strong> Values range between 55,000,000 – 60,000,000, providing insight into net pay trends.</li>
+	    <li><strong>Technical Notes:</strong> 
+	      <ul>
+	        <li>Ensure PPh21 and BPJS deductions are calculated according to regulations.</li>
+	        <li>Store as <code>DECIMAL(15,2)</code> for consistent reporting.</li>
+	      </ul>
+	    </li>
+	  </ul>
+
+	  <!-- Attendance Deduction -->
+	  <h3 id="attendance-deduction">5. Attendance Deduction</h3>
+	  <img src="<?=$baseUrl?>/img/documentation/att-deduction.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+	  <ul>
+	    <li><strong>Purpose:</strong> Displays deductions applied due to late employee attendance.</li>
+	    <li><strong>Data Source:</strong> Attendance logs combined with payroll deduction rules.</li>
+	    <li><strong>Visualization:</strong> Line chart with shaded area showing monthly deduction values.</li>
+	    <li><strong>Interpretation:</strong> 
+	      <ul>
+	        <li>Deductions remain consistent at approximately 110,000 in January and February 2026.</li>
+	        <li>Highlights the financial impact of late arrivals and its stability across months.</li>
+	      </ul>
+	    </li>
+	    <li><strong>Technical Notes:</strong> 
+	      <ul>
+	        <li>Ensure attendance records are validated before applying deductions.</li>
+	        <li>Deduction formula should align with company HR policy and compliance standards.</li>
+	        <li>Store values as <code>DECIMAL(10,2)</code> for accuracy in payroll calculations.</li>
+	      </ul>
+	    </li>
+	  </ul>
+	</section>
+
+
+	<!-- User Management Documentation -->
+	<section class="col-md-9">
+	  <h2 id="usermanagement">User Management</h2>
+	  <p class="text-muted">
+	    This section documents the User Management dashboard, which provides administrators with tools to manage users, roles, and permissions within the system.
+	  </p>
+	  <img src="<?=$baseUrl?>/img/documentation/user-management.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+
+	  <!-- Users Access -->
+	  <h3 id="users-access">1. Users Access</h3>
+	  <img src="<?=$baseUrl?>/img/documentation/user-management.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+	  <ul>
+	    <li><strong>Purpose:</strong> Displays the list of backend users with system access.</li>
+	    <li><strong>Data Source:</strong> User accounts stored in the backend authentication database.</li>
+	    <li><strong>Interpretation:</strong> Allows administrators to review and manage system-level users.</li>
+	    <li><strong>Technical Notes:</strong> Ensure proper role assignment and password policies are enforced.</li>
+	  </ul>
+
+	  <!-- Assignments -->
+	  <h3 id="assignments">2. Assignments</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Provides navigation to assign users to members or groups.</li>
+	    <li><strong>Data Source:</strong> User-to-member mapping tables.</li>
+	    <li><strong>Interpretation:</strong> Facilitates linking backend accounts to frontend members.</li>
+	    <li><strong>Technical Notes:</strong> Validate assignment consistency to avoid orphaned accounts.</li>
+	  </ul>
+
+	  <!-- Role -->
+	  <h3 id="role">3. Role</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Defines collections of permissions grouped into roles.</li>
+	    <li><strong>Data Source:</strong> Role definitions stored in the authorization schema.</li>
+	    <li><strong>Interpretation:</strong> Roles simplify permission management by grouping actions.</li>
+	    <li><strong>Technical Notes:</strong> Use role-based access control (RBAC) for scalability.</li>
+	  </ul>
+
+	  <!-- Permission -->
+	  <h3 id="permission">4. Permission</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Specifies individual actions a user is allowed to perform.</li>
+	    <li><strong>Data Source:</strong> Permission records linked to roles and users.</li>
+	    <li><strong>Interpretation:</strong> Fine-grained control over system functionality.</li>
+	    <li><strong>Technical Notes:</strong> Permissions should be audited regularly for compliance.</li>
+	  </ul>
+
+	  <!-- Members Access -->
+	  <h3 id="members-access">5. Members Access</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Displays the list of frontend/client users.</li>
+	    <li><strong>Data Source:</strong> Member accounts stored in the client-facing database.</li>
+	    <li><strong>Interpretation:</strong> Enables monitoring and management of client-side access.</li>
+	    <li><strong>Technical Notes:</strong> Ensure synchronization between backend and frontend accounts.</li>
+	  </ul>
+
+	  <!-- Change Password -->
+	  <h3 id="change-password">6. Change Password</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Allows users to update their account password securely.</li>
+	    <li><strong>Data Source:</strong> Authentication system with password hashing.</li>
+	    <li><strong>Interpretation:</strong> Provides a self-service option for account security.</li>
+	    <li><strong>Technical Notes:</strong> Enforce strong password policies and hashing algorithms (e.g., bcrypt).</li>
+	  </ul>
+	</section>
+
+	<!-- Payroll Management Documentation -->
+	<section class="col-md-9">
+	  <h2 id="payrollmanagement">Payroll Management</h2>
+	  <p class="text-muted">
+	    This section documents the Payroll Management dashboard, which provides HR and finance teams with tools to manage employee compensation, compliance, and reporting.
+	  </p>
+
+	  <!-- Upload Data -->
+	  <h3 id="upload-data">1. Upload Data</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Upload payroll data integrated from HRIS systems.</li>
+	    <li><strong>Data Source:</strong> HRIS export files (CSV/XML).</li>
+	    <li><strong>Interpretation:</strong> Ensures payroll records are synchronized with HR data.</li>
+	    <li><strong>Technical Notes:</strong> Validate file structure before upload to avoid errors.</li>
+	  </ul>
+
+	  <!-- Join & Resignation -->
+	  <h3 id="join-resignation">2. Join &amp; Resignation</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Overview of employees joining or resigning during the payroll period.</li>
+	    <li><strong>Data Source:</strong> Employee lifecycle records.</li>
+	    <li><strong>Interpretation:</strong> Provides visibility into workforce changes impacting payroll.</li>
+	    <li><strong>Technical Notes:</strong> Ensure resignation dates align with payroll cut-off.</li>
+	  </ul>
+
+	  <!-- Employee Salary -->
+	  <h3 id="employee-salary">3. Employee Salary</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Configure and oversee salary structures and compensation records.</li>
+	    <li><strong>Data Source:</strong> Salary tables and compensation policies.</li>
+	    <li><strong>Interpretation:</strong> Centralized management of salary components.</li>
+	    <li><strong>Technical Notes:</strong> Use <code>DECIMAL(15,2)</code> for monetary fields.</li>
+	  </ul>
+
+	  <!-- Employee Management -->
+	  <h3 id="employee-management">4. Employee Management</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Manage and monitor employee data within the system.</li>
+	    <li><strong>Data Source:</strong> Employee master records.</li>
+	    <li><strong>Interpretation:</strong> Ensures accurate employee information for payroll processing.</li>
+	    <li><strong>Technical Notes:</strong> Regularly audit employee records for completeness.</li>
+	  </ul>
+
+	  <!-- Employee Profile -->
+	  <h3 id="employee-profile">5. Employee Profile</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Displays employee information and payroll details.</li>
+	    <li><strong>Data Source:</strong> Integrated HR and payroll database.</li>
+	    <li><strong>Interpretation:</strong> Provides a single view of employee compensation history.</li>
+	    <li><strong>Technical Notes:</strong> Ensure secure access controls for sensitive data.</li>
+	  </ul>
+
+	  <!-- Payroll -->
+	  <h3 id="payroll">6. Payroll</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Manages employee salary and payroll processing.</li>
+	    <li><strong>Data Source:</strong> Payroll transaction records.</li>
+	    <li><strong>Interpretation:</strong> Executes monthly payroll runs and generates payslips.</li>
+	    <li><strong>Technical Notes:</strong> Align payroll cycle with company financial calendar.</li>
+	  </ul>
+
+	  <!-- L3 Summary -->
+	  <h3 id="l3-summary">7. L3 Summary</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Provides a consolidated payroll overview.</li>
+	    <li><strong>Data Source:</strong> Aggregated payroll reports.</li>
+	    <li><strong>Interpretation:</strong> High-level summary for management review.</li>
+	    <li><strong>Technical Notes:</strong> Ensure report accuracy before distribution.</li>
+	  </ul>
+
+	  <!-- Bukti Potong PPh21 -->
+	  <h3 id="bukti-potong">8. Bukti Potong PPh21</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Generates official tax withholding forms (1721-A1/A2).</li>
+	    <li><strong>Data Source:</strong> Payroll tax calculations.</li>
+	    <li><strong>Interpretation:</strong> Provides compliance documentation for employees.</li>
+	    <li><strong>Technical Notes:</strong> Ensure alignment with DJP e-Bupot standards.</li>
+	  </ul>
+
+	  <!-- Formulir 1721-A1 -->
+	  <h3 id="formulir-1721-a1">9. Formulir 1721-A1</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Official tax withholding form for permanent employees.</li>
+	    <li><strong>Data Source:</strong> Payroll tax records.</li>
+	    <li><strong>Interpretation:</strong> Used for employee annual tax reporting.</li>
+	    <li><strong>Technical Notes:</strong> Validate NPWP/NIK fields before submission.</li>
+	  </ul>
+
+	  <!-- BPJS Records -->
+	  <h3 id="bpjs-records">10. BPJS Records</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Displays employee BPJS records and contribution details.</li>
+	    <li><strong>Data Source:</strong> BPJS contribution tables.</li>
+	    <li><strong>Interpretation:</strong> Ensures compliance with social security regulations.</li>
+	    <li><strong>Technical Notes:</strong> Synchronize with BPJS online system for accuracy.</li>
+	  </ul>
+
+	  <!-- THR -->
+	  <h3 id="thr">11. THR</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Summarizes employee THR (holiday allowance) contributions.</li>
+	    <li><strong>Data Source:</strong> Payroll THR records.</li>
+	    <li><strong>Interpretation:</strong> Provides visibility into annual THR disbursement.</li>
+	    <li><strong>Technical Notes:</strong> Ensure THR calculation follows labor regulations.</li>
+	  </ul>
+	</section>
+
+	<!-- Master Data Documentation -->
+	<section class="col-md-9">
+	  <h2 id="masterdata">Master Data</h2>
+	  <p class="text-muted">
+	    This section documents the Master Data dashboard, which provides foundational configurations for payroll structures, employee statuses, and company information.
+	  </p>
+
+	  <!-- Payroll Profiles -->
+	  <h3 id="payroll-profiles">1. Payroll Profiles</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Defines payroll structures and employee salary configurations.</li>
+	    <li><strong>Data Source:</strong> Payroll profile tables linked to employee records.</li>
+	    <li><strong>Interpretation:</strong> Ensures consistent salary structures across the organization.</li>
+	    <li><strong>Technical Notes:</strong> Profiles should be version-controlled to track changes over time.</li>
+	  </ul>
+
+	  <!-- Payroll Components -->
+	  <h3 id="payroll-components">2. Payroll Components</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Configures salary components used in payroll calculations (e.g., base salary, allowances, deductions).</li>
+	    <li><strong>Data Source:</strong> Component definitions stored in payroll schema.</li>
+	    <li><strong>Interpretation:</strong> Provides modular building blocks for payroll formulas.</li>
+	    <li><strong>Technical Notes:</strong> Use standardized naming conventions for components to avoid duplication.</li>
+	  </ul>
+
+	  <!-- Payroll Categories -->
+	  <h3 id="payroll-categories">3. Payroll Categories</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Organizes payroll components into structured categories.</li>
+	    <li><strong>Data Source:</strong> Category mappings in payroll configuration tables.</li>
+	    <li><strong>Interpretation:</strong> Simplifies reporting and analysis by grouping related components.</li>
+	    <li><strong>Technical Notes:</strong> Categories should align with financial reporting standards.</li>
+	  </ul>
+
+	  <!-- Pending Status -->
+	  <h3 id="pending-status">4. Pending Status</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Displays employees with pending employment status.</li>
+	    <li><strong>Data Source:</strong> Employee master records flagged as pending.</li>
+	    <li><strong>Interpretation:</strong> Provides visibility into employees awaiting confirmation or approval.</li>
+	    <li><strong>Technical Notes:</strong> Pending records should be reviewed regularly to maintain data integrity.</li>
+	  </ul>
+
+	  <!-- Master Company -->
+	  <h3 id="master-company">5. Master Company</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Stores company profile data including legal entity, address, and registration details.</li>
+	    <li><strong>Data Source:</strong> Company master tables.</li>
+	    <li><strong>Interpretation:</strong> Central repository for organizational information used across payroll and HR modules.</li>
+	    <li><strong>Technical Notes:</strong> Ensure compliance with government regulations when updating company data.</li>
+	  </ul>
+	</section>
+
+	<!-- Log Activity Documentation -->
+	<section class="col-md-9">
+	  <h2 id="logactivity">Log Activity</h2>
+	  <p class="text-muted">
+	    This section documents the Log Activity dashboard, which provides an audit trail of all actions performed within the payroll system. It is essential for monitoring, compliance, and troubleshooting.
+	  </p>
+
+	  <!-- Overview -->
+	  <h3 id="log-overview">1. Overview</h3>
+	  <ul>
+	    <li><strong>Purpose:</strong> Tracks system actions such as create, update, and delete operations.</li>
+	    <li><strong>Data Source:</strong> Application logs generated by the payroll system.</li>
+	    <li><strong>Interpretation:</strong> Provides visibility into user and system activity for auditing purposes.</li>
+	    <li><strong>Technical Notes:</strong> Logs should be timestamped and immutable to ensure integrity.</li>
+	  </ul>
+
+	  <!-- Log Fields -->
+	  <h3 id="log-fields">2. Log Fields</h3>
+	  <ul>
+	    <li><strong>No:</strong> Sequential identifier for each log entry.</li>
+	    <li><strong>Action:</strong> Type of operation performed (create, update, delete).</li>
+	    <li><strong>Model:</strong> The data model affected (e.g., EmployeePending, PayrollItem, Salary).</li>
+	    <li><strong>Action By:</strong> The user or system component that performed the action.</li>
+	    <li><strong>Action Date:</strong> Timestamp of when the action occurred.</li>
+	    <li><strong>Record ID:</strong> Identifier of the record impacted by the action.</li>
+	  </ul>
+
+	  <!-- Interpretation -->
+	  <h3 id="log-interpretation">3. Interpretation</h3>
+	  <ul>
+	    <li>Frequent <strong>create</strong> actions indicate new records being added (e.g., new employees).</li>
+	    <li><strong>Update</strong> actions reflect modifications to existing payroll or employee data.</li>
+	    <li><strong>Delete</strong> actions highlight records removed, which should be reviewed for compliance.</li>
+	    <li>Consistent logging by <em>Application v1</em> shows automated system processes are active.</li>
+	  </ul>
+
+	  <!-- Technical Notes -->
+	  <h3 id="log-technical">4. Technical Notes</h3>
+	  <ul>
+	    <li>Ensure logs are stored securely and backed up regularly.</li>
+	    <li>Implement role-based access control (RBAC) to restrict log visibility to authorized users.</li>
+	    <li>Use indexing for efficient retrieval of log records during audits.</li>
+	    <li>Consider integrating with external monitoring tools for real-time alerts.</li>
+	  </ul>
+	</section>
+	  
+  </div>
+</div>

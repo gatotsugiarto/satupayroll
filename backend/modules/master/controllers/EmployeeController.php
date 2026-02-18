@@ -131,7 +131,7 @@ class EmployeeController extends Controller
         $employeeExist = Employee::find()->where(['id' => $upload->id])->one();
         if (!$employeeExist) {
 
-            $sql = "INSERT INTO employee SELECT id, region_id, region, company_id, company, branch_id, branch, site_office_id, site_office, department_id, department, division_id, division, e_number, fullname, join_date, marital_status_id, marital_status, family_status_id, family_status, ptkp_id, ptkp, level_jabatan_id, level_jabatan, jabatan_id, jabatan, grade_id, grade, email, is_npwp, npwp_id, bpjs_tk, bpjs_kes, jkk_id, jkk, bank_id, bank, bank_no, employee_status_id, employee_status, join_date_prorate,resign_prorate,resign_date,1 AS cost_center_id, 1, NOW(), $user_id, NOW(), $user_id FROM employee_upload WHERE id = $id";
+            $sql = "INSERT INTO employee SELECT id, region_id, region, company_id, company, branch_id, branch, site_office_id, site_office, department_id, department, division_id, division, e_number, fullname, join_date, marital_status_id, marital_status, family_status_id, family_status, ptkp_id, ptkp, level_jabatan_id, level_jabatan, jabatan_id, jabatan, grade_id, grade, email, is_npwp, npwp_id, bpjs_tk, bpjs_kes, jkk_id, jkk, bank_id, bank, bank_no, employee_status_id, employee_status, join_date_prorate,resign_prorate,resign_date,1 AS cost_center_id, address, 1, NOW(), $user_id, NOW(), $user_id FROM employee_upload WHERE id = $id";
             $affectedRows =\Yii::$app->db->createCommand($sql)->execute();
             if ($affectedRows > 0) {
 

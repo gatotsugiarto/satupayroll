@@ -17,15 +17,15 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
         <small class="text-muted">
             <?= $isNew
                 ? 'Please fill in the employee, year and month period form below to process a revise payroll.'
-                : 'Update salary information below.' ?>
+                : 'Update payroll information below.' ?>
         </small>
     </div>
 </div>
 
 <?php $form = ActiveForm::begin([
-    'id' => 'salary-form',
+    'id' => 'payroll-form',
     'enableAjaxValidation' => false,
-    // 'validationUrl' => ['salary/validate'],
+    // 'validationUrl' => ['payroll/validate'],
     'action' => $isNew ? ['payroll/create'] : ['payroll/update', 'id' => $model->id],
     'options' => ['data-pjax' => 0],
 ]); ?>
@@ -53,8 +53,8 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                     ],
                     'pluginOptions' => [
                         'allowClear' => true,
-                        // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
-                        // 'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
+                        'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
+                        'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
                     ],
                 ]) ?>
             </div>
@@ -71,8 +71,8 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                     ],
                     'pluginOptions' => [
                         'allowClear' => true,
-                        // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
-                        // 'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
+                        'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
+                        'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
                     ],
                 ]) ?>
             </div>
@@ -86,8 +86,8 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                     ],
                     'pluginOptions' => [
                         'allowClear' => true,
-                        // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
-                        // 'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
+                        'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
+                        'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
                     ],
                 ]) ?>
             </div>

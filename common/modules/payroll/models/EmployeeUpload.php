@@ -34,7 +34,7 @@ class EmployeeUpload extends \yii\db\ActiveRecord
             [['region_id', 'company_id', 'branch_id', 'site_office_id', 'department_id', 'division_id', 'gender_id', 'marital_status_id', 'family_status_id', 'ptkp_id', 'level_jabatan_id', 'jabatan_id', 'grade_id', 'is_npwp', 'jkk_id', 'bank_id', 'employee_status_id', 'join_date_prorate', 'resign_prorate', 'is_bpjs', 'thr', 'status_id', 'created_by', 'updated_by'], 'integer'],
             [['region', 'company', 'branch', 'site_office', 'department', 'division', 'fullname', 'marital_status', 'family_status', 'ptkp', 'level_jabatan', 'jabatan', 'grade', 'bank', 'bank_no', 'employee_status'], 'required'],
             [['join_date', 'new_join_date', 'resign_date', 'upload_date', 'created_at', 'updated_at'], 'safe'],
-            [['bpjs_tk', 'bpjs_kes'], 'string'],
+            [['bpjs_tk', 'bpjs_kes', 'address'], 'string'],
             [['working_day', 'overtime', 'claim', 'revisi_absensi', 'unpaid_leave', 'absensi', 'terlambat', 'bonus'], 'number'],
             [['region', 'company', 'branch', 'site_office', 'department', 'division', 'fullname', 'gender', 'marital_status', 'family_status', 'ptkp', 'level_jabatan', 'jabatan', 'grade', 'npwp_id', 'jkk', 'bank', 'bank_no', 'employee_status', 'referral_code'], 'string', 'max' => 255],
             [['e_number'], 'string', 'max' => 50],
@@ -105,6 +105,7 @@ class EmployeeUpload extends \yii\db\ActiveRecord
             'terlambat' => 'Terlambat',
             'thr' => 'Thr',
             'bonus' => 'Bonus',
+            'address' => 'Address',
             'upload_date' => 'Upload Date',
             'referral_code' => 'Referral Code',
             'status_id' => 'Status ID',
@@ -191,6 +192,7 @@ class EmployeeUpload extends \yii\db\ActiveRecord
                 $EmployeeUpload->absensi = $row[51];
                 $EmployeeUpload->thr = $row[52];
                 $EmployeeUpload->bonus = self::parseExcelNumber($row[53]);
+                $EmployeeUpload->address = $row[54];
                 $EmployeeUpload->upload_date = $upload_date;
                 $EmployeeUpload->referral_code = $referral_code;
 

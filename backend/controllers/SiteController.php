@@ -33,7 +33,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index', 'profile'],
+                        'actions' => ['logout', 'index', 'profile', 'documentation'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -199,6 +199,11 @@ class SiteController extends Controller
 
         // return $this->redirect(['site/login']);
         return $this->redirect('http://localhost:8085/site/login');
+    }
+
+    public function actionDocumentation()
+    {
+        return $this->render('documentation');
     }
 
     // public function actionResendMember($id)

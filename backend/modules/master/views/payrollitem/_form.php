@@ -100,10 +100,7 @@ $icon = $isNew ? 'fa-plus' : 'fa-edit';
             </div>
 
             <div class="col-md-6">
-                <?= $form->field($model, 'taxable')->textInput([
-                    'placeholder' => 'Enter Taxable',
-                    'class' => 'form-control form-control-custom'
-                ]) ?>
+                <?= $form->field($model, 'taxable')->dropDownList([ 1 => 'Yes', 2 => 'No', ], ['prompt' => '']) ?>
             </div>
         </div>
 

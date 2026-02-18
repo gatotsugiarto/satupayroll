@@ -17,15 +17,15 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
         <small class="text-muted">
             <?= $isNew
                 ? 'This payroll has received approval from the Finance department.'
-                : 'Update salary information below.' ?>
+                : 'Update payroll information below.' ?>
         </small>
     </div>
 </div>
 
 <?php $form = ActiveForm::begin([
-    'id' => 'salary-form',
+    'id' => 'payroll-form',
     'enableAjaxValidation' => false,
-    // 'validationUrl' => ['salary/validate'],
+    // 'validationUrl' => ['payroll/validate'],
     'action' => $isNew ? ['payroll/approve'] : ['payroll/update', 'id' => $model->id],
     'options' => ['data-pjax' => 0],
 ]); ?>

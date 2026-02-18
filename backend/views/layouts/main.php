@@ -22,10 +22,12 @@ $currentAction = Yii::$app->controller->action->id;
 $urlMenu = $currentController.'/'.$currentAction;
 $menuMap = [
     'site/index'           => 'Dashboard',
-    'menu/usermanagement' => 'User payrollmenu/index',
+    // 'menu/usermanagement' => 'User payrollmenu/index',
+    'menu/usermanagement' => 'User Management',
     'logactivity/index'    => 'Log Activity',
     'menu/masterdata'    => 'Master Data',
     'payrollmenu/index'    => 'Payroll Management',
+    'site/documentation'           => 'Documentation',
 ];
 
 if (isset($menuMap[$urlMenu])) {
@@ -42,7 +44,10 @@ if (isset($menuMap[$urlMenu])) {
     $topUrl = array_search('Master Data', $menuMap);
 } else if (strpos($urlMenu, 'payrollprofile/') === 0) {
     $baseMenu = 'Master Data';
-    $topUrl = array_search('Master Data', $menuMap);    
+    $topUrl = array_search('Master Data', $menuMap);
+} else if (strpos($urlMenu, 'employeepending/') === 0) {
+    $baseMenu = 'Master Data';
+    $topUrl = array_search('Master Data', $menuMap);
 
 } else if (strpos($urlMenu, 'user/') === 0) {
     $baseMenu = 'User Management';
@@ -68,7 +73,25 @@ if (isset($menuMap[$urlMenu])) {
     $topUrl = array_search('Payroll Management', $menuMap);
 } else if (strpos($urlMenu, 'employeepayrollprofile/') === 0) {
     $baseMenu = 'Payroll Management';
-    $topUrl = array_search('Payroll Management', $menuMap);    
+    $topUrl = array_search('Payroll Management', $menuMap);
+} else if (strpos($urlMenu, 'payrollthr/') === 0) {
+    $baseMenu = 'Payroll Management';
+    $topUrl = array_search('Payroll Management', $menuMap);
+} else if (strpos($urlMenu, 'payrolldetaill3/') === 0) {
+    $baseMenu = 'Payroll Management';
+    $topUrl = array_search('Payroll Management', $menuMap);
+} else if (strpos($urlMenu, 'buktipotongpph21/') === 0) {
+    $baseMenu = 'Payroll Management';
+    $topUrl = array_search('Payroll Management', $menuMap);
+} else if (strpos($urlMenu, 'formulir1721a1/') === 0) {
+    $baseMenu = 'Payroll Management';
+    $topUrl = array_search('Payroll Management', $menuMap);
+} else if (strpos($urlMenu, 'bpjsfiling/') === 0) {
+    $baseMenu = 'Payroll Management';
+    $topUrl = array_search('Payroll Management', $menuMap);
+} else if (strpos($urlMenu, 'additionalbenefit/') === 0) {
+    $baseMenu = 'Payroll Management';
+    $topUrl = array_search('Payroll Management', $menuMap);
 
 } else {
     $baseMenu = 'Intishaka';
@@ -118,13 +141,7 @@ if (isset($menuMap[$urlMenu])) {
                         </a>
                     </li>
 
-                    <!-- <li class="nav-item <?= $currentController === 'user' && $currentAction === 'profile' ? 'active' : '' ?>">
-                        <a class="nav-link" href="<?= $baseUrl ?>/user/profile">
-                            <i class="nc-icon nc-circle-09"></i>
-                            <p>User Profile</p>
-                        </a>
-                    </li> -->
-                    <li class="nav-item <?= $currentController === 'user' && $currentAction === 'profile' ? 'active' : '' ?>">
+                    <li class="nav-item <?= $currentController === 'payrollmenu' && $currentAction === 'index' ? 'active' : '' ?>">
                         <a class="nav-link" href="<?= $baseUrl ?>/payrollmenu/index">
                             <i class="nc-icon nc-app"></i>
                             <p>Payroll Management</p>
@@ -136,32 +153,14 @@ if (isset($menuMap[$urlMenu])) {
                             <p>Master Data</p>
                         </a>
                     </li>
-                    <!-- <li>
-                        <a class="nav-link" href="./icons.html">
-                            <i class="nc-icon nc-grid-45"></i>
-                            <p>Others</p>
-                        </a>
-                    </li> -->
-                    <li class="nav-item <?= $currentController === 'satupayroll' && $currentAction === 'logactivity' ? 'active' : '' ?>">
+                    <li class="nav-item <?= $currentController === 'satupayroll' && $currentAction === 'logactivity' ? 'active' : '' ?>">    
                         <a class="nav-link" href="<?= $baseUrl ?>/satupayroll/logactivity">
                             <i class="nc-icon nc-notes"></i>
                             <p>Log Activity</p>
                         </a>
                     </li>
-                    <!-- <li>
-                        <a class="nav-link" href="./maps.html">
-                            <i class="nc-icon nc-pin-3"></i>
-                            <p>Maps</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="./notifications.html">
-                            <i class="nc-icon nc-bell-55"></i>
-                            <p>Notifications</p>
-                        </a>
-                    </li> -->
                     <li class="nav-item active active-pro">
-                        <a class="nav-link active" href="upgrade.html">
+                        <a class="nav-link active" href="<?= $baseUrl ?>/site/documentation">    
                             <i class="nc-icon nc-alien-33"></i>
                             <p>Documentation</p>
                         </a>

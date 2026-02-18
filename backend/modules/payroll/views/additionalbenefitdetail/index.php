@@ -1,110 +1,81 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\Pjax;
 use kartik\grid\GridView;
 use kartik\export\ExportMenu;
-use kartik\select2\Select2;
 
+use common\modules\payroll\models\AdditionalBenefitDetail;
 
-$this->title = "Data Payroll";
-$subtitle = "Employee payroll processing results.";
+$this->title = 'Additional Benefit Details';
+
+$subtitle = $this->title;
+$this->params['breadcrumbs'][] = $this->title;
 ?>
+
 
 <?php Pjax::begin(['id' => 'w0-pjax']); ?>
 
 <?php
 $gridColumns = [
     ['class' => 'yii\grid\SerialColumn'],
-    'employee.fullname',
-    // 'month',
-    [
-        'attribute' => 'month',
-        'format' => 'raw',
-        'value' => function ($model) {
-            return date('F', mktime(0, 0, 0, $model->month, 1));
-        },
-    ],
-    'year',
-    [
-        'attribute' => 'gross',
-        'width' => '150px',
-        'hAlign' => 'right',
-        'format' => ['decimal', 2],
-        'pageSummary' => true,
-    ],
-    [
-        'attribute' => 'total_deduction',
-        'width' => '150px',
-        'hAlign' => 'right',
-        'format' => ['decimal', 2],
-        'pageSummary' => true,
-    ],
-    [
-        'attribute' => 'thp',
-        'width' => '150px',
-        'hAlign' => 'right',
-        'format' => ['decimal', 2],
-        'pageSummary' => true,
-    ],
+    //id,
+    'employee_id',
+    'period_code',
+    'item_code',
+    'item_name',
+    'category_code',
+    'amount',
+    'description',
+    'source',
+    'trace',
+    'display_order',
+    'generate_mode',
+    'slip_display',
+    'slip_position',
+    'profile_id',
+    //created_at,
+    //createdBy.fullname,
+    //updated_at,
+    //updatedBy.fullname
 ];
 ?>
-
-<!-- ALERT CONTAINER -->
 <div id="alert-container"></div>
 
-<!-- PAGE HEADER -->
 <div class="d-flex justify-content-between align-items-center mb-2">
     <div>
-        <div class="text-primary fw-bold page-title"><i class="fa fa-database"></i>&nbsp;&nbsp;&nbsp;<?= Html::encode($this->title) ?></div>
-        <small class="text-muted"><?=$subtitle ?></small>
+        <div class="text-primary fw-bold page-title"><i class="fa fa-database"></i>&nbsp;&nbsp;&nbsp;
+            <?= Html::encode($this->title) ?>
+        </div>
+        <small class="text-muted"><?= $subtitle ?></small>
     </div>
     <div>
-        <?= ExportMenu::widget([
+        <?=  ExportMenu::widget([
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
             'bsVersion' => '4',
             'bootstrap' => true,
-            'filename' => 'Payroll_Employee_Export_'.date('YmdHis'),
+            'filename' => 'AdditionalBenefitDetail_Export_'.date('YmdHis'),
             'showColumnSelector' => false,
             'dropdownOptions' => [
                 'label' => '<i class="fa fa-download"></i> Export',
                 'class' => 'btn btn-sm btn-success rounded-pill shadow-sm',
-                'style' => 'min-width:140px;',
+                'style' => 'min-width:160px;',
                 'encodeLabel' => false,
             ],
         ]) ?>
 
-        <?= Html::button('<i class="fa fa-times"></i> Cancel ', [
-            'class' => 'btn btn-warning btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:140px;',
-            'data-url' => Url::to(['cancel']),
-        ]) ?>
-
-        <?= Html::button('<i class="fa fa-edit"></i> Revise ', [
-            'class' => 'btn btn-outline-secondary btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:140px;',
+        <?= Html::button('<i class="fa fa-plus"></i> New Data', [
+            'class' => 'btn btn-primary btn-sm rounded-pill shadow-sm create-data',
+            'style' => 'min-width:160px;',
             'data-url' => Url::to(['create']),
         ]) ?>
-
-        <?= Html::button('<i class="fa fa-plus"></i> Batch Process', [
-            'class' => 'btn btn-primary btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:140px;',
-            'data-url' => Url::to(['batch']),
-        ]) ?>
-
-        <?= Html::button('<i class="fa fa-check"></i> Approve', [
-            'class' => 'btn btn-danger btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:140px;',
-            'data-url' => Url::to(['approve']),
-        ]) ?>
-
-        
     </div>
 </div>
 
-<!-- GRIDVIEW -->
-<?= GridView::widget([
+<div style="overflow-x:auto; width:100%;">
+<?=  GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel'  => $searchModel,
     'hover' => true,
@@ -117,177 +88,102 @@ $gridColumns = [
     'columns' => [
         ['class' => 'yii\grid\SerialColumn', 'header' => 'No'],
         // 'id',
-        [
-            'attribute' => 'employee_id',
-            'format' => 'raw',
-            'value' => fn($model) => Html::a(
-                Html::encode($model->employee->fullname),
-                'javascript:void(0);',
-                [
-                    'class' => 'text-primary view-data',
-                    'data-url' => Url::to(['view', 'id' => $model->id]),
-                ]
-            ),
-        ],
-        [
-            'attribute' => 'month',
-            'format' => 'raw',
-            'value' => function ($model) {
-                return date('F', mktime(0, 0, 0, $model->month, 1));
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => [
-                1  => 'January',
-                2  => 'February',
-                3  => 'March',
-                4  => 'April',
-                5  => 'May',
-                6  => 'June',
-                7  => 'July',
-                8  => 'August',
-                9  => 'September',
-                10 => 'October',
-                11 => 'November',
-                12 => 'December',
-            ],
-            'filterWidgetOptions' => [
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'placeholder' => 'All Type',
-                ],
-                'options' => ['placeholder' => 'All Type'],
-            ],
-            'filterInputOptions' => ['class' => 'form-control'],
-            'contentOptions' => ['class' => 'text-left'],
-            'headerOptions' => ['class' => 'text-white bg-creative text-left'],
-        ],
-        'year',
-        [
-            'attribute' => 'gross',
-            'width' => '150px',
-            'hAlign' => 'right',
-            'format' => ['decimal', 2],
-            'pageSummary' => true,
-        ],
-        [
-            'attribute' => 'total_deduction',
-            'width' => '150px',
-            'hAlign' => 'right',
-            'format' => ['decimal', 2],
-            'pageSummary' => true,
-        ],
-        [
-            'attribute' => 'thp',
-            'width' => '150px',
-            'hAlign' => 'right',
-            'format' => ['decimal', 2],
-            'pageSummary' => true,
-        ],
         // [
-        //     'attribute' => 'payroll_item_id',
-        //     'value' => 'payrollItem.name',
-        //     'filter' => yii\helpers\ArrayHelper::map(\common\modules\master\models\PayrollItem::find()->where(['type' => 'DATA'])->orderBy('id')->asArray()->all(),'id','name'),
-        //     'filterType' => GridView::FILTER_SELECT2,
-        //     'filterWidgetOptions' => [
-        //         'pluginOptions' => [
-        //             'allowClear' => true,
-        //             'placeholder' => 'Payroll Component',
-        //         ],
-        //         'options' => ['placeholder' => 'Payroll Component'],
-        //     ],
-        //     'filterInputOptions' => ['class' => 'form-control'],
-        //     'contentOptions' => ['class' => 'text-left'],
-        //     'headerOptions' => ['class' => 'text-white bg-creative text-center'],
+        //     'attribute' => 'employee_id',
+        //     'format' => 'raw',
+        //     'value' => fn($model) => Html::a(
+        //         Html::encode($model->employee->fullname),
+        //         'javascript:void(0);',
+        //         [
+        //             'class' => 'text-primary view-data',
+        //             'data-url' => Url::to(['view', 'id' => $model->id]),
+        //         ]
+        //     ),
         // ],
         // [
-        //     'attribute' => 'amount',
-        //     'width' => '150px',
-        //     'hAlign' => 'right',
-        //     'format' => ['decimal', 2],
-        //     'pageSummary' => true,
-        // ],
-        // [
-        //     'attribute' => 'salary_type',
+        //     'attribute' => 'status_id',
         //     'format' => 'raw',
         //     'value' => function ($model) {
-        //         return $model->payrollItem->salary_type;
+        //         if ($model->status_id == 1) {
+        //             return Html::a(
+        //                 Html::tag('span', 'Active', ['class' => 'badge badge-success']),
+        //                 'javascript:void(0);',
+        //                 [
+        //                     'class' => 'text-primary nonactive-js',
+        //                     'data-url' => Url::to(['nonactive', 'id' => $model->id]),
+        //                     'title' => 'Non Active',
+        //                     'data-title' => 'Non Active AdditionalBenefitDetail',
+        //                     'data-name' => $model->employee->fullname,
+        //                 ]
+        //             );
+        //         } else {
+        //             return Html::a(
+        //                 Html::tag('span', 'Non Active', ['class' => 'badge badge-secondary']),
+        //                 'javascript:void(0);',
+        //                 [
+        //                     'class' => 'text-primary reactive-js',
+        //                     'data-url' => Url::to(['reactive', 'id' => $model->id]),
+        //                     'title' => 'Reactivate',
+        //                     'data-title' => 'Reactivate AdditionalBenefitDetail',
+        //                     'data-name' => $model->employee->fullname,
+        //                 ]
+        //             );
+        //         }
         //     },
         //     'filterType' => GridView::FILTER_SELECT2,
-        //     'filter' => ['RECURRING' => 'RECURRING', 'ONETIME' => 'ONETIME'],
+        //     'filter' => [1 => 'Active', 2 => 'Non Active'],
         //     'filterWidgetOptions' => [
         //         'pluginOptions' => [
         //             'allowClear' => true,
-        //             'placeholder' => 'All Type',
+        //             'placeholder' => 'All Status',
         //         ],
-        //         'options' => ['placeholder' => 'All Type'],
+        //         'options' => ['placeholder' => 'All Status'],
         //     ],
         //     'filterInputOptions' => ['class' => 'form-control'],
         //     'contentOptions' => ['class' => 'text-center'],
         //     'headerOptions' => ['class' => 'text-white bg-creative text-center'],
         // ],
-        // 'insert_by',
-        [
-            'attribute' => 'status_id',
-            'format' => 'raw',
-            'value' => function ($model) {
-                if ($model->status_id == 1) {
-                    return Html::a(
-                        Html::tag('span', 'Draft', ['class' => 'badge badge-warning'])
-                    );
-                } else if ($model->status_id == 2) {
-                    return Html::a(
-                        Html::tag('span', 'Approved', ['class' => 'badge badge-success'])
-                    );
-                } else {
-                    return Html::a(
-                        Html::tag('span', 'Pending', ['class' => 'badge badge-danger'])
-                    );
-                }
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => [1 => 'Draft', 2 => 'Approved', 3 => 'Pending'],
-            'filterWidgetOptions' => [
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'placeholder' => 'All Status',
-                ],
-                'options' => ['placeholder' => 'All Status'],
-            ],
-            'filterInputOptions' => ['class' => 'form-control'],
-            'contentOptions' => ['class' => 'text-center'],
-            'headerOptions' => ['class' => 'text-white bg-creative text-center'],
-        ],
-        //'is_processed',
-        //'processed_at',
+        'employee_id',
+        'period_code',
+        'item_code',
+        'item_name',
+        'category_code',
+        'amount',
+        'description',
+        'source',
+        'trace',
+        'display_order',
+        'generate_mode',
+        'slip_display',
+        'slip_position',
+        'profile_id',
         //'created_at',
-        //'created_by',
+        //'createdBy.fullname',
         //'updated_at',
-        //'updated_by',
+        //'updatedBy.fullname'
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => 'Action',
-            'template' => '{slip}',
+            'template' => '{update} {delete}',
             'contentOptions' => ['class' => 'text-center'],
             'buttons' => [
-                'slip' => function ($url, $model) {
-                    return Html::a(
-                        '<i class="fa fa-print"></i>',
-                        Url::to(['slip', 'id' => $model->id]),
-                        [
-                            'class' => 'btn btn-sm btn-outline-warning rounded-circle',
-                            'title' => 'Print Slip',
-                            'target' => '_blank', // 🔥 open new tab
-                            'data-pjax' => 0,     // 🔥 penting biar PJAX gak intercept
-                        ]
-                    );
-                },
+                'update' => fn($url, $model) => Html::a('<i class="fa fa-edit"></i>', 'javascript:void(0);', [
+                    'class' => 'btn btn-sm btn-outline-success rounded-circle edit-data',
+                    'data-url' => Url::to(['update', 'id' => $model->id]),
+                    'title' => 'Edit',
+                ]),
+                'delete' => fn($url, $model) => Html::button('<i class="fa fa-trash"></i>', [
+                    'class' => 'btn btn-sm btn-outline-danger rounded-circle delete-js',
+                    'data-url' => $url,
+                    'data-name' => $model->employee->fullname,
+                ]),
             ],
         ],
     ],
 ]) ?>
+</div>
 
 <?php Pjax::end(); ?>
-
 
 <!-- =======================================================
 ADD/EDIT MODAL
@@ -389,7 +285,7 @@ $(document).on('click', '.create-data, .edit-data', function () {
     $('#appModal').modal('show').find('.modal-body').load($(this).data('url'));
 });
 
-$(document).on('beforeSubmit', '#payroll-form', function (e) {
+$(document).on('beforeSubmit', '#additionalbenefitdetail-form', function (e) {
     e.preventDefault();
 
     const form = $(this);
@@ -472,4 +368,3 @@ $(document).on('click', '.nonactive-js, .reactive-js', function (e) {
 
 JS);
 ?>
-

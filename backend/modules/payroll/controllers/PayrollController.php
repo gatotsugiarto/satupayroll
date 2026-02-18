@@ -61,17 +61,23 @@ class PayrollController extends Controller
             
             if ($model->validate()) {
                 $inputFile = $model->file->tempName;
-                
-                $referral_code = 'UPL'.date('Ymdhis');
-                $result = EmployeeUpload::saveRecords($inputFile, $referral_code);
 
-                if($result === true){
-                    EmployeeHistory::create($referral_code, "Import Payroll", "Import data payroll telah berhasil [$referral_code]");
-                    // return false;
-                    Yii::$app->session->setFlash('success', 'Import data payroll telah berhasil');
-                    return $this->redirect(['reportupload', 'referral_code' => $referral_code]);
+                $exists = Payroll::find()->where(['status_id' => 1])->limit(1)->exists();
+                if ($exists) {
+                    Yii::$app->session->setFlash('warning', 'Upload failed, there payroll is awaiting Finance approval and cannot be processed while its status is Draft.');
                 }else{
-                    Yii::$app->session->setFlash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                
+                    $referral_code = 'UPL'.date('Ymdhis');
+                    $result = EmployeeUpload::saveRecords($inputFile, $referral_code);
+
+                    if($result === true){
+                        EmployeeHistory::create($referral_code, "Import Payroll", "Import data payroll telah berhasil [$referral_code]");
+                        // return false;
+                        Yii::$app->session->setFlash('success', 'Import data payroll telah berhasil');
+                        return $this->redirect(['reportupload', 'referral_code' => $referral_code]);
+                    }else{
+                        Yii::$app->session->setFlash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                    }
                 }
             }
         }

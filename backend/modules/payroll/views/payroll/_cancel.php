@@ -17,15 +17,15 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
         <small class="text-muted">
             <?= $isNew
                 ? 'This action will cancel the selected payroll period. Once cancelled, the payroll cannot be processed unless it is revised or recreated.'
-                : 'Update salary information below.' ?>
+                : 'Update payroll information below.' ?>
         </small>
     </div>
 </div>
 
 <?php $form = ActiveForm::begin([
-    'id' => 'salary-form',
+    'id' => 'payroll-form',
     'enableAjaxValidation' => false,
-    // 'validationUrl' => ['salary/validate'],
+    // 'validationUrl' => ['payroll/validate'],
     'action' => $isNew ? ['payroll/cancel'] : ['payroll/update', 'id' => $model->id],
     'options' => ['data-pjax' => 0],
 ]); ?>

@@ -133,7 +133,7 @@ GROUP BY pd.employee_id";
         if($employee_id){
             $list_employee_id = implode(',', $employee_id);
             $sql = "INSERT INTO formulir_1721_a1 SELECT 0, e.id AS employee_id, $year, c.npwp, c.company, c.address, e.fullname, 
-CASE WHEN e.npwp_id IS NOT NULL THEN e.npwp_id ELSE e.e_number END AS npwp_nik_pegawai, e.ptkp AS status_ptkp, 'Jl. Permai' AS alamat_pegawai, 
+CASE WHEN e.npwp_id IS NOT NULL THEN e.npwp_id ELSE e.e_number END AS npwp_nik_pegawai, e.ptkp AS status_ptkp, e.address, 
 IFNULL(SUM(CASE WHEN pd.item_code = 'BRUTO' THEN pd.amount ELSE 0 END),0) AS penghasilan_bruto, 
 IFNULL(SUM(CASE WHEN pd.item_code = 'BIAYA_JABATAN' THEN pd.amount END),0) AS biaya_jabatan,
 IFNULL(SUM(CASE WHEN pd.item_code = 'JHT_KARY' THEN pd.amount END),0) AS iuran_pensiun_jht,
@@ -154,7 +154,7 @@ WHERE DATE_FORMAT(STR_TO_DATE(pd.period_code, '%Y-%m'), '%Y') = $year
 GROUP BY pd.employee_id";
         }else{
             $sql = "INSERT INTO formulir_1721_a1 SELECT 0, e.id AS employee_id, $year, c.npwp, c.company, c.address, e.fullname, 
-CASE WHEN e.npwp_id IS NOT NULL THEN e.npwp_id ELSE e.e_number END AS npwp_nik_pegawai, e.ptkp AS status_ptkp, 'Jl. Permai' AS alamat_pegawai, 
+CASE WHEN e.npwp_id IS NOT NULL THEN e.npwp_id ELSE e.e_number END AS npwp_nik_pegawai, e.ptkp AS status_ptkp, e.address AS alamat_pegawai, 
 IFNULL(SUM(CASE WHEN pd.item_code = 'BRUTO' THEN pd.amount ELSE 0 END),0) AS penghasilan_bruto, 
 IFNULL(SUM(CASE WHEN pd.item_code = 'BIAYA_JABATAN' THEN pd.amount END),0) AS biaya_jabatan,
 IFNULL(SUM(CASE WHEN pd.item_code = 'JHT_KARY' THEN pd.amount END),0) AS iuran_pensiun_jht,

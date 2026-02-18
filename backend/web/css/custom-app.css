@@ -364,6 +364,16 @@ body {
 
 
 /* ===========================
+   ERROR MESSAGE
+   =========================== */
+.help-block {
+    color: #e53935 !important;   /* merah danger */
+    /*color: #f57c00 !important;    orange warning */
+    font-size: .9rem;
+}
+
+
+/* ===========================
    FORM CONTROL BEAUTIFY
    =========================== */
 .form-control-custom {
