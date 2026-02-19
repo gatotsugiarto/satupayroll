@@ -1,15 +1,15 @@
 <?php
 
-namespace common\modules\auth\models;
+namespace common\modules\master\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\modules\auth\models\User;
+use common\modules\master\models\ApplicationSetting;
 
 /**
- * UserSearch represents the model behind the search form of `common\modules\auth\models\User`.
+ * ApplicationSettingSearch represents the model behind the search form of `common\modules\master\models\ApplicationSetting`.
  */
-class UserSearch extends User
+class ApplicationSettingSearch extends ApplicationSetting
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'fullname', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'safe'],
+            [['id', 'status_id', 'created_by', 'updated_by'], 'integer'],
+            [['default_password', 'payroll_period', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -41,8 +41,7 @@ class UserSearch extends User
      */
     public function search($params, $formName = null)
     {
-        $query = User::find();
-
+        $query = ApplicationSetting::find();
 
         // add conditions that should always apply here
 
@@ -52,7 +51,9 @@ class UserSearch extends User
                 'pageSize' => 30,
             ],
             'sort' => [
-                'defaultOrder' => ['id' => SORT_DESC],
+                'defaultOrder' => [
+                    'id' => SORT_DESC,
+                ],
             ],
         ]);
 
@@ -67,18 +68,15 @@ class UserSearch extends User
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'status' => $this->status,
+            'status_id' => $this->status_id,
             'created_at' => $this->created_at,
+            'created_by' => $this->created_by,
             'updated_at' => $this->updated_at,
+            'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-            ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-            ->andFilterWhere(['like', 'fullname', $this->fullname])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'verification_token', $this->verification_token]);
+        $query->andFilterWhere(['like', 'default_password', $this->default_password])
+            ->andFilterWhere(['like', 'payroll_period', $this->payroll_period]);
 
         return $dataProvider;
     }

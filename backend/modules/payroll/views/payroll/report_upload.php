@@ -232,37 +232,44 @@ $skaryawan = $modelSyn->karyawan ?? 0;
           <p class="text-muted-small mb-0">Data Upload vs Existing</p>
         </div>
         <div class="card-body">
-          <table class="table table-bordered">
-            <thead class="thead-light">
-              <tr>
-                <th>Description</th>
-                <th>Uploaded</th>
-                <th>Database</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Join Employee</td>
-                <td><?=$baru?></td>
-                <td><?=$sbaru?></td>
-              </tr>
-              <tr>
-                <td>Employee Permanent</td>
-                <td><?=$tetap?></td>
-                <td><?=$stetap?></td>
-              </tr>
-              <tr>
-                <td>Employee - PKWT</td>
-                <td><?=$pkwt?></td>
-                <td><?=$spkwt?></td>
-              </tr>
-              <tr>
-                <td>Total Employees</td>
-                <td><?=$karyawan?></td>
-                <td><?=$skaryawan?></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="creative-table-wrapper">
+            <table class="creative-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Description</th>
+                        <th>Uploaded</th>
+                        <th>Database</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Join Employee</td>
+                        <td><?=$baru?></td>
+                        <td><?=$sbaru?></td>
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>Employee Permanent</td>
+                        <td><?=$tetap?></td>
+                        <td><?=$stetap?></td>
+                      </tr>
+                      <tr>
+                        <td>3</td>
+                        <td>Employee - PKWT</td>
+                        <td><?=$pkwt?></td>
+                        <td><?=$spkwt?></td>
+                      </tr>
+                      <tr>
+                        <td>4</td>
+                        <td>Total Employees</td>
+                        <td><?=$karyawan?></td>
+                        <td><?=$skaryawan?></td>
+                      </tr>
+                </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

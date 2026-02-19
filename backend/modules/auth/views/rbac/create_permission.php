@@ -15,34 +15,32 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="card shadow-sm">
                         <div class="card-body">
 
-                            <div class="d-flex flex-wrap gap-2 mb-4">
+                            <div class="d-flex flex-wrap gap-2 mb-1">
                                 <?= Html::a('<i class="fa fa-server"></i> Backend', ['/auth/rbac/createpermission', 'group' => 'backend'], [
                                     'class' => 'btn btn-primary btn-sm rounded-pill shadow-sm',
                                     'style' => 'min-width:180px',
                                 ]) ?>
+                                &nbsp;&nbsp;&nbsp;
                                 <?= Html::a('<i class="fa fa-globe"></i> Frontend', ['/auth/rbac/createpermission', 'group' => 'frontend'], [
                                     'class' => 'btn btn-primary btn-sm rounded-pill shadow-sm',
                                     'style' => 'min-width:180px',
                                 ]) ?>
-                                <?= Html::a('<i class="fa fa-arrow-left"></i> Back', ['/auth/rbac/permission'], [
-                                    'class' => 'btn btn-warning btn-sm rounded-pill shadow-sm',
-                                    'style' => 'min-width:180px',
-                                ]) ?>
+                                
                             </div>
 
                             <?php $form = ActiveForm::begin(['id' => 'permission-form']); ?>
 
                             <?php foreach ($routes as $moduleName => $moduleData): ?>
-                                <div class="card mb-4 border">
-                                    <div class="card-header bg-light">
+                                <div class="card-body">
+                                    <div class="card-header">
                                         <h5 class="fw-bold mb-0">
-                                            <i class="fa fa-cube text-secondary me-2"></i> Module: <?= Html::encode($moduleName) ?>
+                                            <i class="fa fa-cube text-secondary me-3"></i> Module: <?= Html::encode($moduleName) ?>
                                         </h5>
                                     </div>
                                     <div class="card-body p-0">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover mb-0">
-                                                <thead class="table-light">
+                                        <div class="creative-table-wrapper">
+                                            <table class="creative-table">
+                                                <thead>
                                                     <tr>
                                                         <th style="width:50px">#</th>
                                                         <th>Permission</th>
@@ -57,14 +55,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                                             $parentPermission = "{$group}.{$moduleName}.{$controllerName}.*";
                                                             $hasParent = isset($permissions[$parentPermission]);
                                                         ?>
-                                                        <tr class="table-primary">
+                                                        <tr class="table-warning">
                                                             <td>
                                                                 <?php if (!$hasParent): ?>
                                                                     <?= Html::checkbox("formpermission[{$parentPermission}]", false, ['value' => 1]) ?>
                                                                 <?php endif; ?>
                                                             </td>
                                                             <td><?= Html::encode($parentPermission) ?></td>
-                                                            <td><span class="badge bg-primary"><?= Html::encode($controllerName) ?></span></td>
+                                                            <td>
+                                                                <!-- <span class="badge bg-primary"><?= Html::encode($controllerName) ?></span> -->
+                                                                <?= Html::encode($controllerName) ?>
+                                                            </td>
                                                             <td></td>
                                                         </tr>
 
@@ -80,7 +81,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                                                     <?php endif; ?>
                                                                 </td>
                                                                 <td><?= Html::encode($actionPermission) ?></td>
-                                                                <td><span class="badge bg-warning text-dark"><?= Html::encode($action['name']) ?></span></td>
+                                                                <td>
+                                                                    <!-- <span class="badge bg-warning text-dark"><?= Html::encode($action['name']) ?></span> -->
+                                                                    <?= Html::encode($action['name']) ?>
+                                                                </td>
                                                                 <td></td>
                                                             </tr>
                                                         <?php endforeach; ?>
@@ -92,8 +96,36 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </div>
                             <?php endforeach; ?>
 
-                            <div class="d-flex justify-content-end gap-2 mt-3">
-                                <?= Html::submitButton('<i class="fa fa-check"></i> Generate Permission', ['class' => 'btn btn-success', 'style' => 'min-width:180px']) ?>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+
+                                <!-- LEFT: Back / Close -->
+                                <div>
+                                    <?php if (Yii::$app->request->isAjax): ?>
+
+                                        <?= Html::button('<i class="fa fa-times"></i> Close', [
+                                            'class' => 'btn btn-outline-secondary px-4',
+                                            'data-dismiss' => 'modal',
+                                            'style' => 'min-width:140px;',
+                                        ]) ?>
+
+                                    <?php else: ?>
+
+                                        <?= Html::a('<i class="fa fa-arrow-left"></i> Back', 'javascript:history.back()', [
+                                            'class' => 'btn btn-outline-secondary px-4',
+                                            'style' => 'min-width:140px;',
+                                        ]) ?>
+
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- RIGHT: Submit -->
+                                <div>
+                                    <?= Html::submitButton('<i class="fa fa-save"></i> Save', [
+                                        'class' => 'btn btn-primary px-4',
+                                        'style' => 'min-width:140px;',
+                                    ]) ?>
+                                </div>
+
                             </div>
 
                             <?php ActiveForm::end(); ?>

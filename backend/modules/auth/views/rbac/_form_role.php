@@ -22,7 +22,7 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
 
 </style>
 
-<div class="modal-body p-4">
+
     <?php $form = ActiveForm::begin([
         'id' => 'role-form',
         'enableAjaxValidation' => true,
@@ -56,7 +56,7 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                 ],
                 'pluginOptions' => [
                     'allowClear' => true,
-                    'dropdownParent' => new \yii\web\JsExpression('$("#formModal")'), // pastikan ID sesuai modal
+                    // 'dropdownParent' => new \yii\web\JsExpression('$("#formModal")'), // pastikan ID sesuai modal
                     'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
                     'templateResult' => new \yii\web\JsExpression('function (data) {
                         if (!data.id) { return data.text; }
@@ -78,15 +78,37 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
         </div>
     </div>
 
-    <div class="d-flex justify-content-end gap-2 mt-3">
-        <?= Html::button('<i class="fa fa-times"></i> Cancel', [
-            'class' => 'btn btn-warning',
-            'data-bs-dismiss' => 'modal',
-        ]) ?>
-        <?= Html::submitButton('<i class="fa fa-save"></i> Submit', [
-            'class' => 'btn btn-primary',
+<div class="d-flex justify-content-between align-items-center mt-3">
+
+    <!-- LEFT: Back / Close -->
+    <div>
+        <?php if (Yii::$app->request->isAjax): ?>
+
+            <?= Html::button('<i class="fa fa-times"></i> Close', [
+                'class' => 'btn btn-outline-secondary px-4',
+                'data-dismiss' => 'modal',
+                'style' => 'min-width:140px;',
+            ]) ?>
+
+        <?php else: ?>
+
+            <?= Html::a('<i class="fa fa-arrow-left"></i> Back', 'javascript:history.back()', [
+                'class' => 'btn btn-outline-secondary px-4',
+                'style' => 'min-width:140px;',
+            ]) ?>
+
+        <?php endif; ?>
+    </div>
+
+    <!-- RIGHT: Submit -->
+    <div>
+        <?= Html::submitButton('<i class="fa fa-save"></i> Save', [
+            'class' => 'btn btn-primary px-4',
+            'style' => 'min-width:140px;',
         ]) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
 </div>
+
+<?php ActiveForm::end(); ?>
+

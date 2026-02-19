@@ -408,3 +408,53 @@ body {
     color: #fff !important;
 }
 
+/* ===========================
+   CUSTOM TABLE
+   =========================== */
+.creative-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      background: #ffffff;
+  }
+
+  .creative-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+  }
+
+  .creative-table thead {
+      background-color: #0d6efd; /* Biru corporate */
+  }
+
+  .creative-table thead th {
+      color: #ffffff;          /* FONT PUTIH */
+      font-weight: 500;        /* TEBAL */
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 12px;
+      text-align: left;
+  }
+
+  .creative-table tbody td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f1f1f1;
+      color: #444;
+  }
+
+  .creative-table tbody tr {
+      transition: all 0.2s ease;
+  }
+
+  .creative-table tbody tr:hover {
+      background-color: #f8f9ff;
+      transform: scale(1.01);
+  }
+
+  .creative-table tbody tr:last-child td {
+      border-bottom: none;
+  }
+

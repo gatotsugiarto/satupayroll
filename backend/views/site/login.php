@@ -1,117 +1,179 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
 $this->title = 'Login';
 ?>
 
 <style>
-.login-page {
-    min-height: 100vh;
-    background: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.login-card {
-    width: 480px;
+/* Background biru */
+.login-page{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#ffffff;
 }
 
-.login-card-header {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
+/* Card */
+.login-card{
+    width:320px;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.15);
+    text-align:center;
 }
 
-.login-card-header h3 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
+.login-card h2{
+    margin-bottom:20px;
+    color:#333;
 }
 
-.toggle-password {
-    cursor: pointer;
+/* Form */
+.form-group{
+    text-align:left;
+    margin-bottom:15px;
 }
 
-.toggle-password i {
-    font-size: 1rem;
-    transition: 0.2s;
+.form-group label{
+    font-size:13px;
+    font-weight:600;
 }
 
-.toggle-password:hover i {
-    color: #000;
+.form-control{
+    width:100%;
+    padding:9px;
+    margin-top:5px;
+    border:1px solid #d0d7e2;
+    border-radius:6px;
+    font-size:14px;
 }
+
+/* Remember */
+.form-remember{
+    text-align:left;
+    margin-bottom:15px;
+    font-size:13px;
+}
+
+/* Button */
+.btn-login{
+    width:100%;
+    padding:10px;
+    background:#0d6efd;
+    border:none;
+    color:#fff;
+    font-weight:600;
+    border-radius:6px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.btn-login:hover{
+    background:#0b5ed7;
+}
+
+.password-wrapper{
+    position:relative;
+}
+
+.password-wrapper .form-control{
+    padding-right:35px;
+}
+
+.toggle-password{
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+    color:#888;
+    font-size:14px;
+}
+
+.toggle-password:hover{
+    color:#0d6efd;
+}
+
+.login-icon{
+    width:70px;
+    height:70px;
+    margin:0 auto 10px auto;
+    border-radius:50%;
+    background:#0d6efd;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:28px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
 </style>
 
 <div class="login-page">
-    <div class="card shadow-lg border-0 rounded-4 login-card">
-        
-        <!-- Header -->
-        <div class="login-card-header text-white text-center rounded-top py-3">
-            <h3 class="fw-bold">
-                <i class="fa fa-lock"></i>
-                <?= Html::encode($this->title) ?>
-            </h3>
+    <div class="login-card">
+
+        <div class="login-icon">
+            <i class="fa-solid fa-user-lock"></i>
         </div>
 
-        <!-- Body -->
-        <div class="card-body p-4">
+        <h5>User Sign In</h5>
 
-            <p class="text-muted text-center mb-4">
-                Please enter your credentials to access the dashboard.
-            </p>
-
-            <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
-
-            <!-- Username -->
-            <div class="mb-3">
+        <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+            <div class="form-group">
+                <label>Username</label>
                 <?= $form->field($model, 'username')->textInput([
-                    'autofocus' => true,
-                    'placeholder' => 'Username',
-                    'class' => 'form-control rounded-pill py-2'
+                    'placeholder' => 'Enter username',
+                    'class' => 'form-control',
                 ])->label(false) ?>
             </div>
 
-            <!-- Password -->
-            <div class="mb-3 position-relative">
-                <?= $form->field($model, 'password')->passwordInput([
-                    'placeholder' => 'Password',
-                    'class' => 'form-control rounded-pill py-2',
-                    'id' => 'password-input'
-                ])->label(false) ?>
-
-                <span class="toggle-password position-absolute top-50 end-0 translate-middle-y me-3 text-muted" onclick="togglePassword()">
-                    <i class="fa fa-eye"></i>
-                </span>
+            <div class="form-group password-group">
+                <label>Password</label>
+                <div class="password-wrapper">
+                    <?= $form->field($model, 'password', [
+                        'template' => '
+                            {label}
+                            <div class="password-wrapper">
+                                {input}
+                                <span class="toggle-password" onclick="togglePassword()">
+                                    <i class="fa-solid fa-eye"></i>
+                                </span>
+                            </div>
+                            {error}
+                        ',
+                    ])->passwordInput([
+                        'id' => 'password-input',
+                        'class' => 'form-control',
+                        'placeholder' => 'Enter password'
+                    ])->label(false) ?>
+                </div>
             </div>
 
-            <!-- Remember Me -->
-            <div class="mb-3">
-                <?= $form->field($model, 'rememberMe')->checkbox([
-                    'template' => "<div class=\"form-check\">{input} {label}</div>\n{error}",
-                    'class' => 'form-check-input',
-                    'labelOptions' => ['class' => 'form-check-label ms-1']
-                ]) ?>
+            <div class="form-remember">
+                <label>
+                    <input type="checkbox"> Remember Me
+                </label>
             </div>
 
-            <!-- Submit -->
-            <div class="d-grid">
-                <?= Html::submitButton('Login', [
-                    'class' => 'btn btn-primary btn-lg rounded-pill shadow-sm fw-bold',
-                    'name' => 'login-button'
-                ]) ?>
-            </div>
-
-            <?php ActiveForm::end(); ?>
-        </div>
+            <button type="submit" class="btn-login">Sign In</button>
+        <?php ActiveForm::end(); ?>
     </div>
 </div>
+
+
+
 
 <script>
 function togglePassword() {
     const input = document.getElementById('password-input');
     const icon = document.querySelector('.toggle-password i');
+
     if (input.type === 'password') {
         input.type = 'text';
         icon.classList.replace('fa-eye', 'fa-eye-slash');

@@ -48,6 +48,9 @@ if (isset($menuMap[$urlMenu])) {
 } else if (strpos($urlMenu, 'employeepending/') === 0) {
     $baseMenu = 'Master Data';
     $topUrl = array_search('Master Data', $menuMap);
+} else if (strpos($urlMenu, 'applicationsetting/') === 0) {
+    $baseMenu = 'Master Data';
+    $topUrl = array_search('Master Data', $menuMap);    
 
 } else if (strpos($urlMenu, 'user/') === 0) {
     $baseMenu = 'User Management';

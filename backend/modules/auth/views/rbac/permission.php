@@ -84,7 +84,7 @@ $this->title = "Permissions";
                     $url = Url::toRoute(['deletepermission', 'id' => $key]);
                     return Html::a('<i class="fa fa-trash"></i>', $url, [
                         'title' => 'Delete Permission',
-                        'class' => 'btn btn-sm btn-outline-danger',
+                        'class' => 'btn btn-sm btn-outline-danger rounded-circle',
                         'data-confirm' => 'Are you sure you want to delete this permission?',
                         'data-method' => 'post',
                         'data-pjax' => '0',

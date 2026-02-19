@@ -454,25 +454,69 @@ class PayrollController extends Controller
     public function actionSlip($id=0)
     {
         $model = $this->findModel($id);
-        $detailC = PayrollDetail::find()
-        ->where([
-            'employee_id' => $model->employee_id, 
-            'period_code' => $model->period_code,
-            'slip_display' => 'Y',
-            'slip_position' => 'C',
-        ])
-        ->orderBy(['display_order' => SORT_ASC])
-        ->all();
+        // $detailC = PayrollDetail::find()
+        // ->where([
+        //     'employee_id' => $model->employee_id, 
+        //     'period_code' => $model->period_code,
+        //     'slip_display' => 'Y',
+        //     'slip_position' => 'C',
+        // ])
+        // ->orderBy(['display_order' => SORT_ASC])
+        // ->all();
 
-        $detailD = PayrollDetail::find()
-        ->where([
-            'employee_id' => $model->employee_id, 
-            'period_code' => $model->period_code,
-            'slip_display' => 'Y',
-            'slip_position' => 'D',
-        ])
-        ->orderBy(['display_order' => SORT_ASC])
-        ->all();
+        $query = (new \yii\db\Query())
+            ->select([
+                'pi.name AS item_name',
+                'IFNULL(pd.amount, 0) AS amount',
+            ])
+            ->from('payroll_item pi')
+            ->leftJoin(
+                'payroll_detail pd',
+                'pi.code = pd.item_code 
+                 AND pd.employee_id = :employeeId 
+                 AND pd.period_code = :periodCode',
+                [':employeeId' => $model->employee_id, ':periodCode' => $model->period_code]
+            )
+            ->where([
+                'pi.slip_display' => 'Y',
+                'pi.slip_position' => 'C',
+            ])
+            ->andWhere('(pi.monthly_exec <> 12 OR pi.monthly_exec = RIGHT(pd.period_code,2))')
+            ->orderBy(['pi.display_order' => SORT_ASC]);
+        $detailC = $query->all();
+
+
+
+        // $detailD = PayrollDetail::find()
+        // ->where([
+        //     'employee_id' => $model->employee_id, 
+        //     'period_code' => $model->period_code,
+        //     'slip_display' => 'Y',
+        //     'slip_position' => 'D',
+        // ])
+        // ->orderBy(['display_order' => SORT_ASC])
+        // ->all();
+
+        $query = (new \yii\db\Query())
+            ->select([
+                'pi.name AS item_name',
+                'IFNULL(pd.amount, 0) AS amount',
+            ])
+            ->from('payroll_item pi')
+            ->leftJoin(
+                'payroll_detail pd',
+                'pi.code = pd.item_code 
+                 AND pd.employee_id = :employeeId 
+                 AND pd.period_code = :periodCode',
+                [':employeeId' => $model->employee_id, ':periodCode' => $model->period_code]
+            )
+            ->where([
+                'pi.slip_display' => 'Y',
+                'pi.slip_position' => 'D',
+            ])
+            ->andWhere('(pi.monthly_exec <> 12 OR pi.monthly_exec = RIGHT(pd.period_code,2))')
+            ->orderBy(['pi.display_order' => SORT_ASC]);
+        $detailD = $query->all();
 
         // // Render partial 
         // return $this->renderPartial('slip', [

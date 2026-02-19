@@ -254,13 +254,18 @@
                 <table class="content" width="100%">
                     <?php
                     foreach ($detailC as $credit) {
-                        $item_name = $credit->item_name;
-                        $amount = $credit->amount;
+                        $item_name = $credit['item_name'];
+                        $amount = $credit['amount'];
+                        if($amount == 0){
+                            $data_credit = '-';
+                        }else{
+                            $data_credit = 'Rp' . number_format($amount, 0, ',', '.');
+                        }
                     ?>
                     <tr>
                         <td class="left_label"><?= $item_name ?></td>
                         <td class="left_amount">
-                            Rp <?= number_format($amount, 0, ',', '.') ?>
+                            <?= $data_credit ?>
                         </td>
                     </tr>
                     <?php
@@ -276,13 +281,18 @@
                 <table class="content" width="100%">
                     <?php
                     foreach ($detailD as $debit) {
-                        $item_name = $debit->item_name;
-                        $amount = $debit->amount;
+                        $item_name = $debit['item_name'];
+                        $amount = $debit['amount'];
+                        if($amount == 0){
+                            $data_debit = '-';
+                        }else{
+                            $data_debit = 'Rp' . number_format($amount, 0, ',', '.');
+                        }
                     ?>
                     <tr>
                         <td class="right_label"><?= $item_name ?></td>
                         <td class="left_amount">
-                            Rp <?= number_format($amount, 0, ',', '.') ?>
+                            <?= $data_debit ?>
                         </td>
                     </tr>
                     <?php

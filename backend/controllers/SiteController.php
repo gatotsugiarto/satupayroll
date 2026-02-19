@@ -6,7 +6,7 @@ use common\models\LoginForm;
 use common\models\User;
 use common\models\Member;
 use common\modules\payroll\models\PayrollDetailL1;
-
+use common\modules\master\models\ApplicationSetting;
 
 use Yii;
 use yii\filters\VerbFilter;
@@ -33,7 +33,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index', 'profile', 'documentation'],
+                        'actions' => ['logout', 'index', 'profile', 'documentation', 'test'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -217,4 +217,12 @@ class SiteController extends Controller
 
     //     return $this->redirect(['view', 'id' => $id]);
     // }
+
+    public function actionTest()
+    {
+        $passwordDefaultApp = Yii::$app->params['user.passwordDefault'];
+        $model = ApplicationSetting::findOne(1);
+        $passwordDefault = $model ? $model->default_password : $passwordDefaultApp;
+        // print $passwordDefault;
+    }
 }

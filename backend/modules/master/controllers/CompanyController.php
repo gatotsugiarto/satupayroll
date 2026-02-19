@@ -9,7 +9,8 @@ use common\modules\master\models\Company;
 use common\modules\master\models\CompanySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+
 
 /**
  * CompanyController implements the CRUD actions for Company model.
@@ -21,17 +22,25 @@ class CompanyController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
-                ],
-            ]
-        );
+        $behaviors['access'] = [
+             'class' => AccessControl::className(),
+             'rules' => [
+                 [
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                         
+                        $route = 'backend.'.str_replace('/','.',$this->getRoute());
+                        $parents = strstr($route, strrchr ($route,'.'),true).'.*';
+                        if (\Yii::$app->user->can($route) || \Yii::$app->user->can($parents) || \Yii::$app->user->can("root")) {
+                             return true;
+                        }
+                        }
+                 ],
+             ],
+        ];
+
+        return $behaviors;
     }
 
     /**

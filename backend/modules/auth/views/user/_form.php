@@ -3,7 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 $isNew = $model->isNewRecord;
-$title = $isNew ? 'Create New User' : 'Edit User';
+$title = $isNew ? 'New User Access' : 'Edit User Access';
 $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
 ?>
 
@@ -22,8 +22,8 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
 
 <?php $form = ActiveForm::begin([
     'id' => 'user-form',
-    'enableAjaxValidation' => true,
-    'validationUrl' => ['user/validate'],
+    'enableAjaxValidation' => false,
+    // 'validationUrl' => ['user/validate'],
     'action' => $isNew ? ['user/create'] : ['user/update', 'id' => $model->id],
     'options' => ['data-pjax' => 0],
 ]); ?>

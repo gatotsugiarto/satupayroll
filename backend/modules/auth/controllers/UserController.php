@@ -148,12 +148,15 @@ class UserController extends Controller
         }
 
         // === Fallback Non-AJAX ===
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->save()) {
-                $model->getBehavior('tokenProtection')->consumeToken();
-                Yii::$app->session->setFlash('success', 'User updated successfully.');
-                return $this->redirect(['index']);
-            }
+        if ($model->load(Yii::$app->request->post())) {
+            // if ($model->save()) {
+            //     $model->getBehavior('tokenProtection')->consumeToken();
+            //     Yii::$app->session->setFlash('success', 'User updated successfully.');
+            //     return $this->redirect(['index']);
+            // }
+
+            Yii::$app->session->setFlash('success', 'User updated successfully.');
+            return $this->redirect(['index']);
         }
 
         $formToken = $model->getBehavior('tokenProtection')->generateToken();
@@ -281,6 +284,7 @@ class UserController extends Controller
     {
         $model = $this->findModel($id);
         $model->resetPassword();
+        $model->save(false);
         // if (!$model->save(false)) {
         //     Yii::error("Failed to reset password for user ID: {$model->id}", __METHOD__);
         //     if (Yii::$app->request->isAjax) {

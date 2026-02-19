@@ -4,16 +4,54 @@ use yii\helpers\Url;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\Pjax;
+use kartik\export\ExportMenu;
 
 $this->title = "Roles";
 ?>
 
+<?php Pjax::begin(['id' => 'w0-pjax', 'enablePushState' => false]); ?>
+
+<?php
+$gridColumns = [
+    ['class' => 'yii\grid\SerialColumn'],
+    'name',
+    'description',
+    [
+        'attribute' => 'data',
+        'format' => 'ntext',
+        'value' => function ($model) {
+            return $model->data == 1 ? 'Not show at registration' : 'Will be show at registration';
+        },
+    ],
+];
+?>
+
 <div class="d-flex justify-content-between align-items-center mb-2">
     <div>
-        <div class="mb-0 text-primary fw-bold"><?= Html::encode($this->title) ?></div>
+        <div class="text-primary fw-bold page-title"><i class="fa fa-database"></i>&nbsp;&nbsp;&nbsp;<?= Html::encode($this->title) ?></div>
         <small class="text-muted">The following is the role data registered in the system.</small>
     </div>
     <div>
+        <?= ExportMenu::widget([
+            'dataProvider' => $dataProvider,
+            'columns' => $gridColumns,
+            'bsVersion' => '4',
+            'bootstrap' => true,
+            'filename' => 'Role_Export_' . date('YmdHis'),
+            'showColumnSelector' => false,
+            'exportConfig' => [
+                ExportMenu::FORMAT_HTML => false,
+                ExportMenu::FORMAT_PDF => false,
+                ExportMenu::FORMAT_EXCEL => false,
+            ],
+            'dropdownOptions' => [
+                'label' => '<i class="fa fa-download"></i> Export',
+                'class' => 'btn btn-sm btn-success rounded-pill shadow-sm',
+                'style' => 'min-width:160px;',
+                'encodeLabel' => false,
+            ],
+        ]) ?>
+
         <?= Html::button('<i class="fa fa-plus"></i> New Role', [
             'class' => 'btn btn-primary btn-sm rounded-pill shadow-sm create-data',
             'style' => 'min-width:160px;',
@@ -22,7 +60,7 @@ $this->title = "Roles";
     </div>
 </div>
 
-<?php Pjax::begin(['id' => 'w0-pjax', 'enablePushState' => false]); ?>
+
 
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
@@ -60,19 +98,33 @@ $this->title = "Roles";
             'headerOptions' => ['class' => 'text-white bg-creative text-center'],
             'contentOptions' => ['style' => 'vertical-align: middle;'],
         ],
+        'description',
+        // [
+        //     'attribute' => 'rule_name',
+        //     'headerOptions' => ['class' => 'text-white bg-creative text-center'],
+        //     'contentOptions' => ['style' => 'vertical-align: middle;'],
+        // ],
+        // [
+        //     'attribute' => 'data',
+        //     'format' => 'ntext',
+        //     'value' => function ($model) {
+        //         return $model->data == 1 ? 'Not show at registration' : 'Will be show at registration';
+        //     },
+        //     'headerOptions' => ['class' => 'text-white bg-creative text-center'],
+        //     'contentOptions' => ['style' => 'vertical-align: middle;'],
+        // ],
         [
-            'attribute' => 'rule_name',
-            'headerOptions' => ['class' => 'text-white bg-creative text-center'],
-            'contentOptions' => ['style' => 'vertical-align: middle;'],
-        ],
-        [
+            'label' => 'Be show at registration',
             'attribute' => 'data',
-            'format' => 'ntext',
+            'format' => 'raw',
+            'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
-                return $model->data == 1 ? 'Not show at registration' : 'Will be show at registration';
+                if ($model->data != 1) {
+                    return '<i class="fa fa-check text-primary"></i>';
+                }else{
+                    return '<i class="fa fa-times text-danger"></i>';
+                }
             },
-            'headerOptions' => ['class' => 'text-white bg-creative text-center'],
-            'contentOptions' => ['style' => 'vertical-align: middle;'],
         ],
         [
             'class' => 'yii\grid\ActionColumn',
@@ -93,7 +145,7 @@ $this->title = "Roles";
                     $url = Url::toRoute(['deletepermission', 'id' => $key]);
                     return Html::a('<i class="fa fa-trash"></i>', $url, [
                         'title' => 'Delete Permission',
-                        'class' => 'btn btn-sm btn-outline-danger',
+                        'class' => 'btn btn-sm btn-outline-danger rounded-circle',
                         'data-confirm' => 'Are you sure you want to delete this permission?',
                         'data-method' => 'post',
                         'data-pjax' => '0',
@@ -103,7 +155,7 @@ $this->title = "Roles";
                     '<i class="fa fa-tasks"></i>',
                     ['roleassignment', 'id' => $model->name],
                     [
-                        'class' => 'btn btn-sm btn-outline-warning rounded-circle',
+                        'class' => 'btn btn-sm btn-info rounded-circle',
                         'title' => 'Assignment',
                     ]
                 ),

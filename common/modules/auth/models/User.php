@@ -5,6 +5,7 @@ namespace common\modules\auth\models;
 use Yii;
 use common\components\behaviors\TokenProtectedFormBehavior;
 use common\components\behaviors\LoggableBehavior;
+use common\modules\master\models\ApplicationSetting;
 
 class User extends \yii\db\ActiveRecord
 {
@@ -46,11 +47,26 @@ class User extends \yii\db\ActiveRecord
             [['username', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
             [['username'], 'unique', 'on' => 'create'],
-            // [['email'], 'unique', 'on' => 'create'],
-            ['email', 'unique'],
-            ['email', 'email'],
+            [['email'], 'trim'],
+            [['email'], 'required'],
+            [['email'], 'email'],
+            [['email'], 'unique',
+                'targetClass' => self::class,
+                'targetAttribute' => 'email',
+                'filter' => function ($query) {
+                    $query->andWhere(['not', ['id' => $this->id]]);
+                },
+                'message' => 'This email address has already been taken.'
+            ],
             [['password_reset_token'], 'unique'],
             [['password'], 'required', 'on' => 'create'],
+
+            [
+            ['password'],
+                'match',
+                'pattern' => '/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/',
+                'message' => 'Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character.'
+            ],
 
             [['form_token'], 'safe'],
         ];
@@ -76,7 +92,9 @@ class User extends \yii\db\ActiveRecord
     public function resetPassword()
     {
         
-        $passwordDefault = Yii::$app->params['user.passwordDefault'];
+        $passwordDefaultApp = Yii::$app->params['user.passwordDefault'];
+        $model = ApplicationSetting::findOne(1);
+        $passwordDefault = $model ? $model->default_password : $passwordDefaultApp;
         $this->password_hash = Yii::$app->security->generatePasswordHash($passwordDefault);
         
         return true;

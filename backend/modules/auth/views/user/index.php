@@ -6,7 +6,7 @@ use yii\helpers\Html;
 use yii\widgets\Pjax;
 use kartik\export\ExportMenu;
 
-$this->title = "Users";
+$this->title = "User Access";
 ?>
 
 <?php Pjax::begin(['id' => 'w0-pjax']); ?>
@@ -71,8 +71,13 @@ $gridColumns = [
             'columns' => $gridColumns,
             'bsVersion' => '4',
             'bootstrap' => true,
-            'filename' => 'User_Export_'.date('YmdHis'),
+            'filename' => 'User_Export_' . date('YmdHis'),
             'showColumnSelector' => false,
+            'exportConfig' => [
+                ExportMenu::FORMAT_HTML => false,
+                ExportMenu::FORMAT_PDF => false,
+                ExportMenu::FORMAT_EXCEL => false,
+            ],
             'dropdownOptions' => [
                 'label' => '<i class="fa fa-download"></i> Export',
                 'class' => 'btn btn-sm btn-success rounded-pill shadow-sm',
@@ -80,6 +85,7 @@ $gridColumns = [
                 'encodeLabel' => false,
             ],
         ]) ?>
+
 
         <?= Html::button('<i class="fa fa-plus"></i> New User', [
             'class' => 'btn btn-primary btn-sm rounded-pill shadow-sm create-user',
@@ -206,10 +212,10 @@ $gridColumns = [
                     'title' => 'Change Password',
                 ]),
                 'assignment' => fn($url, $model) => Html::a(
-                    '<i class="fa fa-key"></i>',
+                    '<i class="fa fa-tasks"></i>',
                     ['assignment', 'id' => $model->id],
                     [
-                        'class' => 'btn btn-sm btn-outline-info rounded-circle',
+                        'class' => 'btn btn-sm btn-info rounded-circle',
                         'title' => 'Assignment',
                     ]
                 ),
@@ -527,6 +533,39 @@ $(document).on('submit', '#suspend-user-form', function(e) {
         },
         error: function(xhr) { console.log(xhr.responseText); }
     });
+});
+
+$(document).on('beforeSubmit', '#user-form', function (e) {
+    e.preventDefault();
+
+    const form = $(this);
+
+    $.post(form.attr('action'), form.serialize(), function (res) {
+
+        if (res && res.success) {
+            $('#appModal').modal('hide');
+
+            $.pjax.reload({
+                container: '#w0-pjax',
+                timeout: 500
+            }).done(function () {
+
+                $('#alert-container').html(
+                    '<div class="alert alert-success alert-dismissible fade show mt-3">' +
+                    '<i class="fa fa-check-circle"></i> ' +
+                    (res.message || 'Operation successful.') +
+                    '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                    '</div>'
+                );
+            });
+
+        } else if (res && res.errors) {
+            form.yiiActiveForm('updateMessages', res.errors, true);
+        }
+
+    }, 'json');
+
+    return false;
 });
 
 $(document).on('click', '.reactive-user', function() {
