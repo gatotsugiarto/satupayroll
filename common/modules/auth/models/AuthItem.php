@@ -143,4 +143,28 @@ class AuthItem extends ActiveRecord
 
         return $dropdown;
     }
+
+    /**
+     * Dropdown list untuk basic role.
+     * @return array
+     */
+    public static function dropdownBasic()
+    {
+        static $dropdown;
+
+        if ($dropdown === null) {
+            // $dropdown = ['#' => '#'];
+            $models = static::find()
+                ->where(['type' => Item::TYPE_ROLE, 'data' => 2])
+                ->select(['name','description'])
+                ->orderBy('name')
+                ->all();
+
+            foreach ($models as $model) {
+                $dropdown[$model->name] = $model->description;
+            }
+        }
+
+        return $dropdown;
+    }
 }

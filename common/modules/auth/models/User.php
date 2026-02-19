@@ -12,6 +12,7 @@ class User extends \yii\db\ActiveRecord
 
     public $form_token;
     public $password;
+    public $role;
     
     public static function tableName()
     {
@@ -42,7 +43,7 @@ class User extends \yii\db\ActiveRecord
         return [
             [['password_reset_token', 'verification_token'], 'default', 'value' => null],
             [['status'], 'default', 'value' => 10],
-            [['username', 'fullname', 'email'], 'required'],
+            [['username', 'fullname', 'email', 'role'], 'required'],
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
@@ -82,6 +83,7 @@ class User extends \yii\db\ActiveRecord
             'password_hash' => 'Password',
             'password_reset_token' => 'Password Reset Token',
             'email' => 'Email',
+            'role' => 'Basic Role',
             'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -146,5 +148,38 @@ class User extends \yii\db\ActiveRecord
         return $this->hasMany(AuthItem::className(), ['name' => 'item_name'])
             ->via('authAssignments');
     }
+
+    public function getRole()
+    {
+        return \common\modules\auth\models\AuthAssignment::find()
+            ->alias('aa')
+            ->select('aa.item_name')
+            ->innerJoin('auth_item ai', 'aa.item_name = ai.name AND ai.type = 1')
+            ->where(['aa.user_id' => $this->id])
+            ->scalar();
+    }
+
+    public function saveRole($roleName)
+    {
+        $auth = \Yii::$app->authManager;
+
+        // 1️⃣ Hapus semua role yang dimiliki user
+        $auth->revokeAll($this->id);
+
+        // 2️⃣ Jika ada role baru, assign
+        if (!empty($roleName)) {
+            $role = $auth->getRole($roleName);
+
+            if ($role) {
+                $auth->assign($role, $this->id);
+            } else {
+                throw new \Exception("Role '{$roleName}' tidak ditemukan.");
+            }
+        }
+
+        return true;
+    }
+
+
 
 }

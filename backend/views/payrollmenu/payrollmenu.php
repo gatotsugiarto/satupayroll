@@ -7,9 +7,8 @@ $baseUrl = Yii::$app->request->baseUrl;
 <div class="container py-5">
   <div class="row g-4">
     
-    <!-- <div class="flash-message"></div>   -->
-
     <!-- Upload -->
+    <?php if (\Yii::$app->user->can('backend.payroll.payroll.reportupload') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/payroll/payroll/reportupload" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -21,8 +20,12 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php
+    }
+    ?>
 
     <!-- Join Resign -->
+    <?php if (\Yii::$app->user->can('backend.payroll.payroll.joinresign') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/payroll/payroll/joinresign" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -34,8 +37,12 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php
+    }
+    ?>
 
     <!-- Salary -->
+    <?php if (\Yii::$app->user->can('backend.master.salary.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/master/salary/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -47,8 +54,12 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php
+    }
+    ?>
 
     <!-- Employee -->
+    <?php if (\Yii::$app->user->can('backend.master.employee.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/master/employee/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -60,8 +71,12 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php
+    }
+    ?>
 
     <!-- Employee Payroll Profile -->
+    <?php if (\Yii::$app->user->can('backend.master.employeepayrollprofile.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/master/employeepayrollprofile/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -73,8 +88,12 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php
+    }
+    ?>
 
     <!-- Payroll -->
+    <?php if (\Yii::$app->user->can('backend.payroll.payroll.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/payroll/payroll/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -86,8 +105,12 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php
+    }
+    ?>
 
     <!-- L3 Summary -->
+    <?php if (\Yii::$app->user->can('backend.payroll.payrolldetaill3.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/payroll/payrolldetaill3/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -99,8 +122,12 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php
+    }
+    ?>
 
     <!-- Bukti Potong PPh21 -->
+    <?php if (\Yii::$app->user->can('backend.payroll.buktipotongpph21.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/payroll/buktipotongpph21/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -112,8 +139,12 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php
+    }
+    ?>
 
     <!-- Formulir 1721-A1 -->
+    <?php if (\Yii::$app->user->can('backend.payroll.formulir1721a1.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/payroll/formulir1721a1/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -125,8 +156,12 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php
+    }
+    ?>
 
     <!-- BPJS Filing -->
+    <?php if (\Yii::$app->user->can('backend.payroll.bpjsfiling.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/payroll/bpjsfiling/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -138,8 +173,12 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php
+    }
+    ?>
 
     <!-- BPJS Filing -->
+    <?php if (\Yii::$app->user->can('backend.payroll.payrollthr.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/payroll/payrollthr/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -151,8 +190,12 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php
+    }
+    ?>
 
     <!-- Additional Benefit -->
+    <?php if (\Yii::$app->user->can('backend.payroll.additionalbenefit.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/payroll/additionalbenefit/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -164,6 +207,9 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php
+    }
+    ?>
 
   </div>
 </div>

@@ -11,6 +11,7 @@ $baseUrl = Yii::$app->request->baseUrl;
   <div class="row g-4">
     
     <!-- Users -->
+    <?php if (\Yii::$app->user->can('backend.auth.user.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/auth/user/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -22,10 +23,12 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php } ?>
 
     <!-- Assignments -->
+    <?php if (\Yii::$app->user->can('backend.auth.userassignment.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
-      <a href="<?=$baseUrl ?>/auth/userassignment" class="text-decoration-none">
+      <a href="<?=$baseUrl ?>/auth/userassignment/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
           <div class="menu-icon mb-2">
             <i class="nc-icon nc-support-17"></i>
@@ -35,8 +38,10 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php } ?>
 
     <!-- Role -->
+    <?php if (\Yii::$app->user->can('backend.auth.rbac.role') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/auth/rbac/role" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -48,8 +53,10 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php } ?>
 
     <!-- Permission -->
+    <?php if (\Yii::$app->user->can('backend.auth.rbac.permission') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/auth/rbac/permission" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -61,8 +68,10 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php } ?>
 
     <!-- members -->
+    <?php if (\Yii::$app->user->can('backend.auth.member.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <a href="<?=$baseUrl ?>/auth/member/index" class="text-decoration-none">
         <div class="card menu-card text-center p-4 h-100">
@@ -74,6 +83,7 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
       </a>
     </div>
+    <?php } ?>
 
     <!-- change password -->
     <div class="col-6 col-md-4 col-lg-3 mb-4">

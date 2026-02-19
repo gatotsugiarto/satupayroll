@@ -306,7 +306,7 @@ if (isset($menuMap[$urlMenu])) {
                             <script>
                                 document.write(new Date().getFullYear())
                             </script>
-                            <a href="http://www.creative-tim.com">Satu Payroll Indonesia</a>, Accurate and Efficient Payroll Management
+                            <a href="">PT. Tribhakti Inspektama</a>, Accurate and Efficient Payroll Management
                         </p>
                     </nav>
                 </div>

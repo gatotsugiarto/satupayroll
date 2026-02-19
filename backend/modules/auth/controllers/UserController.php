@@ -118,12 +118,14 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $basicRole = $model->getRole();
 
         if (Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
                 if ($model->validate() && $model->save()) {
+                    $model->saveRole($model->role);
                     $model->getBehavior('tokenProtection')->consumeToken();
 
                     return [
@@ -142,6 +144,7 @@ class UserController extends Controller
             // GET pertama kali buka modal → generate token baru
             $formToken = $model->getBehavior('tokenProtection')->generateToken();
             return $this->renderAjax('_form', [
+                'basicRole'     => $basicRole,
                 'model'     => $model,
                 'formToken' => $formToken,
             ]);
@@ -149,19 +152,21 @@ class UserController extends Controller
 
         // === Fallback Non-AJAX ===
         if ($model->load(Yii::$app->request->post())) {
-            // if ($model->save()) {
-            //     $model->getBehavior('tokenProtection')->consumeToken();
-            //     Yii::$app->session->setFlash('success', 'User updated successfully.');
-            //     return $this->redirect(['index']);
-            // }
+            if ($model->save()) {
+                $model->saveRole($model->role);
+                $model->getBehavior('tokenProtection')->consumeToken();
+                Yii::$app->session->setFlash('success', 'User updated successfully.');
+                return $this->redirect(['index']);
+            }
 
-            Yii::$app->session->setFlash('success', 'User updated successfully.');
-            return $this->redirect(['index']);
+            // Yii::$app->session->setFlash('success', 'User updated successfully.');
+            // return $this->redirect(['index']);
         }
 
         $formToken = $model->getBehavior('tokenProtection')->generateToken();
         return $this->render('update', [
             'model'     => $model,
+            'basicRole'     => $basicRole,
             'formToken' => $formToken,
         ]);
     }

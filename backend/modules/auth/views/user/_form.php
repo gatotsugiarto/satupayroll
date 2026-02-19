@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\select2\Select2;
 
 $isNew = $model->isNewRecord;
 $title = $isNew ? 'New User Access' : 'Edit User Access';
@@ -55,6 +56,26 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                 <?php endif; ?>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <?php $model->role = (!$isNew && $basicRole) ? $basicRole : null; ?>
+                <?= $form->field($model, 'role')->widget(Select2::classname(), [
+                    'data' => \common\modules\auth\models\AuthItem::dropdownBasic(),
+                    'options' => [
+                        'placeholder' => 'Basic Role',
+                        // 'id' => 'payroll_item_id',
+                        'multiple' => false,
+                    ],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
+                        'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
+                    ],
+                ]) ?>
+            </div>
+        </div>
+
     </div>
 </div>
 <div class="d-flex justify-content-end gap-2 mt-3">
