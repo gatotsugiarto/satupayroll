@@ -57,6 +57,11 @@ $gridColumns = [
             'bootstrap' => true,
             'filename' => 'Formulir_1721-A1_'.date('YmdHis'),
             'showColumnSelector' => false,
+            'exportConfig' => [
+                ExportMenu::FORMAT_HTML => false,
+                ExportMenu::FORMAT_PDF => false,
+                ExportMenu::FORMAT_EXCEL => false,
+            ],
             'dropdownOptions' => [
                 'label' => '<i class="fa fa-download"></i> Formulir 1721-A1',
                 'class' => 'btn btn-sm btn-success rounded-pill shadow-sm',

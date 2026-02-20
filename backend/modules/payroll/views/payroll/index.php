@@ -67,6 +67,11 @@ $gridColumns = [
             'bootstrap' => true,
             'filename' => 'Payroll_Employee_Export_'.date('YmdHis'),
             'showColumnSelector' => false,
+            'exportConfig' => [
+                ExportMenu::FORMAT_HTML => false,
+                ExportMenu::FORMAT_PDF => false,
+                ExportMenu::FORMAT_EXCEL => false,
+            ],
             'dropdownOptions' => [
                 'label' => '<i class="fa fa-download"></i> Export',
                 'class' => 'btn btn-sm btn-success rounded-pill shadow-sm',

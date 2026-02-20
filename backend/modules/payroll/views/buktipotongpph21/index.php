@@ -268,6 +268,11 @@ $gridColumns_coretax = [
             'bootstrap' => true,
             'filename' => 'Bukti_Potong_PPh_Pasal21_'.date('YmdHis'),
             'showColumnSelector' => false,
+            'exportConfig' => [
+                ExportMenu::FORMAT_HTML => false,
+                ExportMenu::FORMAT_PDF => false,
+                ExportMenu::FORMAT_EXCEL => false,
+            ],
             'dropdownOptions' => [
                 'label' => '<i class="fa fa-download"></i> Form 1721-I/II',
                 'class' => 'btn btn-sm btn-success rounded-pill shadow-sm',
