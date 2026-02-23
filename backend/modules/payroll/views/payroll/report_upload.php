@@ -3,6 +3,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 
 
+$this->title = 'Upload Report';
 
 $lembur = $model->lembur ?? 0;
 $reimburse = $model->reimburse ?? 0;
@@ -11,6 +12,7 @@ $unpaid_leave = $model->unpaid_leave ?? 0;
 $keterlambatan = $model->keterlambatan ?? 0;
 $thr = $model->thr ?? 0;
 $no_salary = $model->no_salary ?? 0;
+$no_npwp = $model->no_npwp ?? 0;
 $join_date_prorate = $model->join_date_prorate ?? 0;
 $resign_prorate = $model->resign_prorate ?? 0;
 
@@ -42,7 +44,8 @@ $skaryawan = $modelSyn->karyawan ?? 0;
   <div class="row mb-1">
     <div class="col">
       <h4 class="mb-0">Upload Report</h4>
-      <small class="text-muted">Current Period: <strong><?= date('M')?> <?= date('Y')?></strong></small>
+      <small class="text-muted text-success">Current period: <strong><?= date('M')?> <?= date('Y')?></strong></small><br />
+      <small class="text-muted text-warning">Total uploaded records: <strong><?= $totalUpload ?></strong></small>
     </div>
   </div>
 
@@ -62,7 +65,7 @@ $skaryawan = $modelSyn->karyawan ?? 0;
             </div>
           </div>
         </div>
-        <div class="card-footer text-muted-small">Employee overtime records</div>
+        <div class="card-footer text-muted-small">Overtime records</div>
       </div>
     </div>
 
@@ -147,7 +150,7 @@ $skaryawan = $modelSyn->karyawan ?? 0;
             </div>
           </div>
         </div>
-        <div class="card-footer text-muted-small">Employee lateness records</div>
+        <div class="card-footer text-muted-small">Lateness records</div>
       </div>
     </div>
 
@@ -215,7 +218,24 @@ $skaryawan = $modelSyn->karyawan ?? 0;
             </div>
           </div>
         </div>
-        <div class="card-footer text-muted-small">Without salary components</div>
+        <div class="card-footer text-muted-small">No salary components</div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card card-stats">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-4 text-center">
+              <i class="fas fa-id-card text-success icon-big"></i>
+            </div>
+            <div class="col-8">
+              <p class="card-category text-muted-small">Without NPWP</p>
+              <h5 class="card-title"><?=round($no_npwp)?></h5>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-muted-small">Not registered a tax ID</div>
       </div>
     </div>
   
@@ -228,9 +248,18 @@ $skaryawan = $modelSyn->karyawan ?? 0;
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-          <h6 class="mb-0">Upload Comparison</h6>
-          <p class="text-muted-small mb-0">Data Upload vs Existing</p>
+          <div class="card-header d-flex justify-content-between align-items-center">
+              <div>
+                  <h6 class="mb-0">Upload Comparison</h6>
+                  <p class="text-muted-small mb-0">Excel Uploaded vs Existing Database</p>
+              </div>
+              <?= Html::a('<i class="fa fa-share"></i> New Comer', ['joinresign'], [
+                  'class' => 'btn btn-primary btn-sm rounded-pill shadow-sm',
+                  'style' => 'min-width:160px;',
+              ]) ?>
+          </div>
         </div>
+
         <div class="card-body">
           <div class="creative-table-wrapper">
             <table class="creative-table">
@@ -238,8 +267,8 @@ $skaryawan = $modelSyn->karyawan ?? 0;
                     <tr>
                         <th>No</th>
                         <th>Description</th>
-                        <th>Uploaded</th>
-                        <th>Database</th>
+                        <th>Excel Uploaded</th>
+                        <th>Existing Database</th>
                     </tr>
                 </thead>
                 <tbody>

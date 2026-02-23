@@ -17,6 +17,8 @@ use yii\web\UploadedFile;
 use Mpdf\Mpdf;
 
 use common\modules\master\models\UploadForm;
+use common\modules\master\models\Employee;
+
 use common\modules\payroll\models\EmployeeUpload;
 use common\modules\payroll\models\ReportUpload;
 use common\modules\payroll\models\EmployeeHistory;
@@ -71,12 +73,12 @@ class PayrollController extends Controller
                     $result = EmployeeUpload::saveRecords($inputFile, $referral_code);
 
                     if($result === true){
-                        EmployeeHistory::create($referral_code, "Import Payroll", "Import data payroll telah berhasil [$referral_code]");
+                        EmployeeHistory::create($referral_code, "Import Payroll", "Payroll data import was successful [$referral_code]");
                         // return false;
-                        Yii::$app->session->setFlash('success', 'Import data payroll telah berhasil');
+                        Yii::$app->session->setFlash('success', 'The payroll data was imported successfully.');
                         return $this->redirect(['reportupload', 'referral_code' => $referral_code]);
                     }else{
-                        Yii::$app->session->setFlash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                        Yii::$app->session->setFlash('error', 'An error occurred: ' . $e->getMessage());
                     }
                 }
             }
@@ -91,10 +93,12 @@ class PayrollController extends Controller
     {
         $model = ReportUpload::findOne(1);
         $modelSyn = ReportUpload::findOne(2);
+        $totalUpload = EmployeeUpload::find()->count();
 
         return $this->render('report_upload', [
             'model' => $model,
             'modelSyn' => $modelSyn,
+            'totalUpload' => $totalUpload,
         ]);
     }
 
@@ -211,6 +215,12 @@ class PayrollController extends Controller
     public function actionBatch()
     {
         $model = new Payroll();
+        $totalEmployee = (int) Employee::find()->where(['status_id' => 1])->count();
+        $messageEmployee = $totalEmployee === 0 ? 'No employees registered.' : '';
+        $noSalary = (int) Employee::find()->alias('e')->leftJoin('salary s','e.id = s.employee_id AND s.payroll_item_id = 1')->where(['e.status_id' => 1])->andWhere(['s.employee_id' => null])->count();
+        $messageSalary = $noSalary > 0 ? "{$noSalary} employees have not had their basic salary entered." : '';
+        $messageInfo = trim("$messageEmployee $messageSalary");
+        
         $model->scenario = 'create';
 
         if (Yii::$app->request->isAjax) {
@@ -239,6 +249,7 @@ class PayrollController extends Controller
             $formToken = $model->getBehavior('tokenProtection')->generateToken();
             return $this->renderAjax('_batch', [
                 'model'     => $model,
+                'messageInfo' => $messageInfo,
                 'formToken' => $formToken,
             ]);
         }
@@ -256,6 +267,7 @@ class PayrollController extends Controller
         $formToken = $model->getBehavior('tokenProtection')->generateToken();
         return $this->render('_batch', [
             'model'     => $model,
+            'messageInfo' => $messageInfo,
             'formToken' => $formToken,
         ]);
     }
@@ -449,6 +461,74 @@ class PayrollController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionSaveselection()
+    {
+        $ids = Yii::$app->request->post('ids', []);
+        if (empty($ids)) {
+            return $this->asJson(['success' => false, 'message' => 'No IDs received.']);
+        }
+
+        $user_id    = Yii::$app->user->identity->id;
+        foreach($ids as $id){
+            // ambil data upload
+            $upload = EmployeeUpload::findOne($id);
+            if (!$upload) {
+                return $this->asJson(['success' => false, 'message' => 'Data not found.']);
+            }
+
+            // cek apakah sudah pernah diregister
+            $employeeExist = Employee::find()->where(['id' => $upload->id])->one();
+            if (!$employeeExist) {
+
+                $sql = "INSERT INTO employee SELECT id, region_id, region, company_id, company, branch_id, branch, site_office_id, site_office, department_id, department, division_id, division, e_number, UPPER(fullname), join_date, marital_status_id, marital_status, family_status_id, family_status, ptkp_id, ptkp, level_jabatan_id, level_jabatan, jabatan_id, jabatan, grade_id, grade, email, is_npwp, npwp_id, bpjs_tk, bpjs_kes, jkk_id, jkk, bank_id, bank, bank_no, employee_status_id, employee_status, join_date_prorate,resign_prorate,resign_date, 1 AS cost_center_id, UPPER(address), 1, NOW(), $user_id, NOW(), $user_id FROM employee_upload WHERE id = :id";
+                $affectedRows = Yii::$app->db->createCommand($sql)->bindValue(':id', $id)->execute();
+                if ($affectedRows > 0) {
+
+                    $employee_id = Yii::$app->db->getLastInsertID();
+                    $fullname = $upload->fullname;
+                    $jabatan = $upload->jabatan;
+                
+                    $sql2 = "UPDATE employee_join_resign SET status_id = 2 WHERE id = $id";
+                    \Yii::$app->db->createCommand($sql2)->execute();
+
+                    $referral_code = 'PEG'.date('Ymdhis');
+                    $message2 = "Pegawai baru $fullname - $jabatan telah berhasil ditambahkan";
+                    EmployeeHistory::create($referral_code, "Data Pegawai", $message2);
+
+                    $tetap = Employee::tetap();
+                    $pkwt = Employee::pkwt();
+                    $karyawan = Employee::total();
+                    ReportUpload::updateAll(['tetap' => $tetap, 'pkwt' => $pkwt, 'karyawan' => $karyawan], ['id' => 2]);
+
+                    $no_salary = Employee::no_salary();
+                    ReportUpload::updateAll(['no_salary' => $no_salary]);
+                        
+                    EmployeeUpload::adjust_salary_from_upload($id);
+
+                    $employeepayrollprofile = Employee::employeepayrollprofile($employee_id);
+
+                    $link_salary  = \Yii::$app->request->BaseUrl.'/master/salary/index';
+                    $message = "Employee registered successfully. Payroll profile: $employeepayrollprofile. Please manage the salary details.";
+                }else{
+                    $message = "Internal errors.";
+                }
+            }else{
+
+                // $sql2 = "UPDATE employee_join_resign SET status_id = 2 WHERE id = $id";
+                // \Yii::$app->db->createCommand($sql2)->execute();
+
+                return $this->asJson([
+                    'success' => false,
+                    'message' => 'The employee has already been registered.'
+                ]);
+            }
+        }
+
+        if(!$message) $message = 'Error insert employee.';
+        return $this->asJson(['success' => true, 'message' => $message]);
+        // return true;
     }
 
     public function actionSlip($id=0)

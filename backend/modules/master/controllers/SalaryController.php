@@ -6,12 +6,15 @@ use Yii;
 
 use common\modules\master\models\Salary;
 use common\modules\master\models\SalarySearch;
+use common\modules\master\models\PayrollItem;
+use common\modules\master\models\UploadForm;
 
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use yii\web\UploadedFile;
 
 /**
  * SalaryController implements the CRUD actions for Salary model.
@@ -55,9 +58,91 @@ class SalaryController extends Controller
         $searchModel = new SalarySearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        // 1️⃣ Ambil payroll item
+        $payrollItems = PayrollItem::find()
+            ->where([
+                'status_id' => 1,
+                'type' => 'DATA'
+            ])
+            ->andWhere(['in', 'category_id', [1,2]])
+            ->orderBy('display_order')
+            ->all();
+
+        // 2️⃣ Build dynamic select
+        $selectColumns = [
+            'e.id AS employee_id',
+            'e.e_number',
+            'e.fullname'
+        ];
+
+        foreach ($payrollItems as $item) {
+            $code = $item->code;
+
+            $selectColumns[] = new \yii\db\Expression("
+                COALESCE(MAX(CASE WHEN pi.code = '{$code}' THEN s.amount END),0) AS `{$code}`
+            ");
+        }
+
+        // 3️⃣ Query pivot
+        $data = (new \yii\db\Query())
+            ->select($selectColumns)
+            ->from(['e' => 'employee'])
+            ->leftJoin(['s' => 'salary'], 's.employee_id = e.id')
+            ->leftJoin(['pi' => 'payroll_item'], '
+                pi.id = s.payroll_item_id
+                AND pi.status_id = 1
+                AND pi.category_id IN (1,2)
+                AND pi.type = "DATA"
+            ')
+            ->where(['e.status_id' => 1])
+            ->groupBy(['e.id', 'e.fullname'])
+            ->orderBy(['e.id' => SORT_ASC])
+            ->all();
+
+        // 4️⃣ ArrayDataProvider
+        $dataProviderInput = new \yii\data\ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => false,
+        ]);
+
+        // 5️⃣ Build gridColumnsInput dynamic
+        $gridColumnsInput = [
+            [
+                'attribute' => 'employee_id',
+                'label' => 'ID',
+            ],
+            [
+                'attribute' => 'e_number',
+                'label' => 'NIP',
+            ],
+            [
+                'attribute' => 'fullname',
+                'label' => 'Employee',
+            ],
+        ];
+
+        foreach ($payrollItems as $item) {
+            $gridColumnsInput[] = [
+                'attribute' => $item->code,
+                'label' => $item->code,
+                // 'format' => ['decimal', 0],
+                'value' => function ($model) use ($item) {
+                    return (float) ($model[$item->code] ?? 0);
+                },
+                'format' => 'raw',
+                'exportMenuStyle' => [
+                    'format' => \PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER,
+                ],
+                'contentOptions' => ['style' => 'text-align:right;'],
+            ];
+        }
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+
+            'dataProviderInput' => $dataProviderInput,
+            'gridColumnsInput' => $gridColumnsInput,
         ]);
     }
 
@@ -229,6 +314,40 @@ class SalaryController extends Controller
         // fallback non-AJAX
         Yii::$app->session->setFlash('success', 'Salary non activate successfully.');
         return $this->redirect(['index']);
+    }
+
+    public function actionUpload()
+    {
+        $model = new UploadForm();
+        // $modelPayroll = new Payroll();
+
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('_upload', [
+                'model'     => $model,
+            ]);
+        }
+
+        if (Yii::$app->request->isPost) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            
+            if ($model->validate()) {
+                $inputFile = $model->file->tempName;
+                $result = Salary::saveRecords($inputFile);
+
+                if($result === true){
+                    // EmployeeHistory::create($referral_code, "Import Salary", "Salary data import was successful.");
+                    // return false;
+                    Yii::$app->session->setFlash('success', 'The salary data was imported successfully.');
+                    return $this->redirect(['index']);
+                }else{
+                    Yii::$app->session->setFlash('error', 'An error occurred: ' . $e->getMessage());
+                }
+            }
+        }
+
+        return $this->render('_upload', [
+            'model'     => $model,
+        ]);
     }
 
     protected function findModel($id)

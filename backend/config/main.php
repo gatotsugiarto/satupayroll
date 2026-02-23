@@ -44,6 +44,7 @@ return [
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
+            'authTimeout' => 1800, // 30 menit
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
             'loginUrl' => ['site/login'],
         ],
@@ -70,7 +71,12 @@ return [
             'rules' => [
             ],
         ],
-        
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'locale' => 'id-ID',
+            'thousandSeparator' => '.',
+            'decimalSeparator' => ',',
+        ],
     ],
     'params' => $params,
 ];

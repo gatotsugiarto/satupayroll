@@ -7,11 +7,8 @@ use yii\helpers\Html;
         <i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;<?=$model->fullname?> [<?=$model->e_number ?>] 
     </h5>
     <p class="text-muted small mb-0">
-        <?=$model->company ?> - <?=$model->region ?> - <?=$model->site_office ?><br />
-        <?=$model->department ?> - <?=$model->division ?>
-        
-
-
+        <small><?=$model->company ?> - <?=$model->region ?> - <?=$model->site_office ?><br />
+        <?=$model->department ?> - <?=$model->division ?></small>
     </p>
 </div>
 
@@ -21,33 +18,33 @@ use yii\helpers\Html;
         <div class="row mb-3">
             <div class="col-md-6">
                 <span class="text-secondary small">Join Date</span><br>
-                <span class="fw-semibold"><?=$model->join_date ?></span>
+                <span class="fw-semibold"><small><?=$model->join_date ?></small></span>
             </div>
             <div class="col-md-6">
                 <span class="text-secondary small">Email</span><br>
-                <span class="fw-semibold"><?= Html::encode($model->email) ?></span>
+                <span class="fw-semibold"><small><?= Html::encode($model->email) ?></small></span>
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-md-6">
                 <span class="text-secondary small">Position/ Grade</span><br>
-                <span><?=$model->level_jabatan ?>, <?=$model->jabatan ?>/ <?=$model->grade ?></span>
+                <span><small><?=$model->level_jabatan ?>, <?=$model->jabatan ?>/ <?=$model->grade ?></small></span>
             </div>
             <div class="col-md-6">
                 <span class="text-secondary small">Marital/ Family Status/ PTKP</span><br>
-                <span><?=$model->marital_status ?>/ <?=$model->family_status ?>/ <?=$model->ptkp ?></span>
+                <span><small><?=$model->marital_status ?>/ <?=$model->family_status ?>/ <?=$model->ptkp ?></small></span>
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-md-6">
                 <span class="text-secondary small">Bank - Bank No.</span><br>
-                <span><?=$model->bank ?> - <?=$model->bank_no ?></span>
+                <span><small><?=$model->bank ?> - <?=$model->bank_no ?></small></span>
             </div>
             <div class="col-md-6">
                 <span class="text-secondary small">Cost Center</span><br>
-                <span><?=$model->costcenter->code ?></span>
+                <span><small><?=$model->costcenter->code ?></small></span>
             </div>
         </div>
 
@@ -61,7 +58,7 @@ use yii\helpers\Html;
             ?>
             <div class="col-md-6">
                 <span class="text-secondary small">Join Prorate</span><br>
-                <span><?=$join_prorate ?></span>
+                <span><small><?=$join_prorate ?></small></span>
             </div>
             <?php
             if($model->resign_date){
@@ -74,18 +71,18 @@ use yii\helpers\Html;
             ?>
             <div class="col-md-6">
                 <span class="text-secondary small">Resign Date/ Prorate</span><br>
-                <span><?=$resign_date ?>/ <?=$resign_prorate ?></span>
+                <span><small><?=$resign_date ?>/ <?=$resign_prorate ?></small></span>
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-md-6">
                 <span class="text-secondary small">NPWP/ JKK</span><br>
-                <span><?=$model->npwp_id ?>/ <?=$model->jkk ?></span>
+                <span><small><?=$model->npwp_id ?>/ <?=$model->jkk ?></small></span>
             </div>
             <div class="col-md-6">
                 <span class="text-secondary small">Employee Status</span><br>
-                <?=$model->employee_status ?>&nbsp;
+                <small><?=$model->employee_status ?></small>&nbsp;
                 <?php
                 $statusClass = [
                     1 => 'badge badge-primary px-2 py-1',
@@ -95,6 +92,13 @@ use yii\helpers\Html;
                     'class' => $statusClass[$model->status_id] ?? 'badge bg-secondary px-2 py-1'
                 ]);
                 ?>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <span class="text-secondary small">Address</span><br>
+                <span><small><?= Html::encode($model->address) ?></small></span>
             </div>
         </div>
 

@@ -106,4 +106,9 @@ class EmployeeJoinResign extends \yii\db\ActiveRecord
             return 2;
         }
     }
+
+    public function canProcess()
+    {
+        return ($this->identity_id == 1 && $this->status_id == 1) || $this->list_resign();
+    }
 }

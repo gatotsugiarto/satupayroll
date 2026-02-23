@@ -65,14 +65,42 @@ $gridColumns = [
             'dropdownOptions' => [
                 'label' => '<i class="fa fa-download"></i> Export',
                 'class' => 'btn btn-sm btn-success rounded-pill shadow-sm',
-                'style' => 'min-width:160px;',
+                'style' => 'min-width:110px;',
                 'encodeLabel' => false,
             ],
         ]) ?>
 
+        <?= ExportMenu::widget([
+            'dataProvider' => $dataProviderInput,
+            'columns' => $gridColumnsInput,
+            'bsVersion' => '4',
+            'bootstrap' => true,
+            'filename' => 'Maintenance_Salary_'.date('YmdHis'),
+            'showColumnSelector' => false,
+            'exportConfig' => [
+                ExportMenu::FORMAT_HTML => false,
+                ExportMenu::FORMAT_PDF => false,
+                ExportMenu::FORMAT_EXCEL => false,
+                ExportMenu::FORMAT_TEXT => false,
+                ExportMenu::FORMAT_CSV => false,
+            ],
+            'dropdownOptions' => [
+                'label' => '<i class="fa fa-download"></i> Input',
+                'class' => 'btn btn-sm btn-warning rounded-pill shadow-sm',
+                'style' => 'min-width:110px;',
+                'encodeLabel' => false,
+            ],
+        ]) ?>
+
+        <?= Html::button('<i class="fa fa-upload"></i> Upload Salary', [
+            'class' => 'btn btn-warning btn-sm rounded-pill shadow-sm upload-salary',
+            'style' => 'min-width:110px;',
+            'data-url' => Url::to(['upload']),
+        ]) ?>
+
         <?= Html::button('<i class="fa fa-plus"></i> New Salary', [
             'class' => 'btn btn-primary btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:160px;',
+            'style' => 'min-width:110px;',
             'data-url' => Url::to(['create']),
         ]) ?>
     </div>
@@ -304,6 +332,15 @@ CONFIRM MODAL
 
 <?php
 $this->registerJs(<<<JS
+
+/* =========================================================
+ * UPLOAD
+ * ======================================================= */
+$(document).on('click', '.upload-salary', function() {
+    $('#appModal .modal-body').html('<div class="text-center py-5"><i class="fa fa-spinner fa-spin fa-2x text-muted"></i></div>');
+    $('#appModal').modal('show').find('.modal-body').load($(this).data('url'));
+});
+
 /* =========================================================
  * VIEW JS
  * ======================================================= */

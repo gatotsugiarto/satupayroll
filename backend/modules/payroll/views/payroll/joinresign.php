@@ -9,11 +9,63 @@ use kartik\select2\Select2;
 $this->title = "Employee Join & Resignation";
 ?>
 
+<?php 
+$script = <<< JS
+$(document).on('click', '#submit-selected', function (e) {
+
+    var keys = $('#my-grid-view').yiiGridView('getSelectedRows');
+
+    if (keys.length === 0) {
+        krajeeDialog.alert('No rows selected!');
+        return false;
+    }
+
+    krajeeDialog.confirm('Are you sure submit the selected draft?', function(result) {
+
+        if (result) {
+
+            $.ajax({
+                type: 'POST',
+                url: 'saveselection',
+                data: {ids: keys},
+                success: function (response) {
+
+                    if (response.success) {
+                        krajeeDialog.alert(response.message); // ⬅️ TAMBAHKAN INI
+                        $.pjax.reload({container: '#w0-pjax'});
+                    } else {
+                        krajeeDialog.alert(response.message);
+                    }
+
+                },
+                error: function (xhr) {
+                    krajeeDialog.alert(xhr.responseText);
+                }
+            });
+
+        }
+    });
+
+});
+JS;
+
+$this->registerJs($script);
+?>
+
 <?php Pjax::begin(['id' => 'w0-pjax']); ?>
 
 <?php
 $gridColumns = [
-            ['class' => 'yii\grid\SerialColumn'],
+            [
+                'class' => 'yii\grid\CheckboxColumn',
+                'name' => 'selection',
+                'checkboxOptions' => function ($model) {
+                    return [
+                        'value' => $model->id,
+                        'disabled' => !$model->canProcess(),
+                    ];
+                },
+            ],
             [
                 'label'=> 'Keterangan',
                 'attribute'=>'identity_id',
@@ -138,6 +190,7 @@ $gridColumns = [
 
 <!-- GRIDVIEW -->
 <?= GridView::widget([
+    'id' => 'my-grid-view',
     'dataProvider' => $dataProvider,
     'filterModel'  => $searchModel,
     'hover' => true,
@@ -146,7 +199,22 @@ $gridColumns = [
     'tableOptions' => [
         'class' => 'table table-hover table-striped align-middle shadow-sm'
     ],
-    'layout' => "{items}\n<div class='d-flex justify-content-between align-items-center mt-2'>{pager}{summary}</div>",
+    'layout' => "{items}\n<div class='d-flex justify-content-between align-items-center mt-2'>{pager}<div class='d-flex justify-content-between align-items-center mt-2'>
+    <div>
+        " . Html::button(
+            '<i class="fa fa-plus-circle"></i>',
+            [
+                'class' => 'btn btn-light border-success text-success btn-sm shadow-sm modern-btn',
+                'id' => 'submit-selected',
+                'encode' => false
+            ]
+        ) . "
+    </div>&nbsp;&nbsp;
+    <div class='d-flex align-items-center'>
+        {pager}
+        <div class='ms-3'>{summary}</div>
+    </div>
+</div>{summary}</div>",
     'columns' => $gridColumns,
 ]) ?>
 

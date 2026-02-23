@@ -13,19 +13,36 @@ $baseUrl = Yii::$app->request->baseUrl;
   <div class="row">
     
 	<!-- Top Navigation -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-warning w-100">
 	  <div class="container-fluid">
 	    <div class="collapse navbar-collapse" id="navbarNav">
 	      <ul class="navbar-nav ms-auto">
-	        <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
-	        <li class="nav-item"><a class="nav-link" href="#usermanagement">User Management</a></li>
-	        <li class="nav-item"><a class="nav-link" href="#payrollmanagement">Payroll Management</a></li>
-	        <li class="nav-item"><a class="nav-link" href="#masterdata">Master Data</a></li>
-	        <li class="nav-item"><a class="nav-link" href="#logactivity">Log Activity</a></li>
+
+	        <li class="nav-item">
+	          <a class="nav-link text-white fw-bold" href="#dashboard">Dashboard</a>
+	        </li>
+
+	        <li class="nav-item">
+	          <a class="nav-link text-white fw-bold" href="#usermanagement">User Management</a>
+	        </li>
+
+	        <li class="nav-item">
+	          <a class="nav-link text-white fw-bold" href="#payrollmanagement">Payroll Management</a>
+	        </li>
+
+	        <li class="nav-item">
+	          <a class="nav-link text-white fw-bold" href="#masterdata">Master Data</a>
+	        </li>
+
+	        <li class="nav-item">
+	          <a class="nav-link text-white fw-bold" href="#logactivity">Log Activity</a>
+	        </li>
+
 	      </ul>
 	    </div>
 	  </div>
 	</nav>
+
 
 
 	<!-- Documentation Content -->
@@ -339,11 +356,59 @@ $baseUrl = Yii::$app->request->baseUrl;
 	  </ul>
 
 	  <!-- Master Company -->
-	  <h3 id="master-company">5. Master Company</h3>
+	  <h3 id="master-company">5. Company</h3>
 	  <ul>
-	    <li><strong>Purpose:</strong> Stores company profile data including legal entity, address, and registration details.</li>
-	    <li><strong>Data Source:</strong> Company master tables.</li>
-	    <li><strong>Interpretation:</strong> Central repository for organizational information used across payroll and HR modules.</li>
+	    <li>
+	    	<strong>Overview:</strong> 
+	    	The Company Master Data module is used to manage company information registered in the payroll system.
+	    	<br /><br />
+	    	This module stores essential company details required for payroll processing, tax reporting (Form 1721-A1), and system configuration.
+	    	<br /><br />
+	    	Users can:
+	    	<br />
+	    	<ul>
+					<li>Create a new company</li>
+					<li>View company details</li>
+					<li>Update company information</li>
+					<li>Delete a company</li>
+					<li>Activate or deactivate a company</li>
+				</ul>
+	    </li>
+	    <br />
+	    <li><strong>Company List Page:</strong> The Companies page displays all registered companies in the system.</li>
+	    	<ul>
+					<li>
+						I. Company Table Columns
+						<ul>
+							<li>No – Sequential number</li>
+							<li>Code – Unique company code</li>
+							<li>Company – Company name</li>
+							<li>Status – Active / Inactive</li>
+							<li>Action – Edit and Delete buttons</li>
+						</ul>
+					</li>
+					<br />
+					<li>
+						II. Search & Filter
+						<ul>
+							<li>Search by company code</li>
+							<li>Search by company name</li>
+							<li>Filter by status (All Status / Active / Inactive)</li>
+						</ul>
+					</li>
+					<br />
+					<li>
+						III. Export Data: The Export button allows users to export company data into a file format (e.g., Excel/CSV).
+					</li>
+					<br />
+					<li>
+						IV. Add New Company: Click + New Company to create a new company record.
+					</li>
+				</ul>
+
+	    <br />
+	    <li><strong>Company Detail Page:</strong> The Company Detail page displays complete company information.</li>
+	    
 	    <li><strong>Technical Notes:</strong> Ensure compliance with government regulations when updating company data.</li>
 	  </ul>
 	</section>

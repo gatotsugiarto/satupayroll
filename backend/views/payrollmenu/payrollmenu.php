@@ -1,6 +1,7 @@
 <?php
 use \yii\helpers\Url;
 
+$this->title = 'Payroll Management';
 $baseUrl = Yii::$app->request->baseUrl;
 ?>
 

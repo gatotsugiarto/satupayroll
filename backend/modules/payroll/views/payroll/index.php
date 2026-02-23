@@ -75,32 +75,32 @@ $gridColumns = [
             'dropdownOptions' => [
                 'label' => '<i class="fa fa-download"></i> Export',
                 'class' => 'btn btn-sm btn-success rounded-pill shadow-sm',
-                'style' => 'min-width:140px;',
+                'style' => 'min-width:130px;',
                 'encodeLabel' => false,
             ],
         ]) ?>
 
         <?= Html::button('<i class="fa fa-times"></i> Cancel ', [
             'class' => 'btn btn-warning btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:140px;',
+            'style' => 'min-width:130px;',
             'data-url' => Url::to(['cancel']),
         ]) ?>
 
         <?= Html::button('<i class="fa fa-edit"></i> Revise ', [
             'class' => 'btn btn-outline-secondary btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:140px;',
+            'style' => 'min-width:130px;',
             'data-url' => Url::to(['create']),
         ]) ?>
 
         <?= Html::button('<i class="fa fa-plus"></i> Batch Process', [
             'class' => 'btn btn-primary btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:140px;',
+            'style' => 'min-width:130px;',
             'data-url' => Url::to(['batch']),
         ]) ?>
 
         <?= Html::button('<i class="fa fa-check"></i> Approve', [
             'class' => 'btn btn-danger btn-sm rounded-pill shadow-sm create-data',
-            'style' => 'min-width:140px;',
+            'style' => 'min-width:130px;',
             'data-url' => Url::to(['approve']),
         ]) ?>
 

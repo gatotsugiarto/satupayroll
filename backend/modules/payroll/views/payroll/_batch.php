@@ -19,6 +19,10 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                 ? 'Please fill in the year and month period form below to process a new payroll.'
                 : 'Update payroll information below.' ?>
         </small>
+        <br />
+        <small class="text-muted text-danger">
+            <?= $messageInfo ?>
+        </small>
     </div>
 </div>
 

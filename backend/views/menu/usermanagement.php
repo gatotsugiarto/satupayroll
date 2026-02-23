@@ -1,6 +1,7 @@
 <?php
 use \yii\helpers\Url;
 
+$this->title = 'User Management';
 $baseUrl = Yii::$app->request->baseUrl;
 ?>
 

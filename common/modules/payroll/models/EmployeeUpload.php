@@ -273,7 +273,7 @@ class EmployeeUpload extends \yii\db\ActiveRecord
         \Yii::$app->db->createCommand($sql)->execute();
 
         $sql = "INSERT INTO report_upload
-SELECT 0, j.baru, k.resign, a.permanen, b.pkwt, c.karyawan, d.lembur, e.reimburse, f.revisi_absensi, g.unpaid_leave, h.absensi, i.terlambat, l.thr, m.join_date_prorate, o.resign_prorate, n.no_salary, '$upload_date', '$referral_code', 1, NOW(), 1, NOW(), 1 
+SELECT 0, j.baru, k.resign, a.permanen, b.pkwt, c.karyawan, d.lembur, e.reimburse, f.revisi_absensi, g.unpaid_leave, h.absensi, i.terlambat, l.thr, m.join_date_prorate, o.resign_prorate, n.no_salary, p.no_npwp, '$upload_date', '$referral_code', 1, NOW(), 1, NOW(), 1 
 FROM 
 (SELECT COUNT(*) AS permanen FROM employee_upload WHERE employee_status_id < 3) a, 
 (SELECT COUNT(*) AS pkwt FROM employee_upload WHERE employee_status_id > 2) b, 
@@ -291,10 +291,11 @@ FROM
 (SELECT COUNT(*) AS thr FROM employee_upload WHERE bonus > 0) l,
 (SELECT COUNT(*) AS join_date_prorate FROM employee_upload WHERE join_date_prorate > 0) m,
 (SELECT COUNT(*) AS resign_prorate FROM employee_upload WHERE resign_prorate  > 0) o,
+(SELECT COUNT(*) AS no_npwp FROM employee_upload WHERE is_npwp <> 1) p,
 (SELECT COUNT(a.id) AS no_salary FROM employee a LEFT JOIN (SELECT employee_id FROM salary WHERE payroll_item_id = 1 AND status_id = 1) b ON a.id = b.employee_id WHERE a.status_id = 1 AND b.employee_id IS NULL) n";
         \Yii::$app->db->createCommand($sql)->execute();
 
-        $sql = "INSERT INTO report_upload SELECT 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, upload_date, referral_code, status_id, created_at, created_by, updated_at, updated_by FROM report_upload WHERE id = 1 AND referral_code = '$referral_code'";
+        $sql = "INSERT INTO report_upload SELECT 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, upload_date, referral_code, status_id, created_at, created_by, updated_at, updated_by FROM report_upload WHERE id = 1 AND referral_code = '$referral_code'";
         \Yii::$app->db->createCommand($sql)->execute();
 
         // Total karyawan aktif

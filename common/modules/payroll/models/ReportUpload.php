@@ -20,7 +20,7 @@ class ReportUpload extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['baru', 'resign', 'tetap', 'pkwt', 'karyawan', 'lembur', 'reimburse', 'revisi_absensi', 'unpaid_leave', 'absensi', 'keterlambatan', 'thr', 'no_salary', 'status_id', 'created_by', 'updated_by'], 'integer'],
+            [['baru', 'resign', 'tetap', 'pkwt', 'karyawan', 'lembur', 'reimburse', 'revisi_absensi', 'unpaid_leave', 'absensi', 'keterlambatan', 'thr', 'no_salary', 'no_npwp', 'status_id', 'created_by', 'updated_by'], 'integer'],
             [['upload_date', 'join_date_prorate', 'resign_prorate', 'created_at', 'updated_at'], 'safe'],
             [['referral_code'], 'string', 'max' => 255],
         ];
@@ -48,6 +48,7 @@ class ReportUpload extends \yii\db\ActiveRecord
             'join_date_prorate' => 'Join Date Prorate',
             'resign_prorate' => 'Resign Prorate',
             'no_salary' => 'No Salary',
+            'no_npwp' => 'No NPWP',
             'upload_date' => 'Upload Date',
             'referral_code' => 'Referral Code',
             'status_id' => 'Status ID',

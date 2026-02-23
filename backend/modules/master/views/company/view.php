@@ -27,8 +27,17 @@ use yii\helpers\Html;
 
         <div class="row mb-3">
             <div class="col-md-6">
-                <span class="text-secondary small">Address</span><br>
-                <span class="fw-semibold"><?= Html::encode($model->address) ?></span>
+                <span class="text-secondary small">Status</span><br>
+                
+                <?php
+                $statusClass = [
+                    1 => 'badge badge-primary px-2 py-1',
+                    2 => 'badge badge-secondary px-2 py-1',
+                ];
+                echo Html::tag('span', $model->status->status_active, [
+                    'class' => $statusClass[$model->status_id] ?? 'badge bg-secondary px-2 py-1'
+                ]);
+                ?>
             </div>
             <div class="col-md-6">
                 <span class="text-secondary small">Nama Pejabat - Formulir 1721-A1</span><br>
@@ -63,23 +72,22 @@ use yii\helpers\Html;
                 </span>
             </div>
         </div>
-        <div class="row mb-3">
+
+        <!-- <div class="row mb-3">
             <div class="col-md-6">
                 <span class="text-secondary small">Description</span><br>
                 <span><?= Html::encode($model->description ?: '-') ?></span>
             </div>
             <div class="col-md-6">
-                <span class="text-secondary small">Status</span><br>
-                
-                <?php
-                $statusClass = [
-                    1 => 'badge badge-primary px-2 py-1',
-                    2 => 'badge badge-secondary px-2 py-1',
-                ];
-                echo Html::tag('span', $model->status->status_active, [
-                    'class' => $statusClass[$model->status_id] ?? 'badge bg-secondary px-2 py-1'
-                ]);
-                ?>
+                <span class="text-secondary small">Address</span><br>
+                <span><small><?= Html::encode($model->address) ?></small></span>
+            </div>
+        </div> -->
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <span class="text-secondary small">Address</span><br>
+                <span><small><?= Html::encode($model->address) ?></small></span>
             </div>
         </div>
 

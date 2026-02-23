@@ -1,6 +1,7 @@
 <?php
 use \yii\helpers\Url;
 
+$this->title = 'Master Data';
 $baseUrl = Yii::$app->request->baseUrl;
 ?>
 

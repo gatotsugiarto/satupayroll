@@ -4,6 +4,7 @@ namespace common\modules\master\models;
 
 use Yii;
 
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
@@ -12,6 +13,8 @@ use common\components\behaviors\TokenProtectedFormBehavior;
 use common\components\behaviors\LoggableBehavior;
 
 use common\modules\auth\models\User;
+use common\modules\master\models\PayrollItem;
+
 
 class Salary extends \yii\db\ActiveRecord
 {
@@ -122,6 +125,96 @@ class Salary extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'updated_by' => 'Updated By',
         ];
+    }
+
+
+    public static function saveRecords($inputFile)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+
+            $spreadsheet = IOFactory::load($inputFile);
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray();
+
+            if (empty($rows)) {
+                throw new \Exception("Empty file.");
+            }
+
+            $header = $rows[0];
+
+            // 🔹 Mapping payroll_code => payroll_item_id
+            $payrollMap = PayrollItem::find()
+                ->select(['id', 'code'])
+                ->indexBy('code')
+                ->asArray()
+                ->all();
+
+            foreach ($rows as $index => $row) {
+
+                if ($index == 0) {
+                    continue; // skip header
+                }
+
+                $employeeId = trim($row[0]);
+
+                if (empty($employeeId)) {
+                    continue;
+                }
+
+                // 🔥 mulai dari BASIC (index 3)
+                for ($i = 2; $i < count($header); $i++) {
+
+                    $payrollCode = trim($header[$i]);
+                    $amount = isset($row[$i]) ? (float)$row[$i] : 0;
+
+                    if (!isset($payrollMap[$payrollCode])) {
+                        continue; // skip jika code tidak ada
+                    }
+
+                    $payrollItemId = $payrollMap[$payrollCode]['id'];
+
+                    $existing = self::find()
+                        ->where([
+                            'employee_id' => $employeeId,
+                            'payroll_item_id' => $payrollItemId,
+                        ])
+                        ->one();
+                    
+                    // ✅ Jika sudah ada
+                    if ($amount > 0) {
+                        if ($existing) {
+
+                            // Jika amount sama → SKIP
+                            if ((float)$existing->amount == $amount) {
+                                continue;
+                            }
+
+                            // Jika beda → UPDATE
+                            $existing->amount = $amount;
+                            $existing->save(false);
+
+                        } else {
+
+                            // ✅ Jika tidak ada → INSERT
+                            $model = new self();
+                            $model->employee_id = $employeeId;
+                            $model->payroll_item_id = $payrollItemId;
+                            $model->amount = $amount;
+                            $model->save(false);
+                        }
+                    }
+                }
+            }
+
+            $transaction->commit();
+            return true;
+
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            return $e;
+        }
     }
 
     /**
