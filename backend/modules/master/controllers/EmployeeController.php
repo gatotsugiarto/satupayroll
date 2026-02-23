@@ -123,7 +123,7 @@ class EmployeeController extends Controller
         // ambil data upload
         $upload = EmployeeUpload::findOne($id);
         if (!$upload) {
-            Yii::$app->session->setFlash('danger', 'Data upload pegawai tidak ditemukan.');
+            Yii::$app->session->setFlash('danger', 'Uploaded employee data was not found.');
             return $this->redirect(['/payroll/payroll/joinresign']);
         }
 
@@ -143,8 +143,8 @@ class EmployeeController extends Controller
                 \Yii::$app->db->createCommand($sql2)->execute();
 
                 $referral_code = 'PEG'.date('Ymdhis');
-                $message2 = "Pegawai baru $fullname - $jabatan telah berhasil ditambahkan";
-                EmployeeHistory::create($referral_code, "Data Pegawai", $message2);
+                $message2 = "$fullname - $jabatan has been successfully added.";
+                EmployeeHistory::create($referral_code, "The new employee", $message2);
 
                 $tetap = Employee::tetap();
                 $pkwt = Employee::pkwt();
@@ -164,7 +164,7 @@ class EmployeeController extends Controller
                 Yii::$app->session->setFlash('danger', $message);
                 return $this->redirect(['/payroll/payroll/joinresign']);
             }else{
-                Yii::$app->session->setFlash('danger', 'Gagal atau tidak ada perubahan data.');
+                Yii::$app->session->setFlash('danger', 'Failed or no data changes were made.');
                 return $this->redirect(['/payroll/payroll/joinresign']);
             }
         }else{
@@ -172,7 +172,7 @@ class EmployeeController extends Controller
             // $sql2 = "UPDATE employee_join_resign SET status_id = 2 WHERE id = $id";
             // \Yii::$app->db->createCommand($sql2)->execute();
 
-            Yii::$app->session->setFlash('danger', 'Data pegawai baru telah berhasil ditambahkan sebelumnya.');
+            Yii::$app->session->setFlash('danger', 'The new employee data has already been successfully added previously.');
             return $this->redirect(['/payroll/payroll/joinresign']);
         }
         
@@ -228,7 +228,7 @@ class EmployeeController extends Controller
         $model = Employee::findOne($id);
         if(!$model){
 
-            $message = "Gagal atau tidak ada perubahan data.";
+            $message = "Failed or no data changes were made.";
             Yii::$app->session->setFlash('danger', $message);
             return $this->redirect(['/payroll/payroll/datauploaded']);
         }else{
@@ -240,14 +240,14 @@ class EmployeeController extends Controller
                 $Employee = Employee::findOne($id);
                 $fullname = $Employee->fullname;
                 $jabatan = $Employee->jabatan;
-                $message = "Data pegawai baru $fullname - $jabatan telah berhasil di <b>Non Aktifkan</b>.";
+                $message = "New employee $fullname - $jabatan has been <b>non actived</b>.";
                 
                 $sql2 = "UPDATE employee_uploaded_detail SET status_id = 2 WHERE id = $id";
                 \Yii::$app->db->createCommand($sql2)->execute();
 
                 $referral_code = 'PEG'.date('Ymdhis');
-                $message2 = "Pegawai resign $fullname - $jabatan telah berhasil di non aktifkan";
-                EmployeeHistory::create($referral_code, "Data Pegawai", $message2);
+                $message2 = "resigned $fullname - $jabatan has been deactivated";
+                EmployeeHistory::create($referral_code, "New employee", $message2);
 
                 $resign = Payroll::resign();
                 Payroll::no_salary();
@@ -258,13 +258,13 @@ class EmployeeController extends Controller
                 // EmployeeUploaded::updateAll(['no_salary' => $no_salary]);
 
                 Salary::updateAll(['status_id' => 2], ['employee_id' => $id]);
-                $message = "Data salary, karyawan ".strtoupper($fullname)." telah berhasil di Non Aktifkan";
+                $message = "Employee salary ".strtoupper($fullname)." has been deactivated";
                 EmployeeHistory::create($referral_code, "Gaji Karyawan", $message);
 
                 Yii::$app->session->setFlash('success', $message);
                 return $this->redirect(['/master/employee/index']);
             } else {
-                $message = "Data pegawai telah di <b>Non Aktifkan</b> sebelumnya.";
+                $message = "The employee data has already been <b>deactivated</b> previously.";
                 Yii::$app->session->setFlash('danger', $message);
                 return $this->redirect(['/payroll/payroll/datauploaded']);
             }
@@ -284,7 +284,7 @@ class EmployeeController extends Controller
         $model = Employee::findOne($id);
         if(!$model){
 
-            $message = "Gagal atau tidak ada perubahan data.";
+            $message = "Failed or no data changes were made.";
             Yii::$app->session->setFlash('danger', $message);
             return $this->redirect(['/payroll/payroll/datauploaded']);
         }else{
@@ -296,7 +296,7 @@ class EmployeeController extends Controller
                 $Employee = Employee::findOne($id);
                 $fullname = $Employee->fullname;
                 $jabatan = $Employee->jabatan;
-                $message = "Data pegawai baru $fullname - $jabatan telah berhasil di <b>Aktifkan</b>, <a href='$link_salary'><b>Klik Disini</b></a> untuk kelola data gaji.";
+                $message = "New employee $fullname - $jabatan has been <b>actived</b>, <a href='$link_salary'><b>Click Here</b></a> to manage salaries.";
                 
                 $sql2 = "UPDATE employee_uploaded_detail SET status_id = 2 WHERE id = $id";
                 \Yii::$app->db->createCommand($sql2)->execute();
@@ -304,7 +304,8 @@ class EmployeeController extends Controller
                 Yii::$app->session->setFlash('success', $message);
                 return $this->redirect(['/master/employee/index']);
             } else {
-                $message = "Data pegawai telah di <b>Non Aktifkan</b> sebelumnya.";
+                The new employee data has already been successfully added previously.
+                $message = "The employee data has already been successfully <b>Non Active</b> previously.";
                 Yii::$app->session->setFlash('danger', $message);
                 return $this->redirect(['/payroll/payroll/datauploaded']);
             }

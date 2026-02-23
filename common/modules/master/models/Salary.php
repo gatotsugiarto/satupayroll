@@ -14,6 +14,10 @@ use common\components\behaviors\LoggableBehavior;
 
 use common\modules\auth\models\User;
 use common\modules\master\models\PayrollItem;
+use common\modules\master\models\Employee;
+
+use common\modules\payroll\models\EmployeeHistory;
+
 
 
 class Salary extends \yii\db\ActiveRecord
@@ -192,8 +196,13 @@ class Salary extends \yii\db\ActiveRecord
                             }
 
                             // Jika beda → UPDATE
+                            $existing->employee_id = $employeeId;
                             $existing->amount = $amount;
+                            $existing->insert_by = 'IMPORT';
                             $existing->save(false);
+
+                            $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
+                            EmployeeHistory::create('SAL'.date('Ymdhis'), "Update Salary", "Salary for $fullname has been successfully updated.");
 
                         } else {
 
@@ -202,7 +211,11 @@ class Salary extends \yii\db\ActiveRecord
                             $model->employee_id = $employeeId;
                             $model->payroll_item_id = $payrollItemId;
                             $model->amount = $amount;
+                            $model->insert_by = 'IMPORT';
                             $model->save(false);
+
+                            $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
+                            EmployeeHistory::create('SAL'.date('Ymdhis'), "Create Salary", "Salary for $fullname has been successfully inserted.");
                         }
                     }
                 }

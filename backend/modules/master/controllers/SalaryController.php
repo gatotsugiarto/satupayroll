@@ -8,6 +8,8 @@ use common\modules\master\models\Salary;
 use common\modules\master\models\SalarySearch;
 use common\modules\master\models\PayrollItem;
 use common\modules\master\models\UploadForm;
+use common\modules\master\models\Employee;
+use common\modules\payroll\models\EmployeeHistory;
 
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -167,6 +169,8 @@ class SalaryController extends Controller
 
                 if ($model->validate()) {
                     $model->save();
+                    $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
+                    EmployeeHistory::create('SAL'.date('Ymdhis'), "Create Salary", "Salary for $fullname has been successfully inserted.");
                     $model->getBehavior('tokenProtection')->consumeToken();
 
                     return [
@@ -191,6 +195,8 @@ class SalaryController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->save()) {
+                $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
+                EmployeeHistory::create('SAL'.date('Ymdhis'), "Create Salary", "Salary for $fullname has been successfully inserted.");
                 $model->getBehavior('tokenProtection')->consumeToken();
                 Yii::$app->session->setFlash('success', 'Salary created successfully.');
                 return $this->redirect(['index']);
@@ -214,6 +220,8 @@ class SalaryController extends Controller
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
                 if ($model->validate() && $model->save()) {
+                    $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
+                    EmployeeHistory::create('SAL'.date('Ymdhis'), "Update Salary", "Salary for $fullname has been successfully updated.");
                     $model->getBehavior('tokenProtection')->consumeToken();
 
                     return [
@@ -238,6 +246,8 @@ class SalaryController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->save()) {
+                $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
+                EmployeeHistory::create('SAL'.date('Ymdhis'), "Update Salary", "Salary for $fullname has been successfully updated.");
                 $model->getBehavior('tokenProtection')->consumeToken();
                 Yii::$app->session->setFlash('success', 'Salary updated successfully.');
                 return $this->redirect(['index']);
@@ -254,7 +264,9 @@ class SalaryController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
+        $fullname = Employee::findOne($model->employee_id)?->fullname ?? '-';
         $model->delete();
+        EmployeeHistory::create('SAL'.date('Ymdhis'), "Delete Salary", "Salary for $fullname has been successfully deleted.");
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -271,12 +283,14 @@ class SalaryController extends Controller
     public function actionReactive($id)
     {
         $model = $this->findModel($id);
+        $fullname = Employee::findOne($model->employee_id)?->fullname ?? '-';
         // Non behavior token protection
         $model->detachBehavior('tokenProtection');
 
         // Update Salary
         $model->status_id = 1;
         $model->save();
+        EmployeeHistory::create('SAL'.date('Ymdhis'), "Reactive Salary", "Salary for $fullname has been successfully reactived.");
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -295,12 +309,14 @@ class SalaryController extends Controller
     public function actionNonactive($id)
     {
         $model = $this->findModel($id);
+        $fullname = Employee::findOne($model->employee_id)?->fullname ?? '-';
         // Non behavior token protection
         $model->detachBehavior('tokenProtection');
 
         // Update Salary
         $model->status_id = 2;
         $model->save();
+        EmployeeHistory::create('SAL'.date('Ymdhis'), "Non Active Salary", "Salary for $fullname has been successfully non actived.");
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -335,8 +351,6 @@ class SalaryController extends Controller
                 $result = Salary::saveRecords($inputFile);
 
                 if($result === true){
-                    // EmployeeHistory::create($referral_code, "Import Salary", "Salary data import was successful.");
-                    // return false;
                     Yii::$app->session->setFlash('success', 'The salary data was imported successfully.');
                     return $this->redirect(['index']);
                 }else{
