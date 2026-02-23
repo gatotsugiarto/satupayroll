@@ -163,8 +163,8 @@ class Salary extends \yii\db\ActiveRecord
                     continue;
                 }
 
-                // 🔥 mulai dari BASIC (index 3)
-                for ($i = 2; $i < count($header); $i++) {
+                // 🔥 mulai dari BASIC (index 3) 📌 ID,NIP,Employee 🎯 mulai  BASIC dst...
+                for ($i = 3; $i < count($header); $i++) {
 
                     $payrollCode = trim($header[$i]);
                     $amount = isset($row[$i]) ? (float)$row[$i] : 0;
