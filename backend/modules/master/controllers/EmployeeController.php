@@ -304,7 +304,6 @@ class EmployeeController extends Controller
                 Yii::$app->session->setFlash('success', $message);
                 return $this->redirect(['/master/employee/index']);
             } else {
-                The new employee data has already been successfully added previously.
                 $message = "The employee data has already been successfully <b>Non Active</b> previously.";
                 Yii::$app->session->setFlash('danger', $message);
                 return $this->redirect(['/payroll/payroll/datauploaded']);
