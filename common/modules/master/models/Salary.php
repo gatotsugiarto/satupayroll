@@ -199,10 +199,11 @@ class Salary extends \yii\db\ActiveRecord
                             $existing->employee_id = $employeeId;
                             $existing->amount = $amount;
                             $existing->insert_by = 'IMPORT';
-                            $existing->save(false);
 
-                            $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
-                            EmployeeHistory::create('SAL'.date('Ymdhis'), "Update Salary", "Salary for $fullname has been successfully updated.");
+                            $existing->extraRemarks = 'Update salary '.$existing->payrollItem->name;
+                            $existing->extraEmployee = $employeeId;
+
+                            $existing->save(false);
 
                         } else {
 
@@ -212,10 +213,16 @@ class Salary extends \yii\db\ActiveRecord
                             $model->payroll_item_id = $payrollItemId;
                             $model->amount = $amount;
                             $model->insert_by = 'IMPORT';
-                            $model->save(false);
 
-                            $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
-                            EmployeeHistory::create('SAL'.date('Ymdhis'), "Create Salary", "Salary for $fullname has been successfully inserted.");
+                            $PayrollItem = PayrollItem::findOne($payrollItemId);
+                            if($PayrollItem){
+                                $model->extraRemarks = 'Create salary '.$PayrollItem->name;
+                            }else{
+                                $model->extraRemarks = 'Create salary';
+                            }
+                            $model->extraEmployee = $employeeId;
+
+                            $model->save(false);
                         }
                     }
                 }

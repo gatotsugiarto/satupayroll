@@ -1,6 +1,8 @@
 <?php
 namespace common\components\payroll;
 
+use Yii;
+
 use yii\base\Component;
 
 use common\modules\payroll\models\PayrollDetail;
@@ -732,11 +734,12 @@ class Calculate extends Component
     {
         // Salary -> is_processed = 1 (Y), 2 = (N)
         $sql = "UPDATE salary s INNER JOIN payroll_item pi ON s.payroll_item_id = pi.id AND s.status_id = 2 SET s.is_processed = 1, s.processed_at = NOW(), s.status_id = 1 WHERE pi.salary_type = 'ONETIME'";
-        $sql = "UPDATE salary s INNER JOIN payroll_item pi ON s.payroll_item_id = pi.id AND s.status_id = 2 SET s.is_processed = 1, s.processed_at = NOW() WHERE pi.salary_type = 'ONETIME'";
+        // $sql = "UPDATE salary s INNER JOIN payroll_item pi ON s.payroll_item_id = pi.id AND s.status_id = 2 SET s.is_processed = 1, s.processed_at = NOW() WHERE pi.salary_type = 'ONETIME'";
         \Yii::$app->db->createCommand($sql)->execute();
 
         // Resign employee
-        $sql = "UPDATE employee a INNER JOIN payroll_detail b ON a.id = b.employee_id AND a.status_id = 1 AND a.resign_date IS NOT NULL AND b.period_code = '$period_code' AND b.item_code = 1 SET a.status_id = 2, a.updated_at = NOW()";
+        // $sql = "UPDATE employee a INNER JOIN payroll_detail b ON a.id = b.employee_id AND a.status_id = 1 AND a.resign_date IS NOT NULL AND b.period_code = '$period_code' AND b.item_code = 'BASIC' SET a.status_id = 2, a.updated_at = NOW()";
+        $sql = "UPDATE employee a INNER JOIN payroll_detail b ON a.id = b.employee_id AND a.status_id = 1 AND a.resign_date IS NOT NULL AND b.period_code = '$period_code' SET a.status_id = 2, a.updated_at = NOW()";
         \Yii::$app->db->createCommand($sql)->execute();
     }
 

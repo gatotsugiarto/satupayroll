@@ -259,7 +259,7 @@
                         if($amount == 0){
                             $data_credit = '-';
                         }else{
-                            $data_credit = 'Rp' . number_format($amount, 0, ',', '.');
+                            $data_credit = 'Rp ' . number_format($amount, 0, ',', '.');
                         }
                     ?>
                     <tr>
@@ -286,7 +286,7 @@
                         if($amount == 0){
                             $data_debit = '-';
                         }else{
-                            $data_debit = 'Rp' . number_format($amount, 0, ',', '.');
+                            $data_debit = 'Rp ' . number_format($amount, 0, ',', '.');
                         }
                     ?>
                     <tr>

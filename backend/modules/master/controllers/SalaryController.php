@@ -168,9 +168,18 @@ class SalaryController extends Controller
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
                 if ($model->validate()) {
+
+                    $PayrollItem = PayrollItem::findOne($model->payroll_item_id);
+                    if($PayrollItem){
+                        $model->extraRemarks = 'Create salary '.$PayrollItem->name;
+                    }else{
+                        $model->extraRemarks = 'Create salary';
+                    }
+                    $model->extraEmployee = $model->employee_id;
+
                     $model->save();
-                    $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
-                    EmployeeHistory::create('SAL'.date('Ymdhis'), "Create Salary", "Salary for $fullname has been successfully inserted.");
+                    // $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
+                    // EmployeeHistory::create('SAL'.date('Ymdhis'), "Create Salary", "Salary for $fullname has been successfully inserted.");
                     $model->getBehavior('tokenProtection')->consumeToken();
 
                     return [
@@ -194,6 +203,13 @@ class SalaryController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $PayrollItem = PayrollItem::findOne($model->payroll_item_id);
+            if($PayrollItem){
+                $model->extraRemarks = 'Create salary '.$PayrollItem->name;
+            }else{
+                $model->extraRemarks = 'Create salary';
+            }
+            $model->extraEmployee = $model->employee_id;
             if ($model->save()) {
                 $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
                 EmployeeHistory::create('SAL'.date('Ymdhis'), "Create Salary", "Salary for $fullname has been successfully inserted.");
@@ -219,9 +235,19 @@ class SalaryController extends Controller
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
-                if ($model->validate() && $model->save()) {
-                    $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
-                    EmployeeHistory::create('SAL'.date('Ymdhis'), "Update Salary", "Salary for $fullname has been successfully updated.");
+                if ($model->validate()) {
+
+                    $PayrollItem = PayrollItem::findOne($model->payroll_item_id);
+                    if($PayrollItem){
+                        $model->extraRemarks = 'Update salary '.$PayrollItem->name;
+                    }else{
+                        $model->extraRemarks = 'Update salary';
+                    }
+                    $model->extraEmployee = $model->employee_id;
+                    $model->save();
+
+                    // $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
+                    // EmployeeHistory::create('SAL'.date('Ymdhis'), "Update Salary", "Salary for $fullname has been successfully updated.");
                     $model->getBehavior('tokenProtection')->consumeToken();
 
                     return [
@@ -245,9 +271,17 @@ class SalaryController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $PayrollItem = PayrollItem::findOne($model->payroll_item_id);
+            if($PayrollItem){
+                $model->extraRemarks = 'Update salary '.$PayrollItem->name;
+            }else{
+                $model->extraRemarks = 'Update salary';
+            }
+            $model->extraEmployee = $model->employee_id;
+
             if ($model->save()) {
-                $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
-                EmployeeHistory::create('SAL'.date('Ymdhis'), "Update Salary", "Salary for $fullname has been successfully updated.");
+                // $fullname = Employee::findOne($employeeId)?->fullname ?? '-';
+                // EmployeeHistory::create('SAL'.date('Ymdhis'), "Update Salary", "Salary for $fullname has been successfully updated.");
                 $model->getBehavior('tokenProtection')->consumeToken();
                 Yii::$app->session->setFlash('success', 'Salary updated successfully.');
                 return $this->redirect(['index']);
@@ -283,14 +317,16 @@ class SalaryController extends Controller
     public function actionReactive($id)
     {
         $model = $this->findModel($id);
-        $fullname = Employee::findOne($model->employee_id)?->fullname ?? '-';
+        // $fullname = Employee::findOne($model->employee_id)?->fullname ?? '-';
         // Non behavior token protection
         $model->detachBehavior('tokenProtection');
 
         // Update Salary
         $model->status_id = 1;
+        $model->extraRemarks = 'Reactive salary';
+        $model->extraEmployee = $model->employee_id;
         $model->save();
-        EmployeeHistory::create('SAL'.date('Ymdhis'), "Reactive Salary", "Salary for $fullname has been successfully reactived.");
+        // EmployeeHistory::create('SAL'.date('Ymdhis'), "Reactive Salary", "Salary for $fullname has been successfully reactived.");
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -354,7 +390,7 @@ class SalaryController extends Controller
                     Yii::$app->session->setFlash('success', 'The salary data was imported successfully.');
                     return $this->redirect(['index']);
                 }else{
-                    Yii::$app->session->setFlash('error', 'An error occurred: ' . $e->getMessage());
+                    Yii::$app->session->setFlash('error', 'An error occurred: ' . $result);
                 }
             }
         }
