@@ -37,8 +37,16 @@ use yii\helpers\Html;
                 <?= Html::encode($model->request_url) ?>
             </div>
             <div class="col-md-6">
-                <span class="text-secondary small">Record ID</span><br>
-                <span class='badge badge-success'><?= Html::encode($model->record_id) ?></span>
+                <?php
+                $addLabel = '';
+                $fullname = '';
+                if($model->employee){
+                    $addLabel = '/ Employee';
+                    $fullname = '/ '. $model->employee->fullname;
+                }
+                ?>
+                <span class="text-secondary small">Record ID<?=$addLabel?></span><br>
+                <span class='badge badge-success'><?= Html::encode($model->record_id) ?><?=$fullname?></span>
             </div>
         </div>
 

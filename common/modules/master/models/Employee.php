@@ -201,21 +201,37 @@ class Employee extends \yii\db\ActiveRecord
     public static function employeepayrollprofile($employee_id)
     {
         $profile_id = PayrollProfile::getDefaultId();
-        if($profile_id){
-            $EmployeePayrollProfile = EmployeePayrollProfile::findOne($profile_id);
-            if(!$EmployeePayrollProfile){
 
-                $model = new EmployeePayrollProfile();
-                $model->employee_id = $employee_id;
-                $model->profile_id = $profile_id;
-                $model->save();
-            }
-
-            $PayrollProfile = PayrollProfile::findOne($profile_id);
-            return $PayrollProfile->profile_name;
-        }else{
+        if (!$profile_id) {
             return '';
         }
+
+        // cek apakah sudah ada
+        $exists = EmployeePayrollProfile::find()
+            ->where([
+                'employee_id' => $employee_id,
+                'profile_id'  => $profile_id,
+            ])
+            ->exists();
+
+        if (!$exists) {
+            $model = new EmployeePayrollProfile();
+            $model->employee_id = $employee_id;
+            $model->profile_id  = $profile_id;
+            $model->extraRemarks = 'Create payroll method';
+            $model->extraEmployee = $employee_id;
+
+            if (!$model->save()) {
+                Yii::error(
+                    "Failed to create EmployeePayrollProfile | employee_id={$employee_id} | profile_id={$profile_id} | errors=" .
+                    \yii\helpers\VarDumper::dumpAsString($model->errors),
+                    'payroll'
+                );
+            }
+        }
+
+        $payrollProfile = PayrollProfile::findOne($profile_id);
+        return $payrollProfile ? $payrollProfile->profile_name : '';
     }
 
     public static function dropdown()

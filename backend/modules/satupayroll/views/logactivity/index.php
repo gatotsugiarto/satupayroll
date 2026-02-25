@@ -77,13 +77,28 @@ $gridColumns = [
             'headerOptions' => ['class' => 'text-white bg-creative text-center'],
         ],
         [
-            'attribute' => 'controller_action', 
+            'attribute' => 'remarks', 
             'headerOptions' => ['class' => 'text-white bg-creative text-center'],
         ],
         [
-            'attribute' => 'model_name', 
-            'headerOptions' => ['class' => 'text-white bg-creative text-center'],
+            'attribute' => 'employee_id',
+            'format' => 'raw',
+            'value' => function ($model) {
+                if($model->employee){
+                    return $model->employee->fullname;
+                }else{
+                    return '-';
+                }
+            },
         ],
+        // [
+        //     'attribute' => 'controller_action', 
+        //     'headerOptions' => ['class' => 'text-white bg-creative text-center'],
+        // ],
+        // [
+        //     'attribute' => 'model_name', 
+        //     'headerOptions' => ['class' => 'text-white bg-creative text-center'],
+        // ],
         [
             'attribute' => 'action_by',
             'format' => 'raw',

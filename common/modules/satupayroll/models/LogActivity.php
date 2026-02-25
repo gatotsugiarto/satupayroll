@@ -9,6 +9,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 
 use common\modules\auth\models\User;
+use common\modules\master\models\Employee;
 
 class LogActivity extends ActiveRecord
 {
@@ -41,7 +42,7 @@ class LogActivity extends ActiveRecord
     {
         return [
             [['controller_action', 'model_name', 'record_id'], 'required'],
-            [['record_id', 'action_by'], 'integer'],
+            [['employee_id', 'record_id', 'action_by'], 'integer'],
             [['created_at'], 'safe'],
             [['controller_action', 'model_name', 'status'], 'string', 'max' => 50],
             [['ip_address'], 'string', 'max' => 45],
@@ -67,6 +68,7 @@ class LogActivity extends ActiveRecord
             'before_data' => 'Before Data',
             'after_data' => 'After Data',
             'status' => 'Status',
+            'employee_id' => 'Employee',
             'remarks' => 'Remarks',
         ];
     }
@@ -75,5 +77,11 @@ class LogActivity extends ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'action_by']);
+    }
+
+    // Relasi ke employee
+    public function getEmployee()
+    {
+        return $this->hasOne(Employee::class, ['id' => 'employee_id']);
     }
 }

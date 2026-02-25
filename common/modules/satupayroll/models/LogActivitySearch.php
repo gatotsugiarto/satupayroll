@@ -17,8 +17,8 @@ class LogActivitySearch extends LogActivity
     public function rules()
     {
         return [
-            [['id', 'record_id', 'action_by'], 'integer'],
-            [['controller_action', 'model_name', 'created_at', 'ip_address', 'user_agent', 'request_url', 'before_data', 'after_data', 'status', 'remarks'], 'safe'],
+            [['id'], 'integer'],
+            [['employee_id', 'action_by', 'record_id', 'controller_action', 'model_name', 'created_at', 'ip_address', 'user_agent', 'request_url', 'before_data', 'after_data', 'status', 'remarks'], 'safe'],
         ];
     }
 
@@ -42,6 +42,8 @@ class LogActivitySearch extends LogActivity
     public function search($params, $formName = null)
     {
         $query = LogActivity::find();
+        $query->joinWith(['employee']);
+        $query->joinWith(['user']);
 
         // add conditions that should always apply here
 
@@ -68,12 +70,13 @@ class LogActivitySearch extends LogActivity
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'record_id' => $this->record_id,
-            'action_by' => $this->action_by,
+            // 'record_id' => $this->record_id,
+            // 'action_by' => $this->action_by,
             'created_at' => $this->created_at,
         ]);
 
         $query->andFilterWhere(['like', 'controller_action', $this->controller_action])
+            ->andFilterWhere(['like', 'log_activity.id', $this->record_id])
             ->andFilterWhere(['like', 'model_name', $this->model_name])
             ->andFilterWhere(['like', 'ip_address', $this->ip_address])
             ->andFilterWhere(['like', 'user_agent', $this->user_agent])
@@ -81,6 +84,8 @@ class LogActivitySearch extends LogActivity
             ->andFilterWhere(['like', 'before_data', $this->before_data])
             ->andFilterWhere(['like', 'after_data', $this->after_data])
             ->andFilterWhere(['like', 'status', $this->status])
+            ->andFilterWhere(['like', 'employee.fullname', $this->employee_id])
+            ->andFilterWhere(['like', 'user.fullname', $this->action_by])
             ->andFilterWhere(['like', 'remarks', $this->remarks]);
 
         return $dataProvider;

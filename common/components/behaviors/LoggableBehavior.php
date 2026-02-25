@@ -13,20 +13,43 @@ class LoggableBehavior extends Behavior
     private $_beforeValues = [];
     private $_beforeDelete = [];
     private $_dirtyAttributes = [];
+    
+    public $extraRemarks;
+    public $extraEmployee;
 
     public function events()
     {
         return [
-            ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
             ActiveRecord::EVENT_AFTER_INSERT => 'afterInsert',
+            ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
             ActiveRecord::EVENT_AFTER_UPDATE => 'afterUpdate',
             ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
             ActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
         ];
     }
 
-    protected function log($action, $before = null, $after = null)
+    public function manualLog($action, $extraRemarks = null, $extraEmployee = null, $recordId = null)
     {
+        $log = new LogActivity();
+        $log->controller_action = $action;
+        $log->model_name = $this->modelName ?: ($this->owner ? $this->owner->tableName() : 'EmployeeUpload');
+        $log->record_id = $recordId ?? ($this->owner ? $this->owner->primaryKey : 1);
+        $log->employee_id = $extraEmployee;
+        $log->remarks = $extraRemarks ?? ucfirst($action) . ' performed';
+        $log->ip_address = Yii::$app->request->userIP ?? 'console';
+        $log->user_agent = Yii::$app->request->userAgent ?? 'console';
+        $log->request_url = Yii::$app->request->url ?? 'console';
+        $log->status = 'success';
+        $log->save(false);
+    }
+
+
+    protected function log($action, $extraRemarks = null, $extraEmployee = null, $before = null, $after = null)
+    {
+        if ($this->owner->disableLog ?? false) { 
+            return; // skip log 
+        }
+
         $log = new LogActivity();
         $log->controller_action = $action;
         $log->model_name = $this->modelName ?: $this->owner->tableName();
@@ -39,7 +62,20 @@ class LoggableBehavior extends Behavior
         $log->before_data = $before ? json_encode($before, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) : null;
         $log->after_data = $after ? json_encode($after, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) : null;
         $log->status = 'success';
-        $log->remarks = ucfirst($action) . ' performed';
+
+        $employee_id = NULL;
+        if (!empty($this->extraEmployee)) { 
+            $employee_id = $this->extraEmployee; 
+        }
+        $log->employee_id = $employee_id;
+        
+        // default remarks 
+        $remarks = ucfirst($action) . ' performed'; 
+        // kalau ada tambahan info dari controller, gabungkan 
+        if (!empty($this->extraRemarks)) { 
+            $remarks = $this->extraRemarks; 
+        } 
+        $log->remarks = $remarks;
 
         if (!$log->save(false)) {
             Yii::error('LogActivity failed to save: ' . json_encode($log->getErrors()));
@@ -63,7 +99,7 @@ class LoggableBehavior extends Behavior
 
     public function afterInsert($event)
     {
-        $this->log('create', null, $this->owner->getAttributes());
+        $this->log('create', null, null, null, $this->owner->getAttributes());
     }
 
     public function afterUpdate($event)
@@ -85,11 +121,11 @@ class LoggableBehavior extends Behavior
             $after[$attribute] = $newValue;
         }
 
-        $this->log('update', $this->_beforeValues, $after);
+        $this->log('update', null, null, $this->_beforeValues, $after);
     }
 
     public function afterDelete($event)
     {
-        $this->log('delete', $this->_beforeDelete, null);
+        $this->log('delete', null, null, $this->_beforeDelete, null);
     }
 }

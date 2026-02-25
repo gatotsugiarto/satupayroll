@@ -50,7 +50,7 @@ class PayrollController extends Controller
     public function actionUpload()
     {
         $model = new UploadForm();
-        $modelPayroll = new Payroll();
+        $modelEmployeeUpload = new EmployeeUpload();
 
         if (Yii::$app->request->isAjax) {
             return $this->renderAjax('_upload', [
@@ -74,11 +74,13 @@ class PayrollController extends Controller
 
                     if($result === true){
                         EmployeeHistory::create($referral_code, "Import Payroll", "Payroll data import was successful [$referral_code]");
+
                         // return false;
                         Yii::$app->session->setFlash('success', 'The payroll data was imported successfully.');
                         return $this->redirect(['reportupload', 'referral_code' => $referral_code]);
                     }else{
-                        Yii::$app->session->setFlash('error', 'An error occurred: ' . $e->getMessage());
+                        Yii::$app->session->setFlash('error', 'An error occurred: '.$result);
+                        // Yii::$app->session->setFlash('error', 'An error occurred: ' . $e->getMessage());
                     }
                 }
             }
@@ -508,6 +510,9 @@ class PayrollController extends Controller
                     EmployeeUpload::adjust_salary_from_upload($id);
 
                     $employeepayrollprofile = Employee::employeepayrollprofile($employee_id);
+
+                    $LoggableBehavior = new \common\components\behaviors\LoggableBehavior();
+                    $LoggableBehavior->manualLog('create', 'Register employee', $employee_id, $employee_id);
 
                     $link_salary  = \Yii::$app->request->BaseUrl.'/master/salary/index';
                     $message = "Employee registered successfully. Payroll profile: $employeepayrollprofile. Please manage the salary details.";

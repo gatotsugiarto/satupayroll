@@ -158,6 +158,9 @@ class EmployeeController extends Controller
 
                 $employeepayrollprofile = Employee::employeepayrollprofile($employee_id);
 
+                $LoggableBehavior = new \common\components\behaviors\LoggableBehavior();
+                $LoggableBehavior->manualLog('create', 'Register employee', $employee_id, $employee_id);
+
                 $link_salary  = \Yii::$app->request->BaseUrl.'/master/salary/index';
                 $message = "Employee registered successfully. Payroll profile: $employeepayrollprofile. Please manage the salary details.";
 

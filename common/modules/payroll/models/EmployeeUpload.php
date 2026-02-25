@@ -4,14 +4,24 @@ namespace common\modules\payroll\models;
 
 use Yii;
 
+use yii\db\ActiveRecord;
+use yii\db\Expression;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
+
+use common\components\behaviors\TokenProtectedFormBehavior;
+use common\components\behaviors\LoggableBehavior;
+
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 use common\modules\master\models\UploadItem;
+use common\modules\auth\models\User;
 
 
 class EmployeeUpload extends \yii\db\ActiveRecord
 {
 
+    public $disableLog;
 
     /**
      * {@inheritdoc}
@@ -19,6 +29,45 @@ class EmployeeUpload extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'employee_upload';
+    }
+
+    public function behaviors()
+    {
+        if ($this instanceof UserSearch) {
+            return [];
+        }
+
+        return [
+            // created_at & updated_at => NOW()
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+
+            // created_by & updated_by => user login
+            [
+                'class' => BlameableBehavior::class,
+                'createdByAttribute' => 'created_by',
+                'updatedByAttribute' => 'updated_by',
+            ],
+            
+            // token protection untuk form
+            'tokenProtection' => [
+                'class' => TokenProtectedFormBehavior::class,
+                'tokenAttribute' => 'form_token',
+                'sessionKey' => 'employee_upload',
+            ],
+            
+            // log activity otomatis
+            [
+                'class' => LoggableBehavior::class,
+                'modelName' => 'EmployeeUpload', // opsional, default pakai nama tabel
+            ],
+        ];
     }
 
     /**
@@ -196,8 +245,14 @@ class EmployeeUpload extends \yii\db\ActiveRecord
                 $EmployeeUpload->upload_date = $upload_date;
                 $EmployeeUpload->referral_code = $referral_code;
 
+                $EmployeeUpload->disableLog = true;
                 $EmployeeUpload->save(false);
             }
+
+            
+            $LoggableBehavior = new \common\components\behaviors\LoggableBehavior();
+            $LoggableBehavior->manualLog('upload', 'Upload payroll file', $employee_id = NULL, 1);
+
 
             $EmployeeUpload->report_upload($referral_code, $upload_date);
             self::adjust_salary_from_upload();
