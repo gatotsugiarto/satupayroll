@@ -142,10 +142,6 @@ class EmployeeController extends Controller
                 $sql2 = "UPDATE employee_join_resign SET status_id = 2 WHERE id = $id";
                 \Yii::$app->db->createCommand($sql2)->execute();
 
-                $referral_code = 'PEG'.date('Ymdhis');
-                $message2 = "$fullname - $jabatan has been successfully added.";
-                EmployeeHistory::create($referral_code, "The new employee", $message2);
-
                 $tetap = Employee::tetap();
                 $pkwt = Employee::pkwt();
                 $karyawan = Employee::total();
@@ -178,50 +174,6 @@ class EmployeeController extends Controller
             Yii::$app->session->setFlash('danger', 'The new employee data has already been successfully added previously.');
             return $this->redirect(['/payroll/payroll/joinresign']);
         }
-        
-        // $model = Employee::findOne($id);
-        // if(!$model){
-        //     $sql = "INSERT INTO employee 
-        //         SELECT id, region_id, region, company_id, company, branch_id, branch, site_office_id, site_office, department_id, department, division_id, division, e_number, fullname, join_date, marital_status_id, marital_status, family_status_id, family_status, ptkp_id, ptkp, level_jabatan_id, level_jabatan, jabatan_id, jabatan, grade_id, grade, email, is_npwp, npwp_id, bpjs_tk, bpjs_kes, jkk_id, jkk, bank_id, bank, bank_no, employee_status_id, employee_status, join_date_prorate,resign_prorate,resign_date,1 AS cost_center_id, 1, NOW(), $user_id, NOW(), $user_id FROM employee_upload WHERE id = $id";
-        //     $affectedRows =\Yii::$app->db->createCommand($sql)->execute();
-
-
-        //     if ($affectedRows > 0) {
-        //         $Employee = Employee::findOne($id);
-        //         $fullname = $Employee->fullname;
-        //         $jabatan = $Employee->jabatan;
-        //         $link_salary  = \Yii::$app->request->BaseUrl.'/master/salary/index';
-        //         $message = "Data pegawai baru $fullname - $jabatan telah berhasil ditambahkan, <a href='$link_salary'><b>Klik Disini</b></a> untuk kelola data gaji.";
-                
-        //         $sql2 = "UPDATE employee_join_resign SET status_id = 2 WHERE id = $id";
-        //         \Yii::$app->db->createCommand($sql2)->execute();
-
-        //         $referral_code = 'PEG'.date('Ymdhis');
-        //         $message2 = "Pegawai baru $fullname - $jabatan telah berhasil ditambahkan";
-        //         EmployeeHistory::create($referral_code, "Data Pegawai", $message2);
-
-        //         $tetap = Employee::tetap();
-        //         ReportUpload::updateAll(['tetap' => $tetap], ['id' => 2]);
-                
-        //         $no_salary = Payroll::no_salary();
-        //         ReportUpload::updateAll(['no_salary' => $no_salary]);
-
-        //         Yii::$app->session->setFlash('success', $message);
-        //         return $this->redirect(['/master/employee/index']);
-        //     } else {
-        //         $message = "Gagal atau tidak ada perubahan data.";
-        //         Yii::$app->session->setFlash('danger', $message);
-        //         return $this->redirect(['/payroll/payroll/joinresign']);
-        //     }
-        // }else{
-        //     $message = "Data pegawai baru telah berhasil ditambahkan sebelumnya.";
-
-        //     $sql2 = "UPDATE employee_join_resign SET status_id = 2 WHERE id = $id";
-        //     \Yii::$app->db->createCommand($sql2)->execute();
-
-        //     Yii::$app->session->setFlash('danger', $message);
-        //     return $this->redirect(['/payroll/payroll/joinresign']);
-        // }
     }
 
     public function actionResignemployee($id)
@@ -247,10 +199,6 @@ class EmployeeController extends Controller
                 
                 $sql2 = "UPDATE employee_uploaded_detail SET status_id = 2 WHERE id = $id";
                 \Yii::$app->db->createCommand($sql2)->execute();
-
-                $referral_code = 'PEG'.date('Ymdhis');
-                $message2 = "resigned $fullname - $jabatan has been deactivated";
-                EmployeeHistory::create($referral_code, "New employee", $message2);
 
                 $resign = Payroll::resign();
                 Payroll::no_salary();

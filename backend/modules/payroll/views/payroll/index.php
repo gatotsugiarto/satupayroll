@@ -34,6 +34,13 @@ $gridColumns = [
         'pageSummary' => true,
     ],
     [
+        'attribute' => 'pph21',
+        'width' => '150px',
+        'hAlign' => 'right',
+        'format' => ['decimal', 2],
+        'pageSummary' => true,
+    ],
+    [
         'attribute' => 'total_deduction',
         'width' => '150px',
         'hAlign' => 'right',
@@ -169,6 +176,13 @@ $gridColumns = [
         'year',
         [
             'attribute' => 'gross',
+            'width' => '150px',
+            'hAlign' => 'right',
+            'format' => ['decimal', 2],
+            'pageSummary' => true,
+        ],
+        [
+            'attribute' => 'pph21',
             'width' => '150px',
             'hAlign' => 'right',
             'format' => ['decimal', 2],

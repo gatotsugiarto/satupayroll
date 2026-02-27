@@ -32,6 +32,12 @@ class Calculate extends Component
 
         self::sumByCategory($category_id=1, $generate_mode, $period_code, $status_id, $user_id, $list_employee_id); // FIXED_INCOME
 
+        self::overtime($year, $month, 20, $generate_mode, $period_code, $status_id, $user_id, $list_employee_id); // LEMBUR
+
+        self::prorate($year, $month, 23, $generate_mode, $period_code, $status_id, $user_id, $list_employee_id); // CUT_UNPAID
+
+        self::prorate($year, $month, 25, $generate_mode, $period_code, $status_id, $user_id, $list_employee_id); // CUT_ALPHA
+
         self::sumByCategory($category_id=2, $generate_mode, $period_code, $status_id, $user_id, $list_employee_id); // VAR_INCOME
 
         self::sumByCategoryWithSign($item_id=46, $generate_mode, $period_code, $status_id, $user_id, $list_employee_id); // OTHER_INCOME
@@ -148,6 +154,12 @@ class Calculate extends Component
         self::insertAdditionalBenefit($generate_mode, $period_code, $status_id, $user_id); // DATA
 
         self::sumByCategory($category_id=1, $generate_mode, $period_code, $status_id, $user_id); // FIXED_INCOME
+
+        self::overtime($year, $month, 20, $generate_mode, $period_code, $status_id, $user_id); // LEMBUR
+
+        self::prorate($year, $month, 23, $generate_mode, $period_code, $status_id, $user_id); // CUT_UNPAID
+
+        self::prorate($year, $month, 25, $generate_mode, $period_code, $status_id, $user_id); // CUT_ALPHA
 
         self::sumByCategory($category_id=2, $generate_mode, $period_code, $status_id, $user_id); // VAR_INCOME
 
@@ -438,6 +450,32 @@ class Calculate extends Component
         \Yii::$app->db->createCommand($sql)->execute();
     }
 
+    /**
+     * Ovetime
+    */
+    public static function overtime($year, $month, $item_id, $generate_mode, $period_code, $status_id, $user_id, $employee_id=array())
+    {
+        if($employee_id){
+            $sql = "UPDATE payroll_detail ovt INNER JOIN payroll_item pi ON pi.id = $item_id AND ovt.status_id = 1 AND ovt.employee_id IN ($employee_id) AND ovt.item_code = pi.code AND pi.status_id = 1 AND ovt.period_code = '$period_code' INNER JOIN payroll_detail fi ON fi.item_code = pi.item_code AND ovt.period_code = fi.period_code AND ovt.employee_id = fi.employee_id AND fi.status_id = 1 SET ovt.amount = ovt.amount*fi.amount*pi.percent";
+        }else{
+            $sql = "UPDATE payroll_detail ovt INNER JOIN payroll_item pi ON pi.id = $item_id AND ovt.status_id = 1 AND ovt.item_code = pi.code AND pi.status_id = 1 AND ovt.period_code = '$period_code' INNER JOIN payroll_detail fi ON fi.item_code = pi.item_code AND ovt.period_code = fi.period_code AND ovt.employee_id = fi.employee_id AND fi.status_id = 1 SET ovt.amount = ovt.amount*fi.amount*pi.percent";
+        }
+        \Yii::$app->db->createCommand($sql)->execute();
+    }
+
+    /**
+     * Prorate
+    */
+    public static function prorate($year, $month, $item_id, $generate_mode, $period_code, $status_id, $user_id, $employee_id=array())
+    {
+        if($employee_id){
+            $sql = "UPDATE payroll_detail ovt INNER JOIN payroll_item pi ON pi.id = $item_id AND ovt.status_id = 1 AND ovt.item_code = pi.code AND pi.status_id = 1 AND ovt.period_code = '$period_code' AND ovt.employee_id IN ($employee_id) INNER JOIN payroll_detail fi ON fi.item_code = pi.item_code AND ovt.period_code = fi.period_code AND ovt.employee_id = fi.employee_id AND fi.status_id = 1 INNER JOIN (SELECT working_day FROM employee_upload LIMIT 1) wd SET ovt.amount = ovt.amount/wd.working_day*fi.amount";
+        }else{
+            $sql = "UPDATE payroll_detail ovt INNER JOIN payroll_item pi ON pi.id = $item_id AND ovt.status_id = 1 AND ovt.item_code = pi.code AND pi.status_id = 1 AND ovt.period_code = '$period_code' INNER JOIN payroll_detail fi ON fi.item_code = pi.item_code AND ovt.period_code = fi.period_code AND ovt.employee_id = fi.employee_id AND fi.status_id = 1 INNER JOIN (SELECT working_day FROM employee_upload LIMIT 1) wd SET ovt.amount = ovt.amount/wd.working_day*fi.amount";
+        }
+        \Yii::$app->db->createCommand($sql)->execute();
+    }
+
     public static function PayrollApproveBatch($year, $month, $period_code, $status_id, $user_id)
     {
         PayrollDetail::updateAll([
@@ -709,9 +747,9 @@ class Calculate extends Component
 
         if($employee_id){
             $list_employee_id = implode(',', $employee_id);
-            $sql = "INSERT INTO payroll (employee_id, month, year, period_code, gross, total_deduction, thp, status_id, created_at, created_by, updated_at, updated_by) SELECT employee_id, $month, $year, period_code, IFNULL(MAX(CASE WHEN item_code = 'BRUTO' THEN amount END),0) AS gross, IFNULL(MAX(CASE WHEN item_code = 'TOTAL_POTONGAN' THEN amount END),0) AS total_potongan, IFNULL(MAX(CASE WHEN item_code = 'THP' THEN amount END),0) AS thp, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail WHERE employee_id IN ($list_employee_id) AND period_code = '$period_code' GROUP BY employee_id";
+            $sql = "INSERT INTO payroll (employee_id, month, year, period_code, gross, pph21, total_deduction, thp, status_id, created_at, created_by, updated_at, updated_by) SELECT employee_id, $month, $year, period_code, IFNULL(MAX(CASE WHEN item_code = 'BRUTO' THEN amount END),0) AS gross, IFNULL(MAX(CASE WHEN item_code = 'PPH21' THEN amount END),0) AS pph21, IFNULL(MAX(CASE WHEN item_code = 'TOTAL_POTONGAN' THEN amount END),0) AS total_potongan, IFNULL(MAX(CASE WHEN item_code = 'THP' THEN amount END),0) AS thp, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail WHERE employee_id IN ($list_employee_id) AND period_code = '$period_code' GROUP BY employee_id";
         }else{
-            $sql = "INSERT INTO payroll (employee_id, month, year, period_code, gross, total_deduction, thp, status_id, created_at, created_by, updated_at, updated_by) SELECT employee_id, $month, $year, period_code, IFNULL(MAX(CASE WHEN item_code = 'BRUTO' THEN amount END),0) AS gross, IFNULL(MAX(CASE WHEN item_code = 'TOTAL_POTONGAN' THEN amount END),0) AS total_potongan, IFNULL(MAX(CASE WHEN item_code = 'THP' THEN amount END),0) AS thp, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail WHERE period_code = '$period_code' GROUP BY employee_id";
+            $sql = "INSERT INTO payroll (employee_id, month, year, period_code, gross, pph21, total_deduction, thp, status_id, created_at, created_by, updated_at, updated_by) SELECT employee_id, $month, $year, period_code, IFNULL(MAX(CASE WHEN item_code = 'BRUTO' THEN amount END),0) AS gross, IFNULL(MAX(CASE WHEN item_code = 'PPH21' THEN amount END),0) AS pph21, IFNULL(MAX(CASE WHEN item_code = 'TOTAL_POTONGAN' THEN amount END),0) AS total_potongan, IFNULL(MAX(CASE WHEN item_code = 'THP' THEN amount END),0) AS thp, $status_id, NOW(), $user_id, NOW(), $user_id FROM payroll_detail WHERE period_code = '$period_code' GROUP BY employee_id";
         }
         \Yii::$app->db->createCommand($sql)->execute();
     }
@@ -733,7 +771,7 @@ class Calculate extends Component
     public static function PayrollCloseSalary($year, $month, $period_code)
     {
         // Salary -> is_processed = 1 (Y), 2 = (N)
-        $sql = "UPDATE salary s INNER JOIN payroll_item pi ON s.payroll_item_id = pi.id AND s.status_id = 2 SET s.is_processed = 1, s.processed_at = NOW(), s.status_id = 1 WHERE pi.salary_type = 'ONETIME'";
+        $sql = "UPDATE salary s INNER JOIN payroll_item pi ON s.payroll_item_id = pi.id SET s.is_processed = 1, s.status_id = 2, s.processed_at = NOW() WHERE pi.salary_type = 'ONETIME' AND s.status_id = 1";
         // $sql = "UPDATE salary s INNER JOIN payroll_item pi ON s.payroll_item_id = pi.id AND s.status_id = 2 SET s.is_processed = 1, s.processed_at = NOW() WHERE pi.salary_type = 'ONETIME'";
         \Yii::$app->db->createCommand($sql)->execute();
 

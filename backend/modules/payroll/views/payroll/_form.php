@@ -53,7 +53,7 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                     ],
                     'pluginOptions' => [
                         'allowClear' => true,
-                        'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
+                        // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
                         'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
                     ],
                 ]) ?>
@@ -71,7 +71,7 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                     ],
                     'pluginOptions' => [
                         'allowClear' => true,
-                        'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
+                        // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
                         'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
                     ],
                 ]) ?>
@@ -86,7 +86,7 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
                     ],
                     'pluginOptions' => [
                         'allowClear' => true,
-                        'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
+                        // 'dropdownParent' => new \yii\web\JsExpression('$("#appModal")'), // pastikan ID sesuai modal
                         'escapeMarkup' => new \yii\web\JsExpression('function (m) { return m; }'),
                     ],
                 ]) ?>

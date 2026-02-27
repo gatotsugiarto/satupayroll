@@ -73,7 +73,7 @@ class PayrollController extends Controller
                     $result = EmployeeUpload::saveRecords($inputFile, $referral_code);
 
                     if($result === true){
-                        EmployeeHistory::create($referral_code, "Import Payroll", "Payroll data import was successful [$referral_code]");
+                        // EmployeeHistory::create($referral_code, "Import Payroll", "Payroll data import was successful [$referral_code]");
 
                         // return false;
                         Yii::$app->session->setFlash('success', 'The payroll data was imported successfully.');
@@ -234,6 +234,10 @@ class PayrollController extends Controller
 
                     $generate_mode = 'Batch';
                     $model->PayrollGenerate($generate_mode);
+                    $period_code = $model->year . '-' . str_pad($model->month, 2, '0', STR_PAD_LEFT);
+
+                    $LoggableBehavior = new \common\components\behaviors\LoggableBehavior();
+                    $LoggableBehavior->manualLog('batch', 'Payroll batch period '.$period_code, $employee_id = NULL, 1);
 
                     return [
                         'success' => true,
@@ -259,6 +263,10 @@ class PayrollController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $generate_mode = 'Batch';
             $model->PayrollGenerate($generate_mode);
+            $period_code = $model->year . '-' . str_pad($model->month, 2, '0', STR_PAD_LEFT);
+
+            $LoggableBehavior = new \common\components\behaviors\LoggableBehavior();
+            $LoggableBehavior->manualLog('batch', 'Payroll batch period '.$period_code, $employee_id = NULL, 1);
             
             $model->getBehavior('tokenProtection')->consumeToken();
             Yii::$app->session->setFlash('success', 'Payroll processing has been completed successfully. All employee payroll data has been finalized and recorded.');
@@ -287,6 +295,12 @@ class PayrollController extends Controller
                     $period_code = $model->year . '-' . str_pad($model->month, 2, '0', STR_PAD_LEFT);
                     $generate_mode = 'Batch';
                     $model->PayrollApprove($generate_mode);
+                    
+                    $period_code = $model->year . '-' . str_pad($model->month, 2, '0', STR_PAD_LEFT);
+
+                    $LoggableBehavior = new \common\components\behaviors\LoggableBehavior();
+                    $LoggableBehavior->manualLog('approve', 'Payroll approve period '.$period_code, $employee_id = NULL, 1);
+
                     $model->getBehavior('tokenProtection')->consumeToken();
 
                     return [
@@ -313,6 +327,9 @@ class PayrollController extends Controller
             $generate_mode = 'Batch';
             $model->PayrollApprove($generate_mode);
             $period_code = $model->year . '-' . str_pad($model->month, 2, '0', STR_PAD_LEFT);
+
+            $LoggableBehavior = new \common\components\behaviors\LoggableBehavior();
+            $LoggableBehavior->manualLog('approve', 'Payroll approve period '.$period_code, $employee_id = NULL, 1);
             
             $model->getBehavior('tokenProtection')->consumeToken();
             Yii::$app->session->setFlash('success', "The payroll period $period_code has been reviewed and approved by the Finance department and is now finalized.");
@@ -342,6 +359,12 @@ class PayrollController extends Controller
                     $generate_mode = 'Single';
                     $model->PayrollGenerate($generate_mode, $model->arr_employee_id);
 
+                    $LoggableBehavior = new \common\components\behaviors\LoggableBehavior();
+                    $period_code = $model->year . '-' . str_pad($model->month, 2, '0', STR_PAD_LEFT);
+                    foreach($model->arr_employee_id as $employee_id){
+                        $LoggableBehavior->manualLog('revise', 'Payroll revise period '.$period_code, $employee_id, 1);
+                    }
+
                     return [
                         'success' => true,
                         'message' => 'Payroll processing has been successfully revised. All payroll data for the selected period has been updated and reprocessed accordingly.',
@@ -365,6 +388,12 @@ class PayrollController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $generate_mode = 'Single';
             $model->PayrollGenerate($generate_mode, $model->arr_employee_id);
+
+            $LoggableBehavior = new \common\components\behaviors\LoggableBehavior();
+            $period_code = $model->year . '-' . str_pad($model->month, 2, '0', STR_PAD_LEFT);
+            foreach($model->arr_employee_id as $employee_id){
+                $LoggableBehavior->manualLog('revise', 'Payroll revise period '.$period_code, $employee_id, 1);
+            }
             
             $model->getBehavior('tokenProtection')->consumeToken();
             Yii::$app->session->setFlash('success', 'Payroll processing has been successfully revised. All payroll data for the selected period has been updated and reprocessed accordingly.');
@@ -392,7 +421,10 @@ class PayrollController extends Controller
                     $model->getBehavior('tokenProtection')->consumeToken();
 
                     $generate_mode = 'Batch';
+                    $period_code = $model->year . '-' . str_pad($model->month, 2, '0', STR_PAD_LEFT);
                     $model->PayrollCancel($generate_mode);
+                    $LoggableBehavior = new \common\components\behaviors\LoggableBehavior();
+                    $LoggableBehavior->manualLog('cancel', 'Payroll cancel period '.$period_code, $employee_id = NULL, 1);
 
                     return [
                         'success' => true,
@@ -416,7 +448,10 @@ class PayrollController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $generate_mode = 'Batch';
+            $period_code = $model->year . '-' . str_pad($model->month, 2, '0', STR_PAD_LEFT);
             $model->PayrollCancel($generate_mode);
+            $LoggableBehavior = new \common\components\behaviors\LoggableBehavior();
+            $LoggableBehavior->manualLog('cancel', 'Payroll cancel period '.$period_code, $employee_id = NULL, 1);
             
             $model->getBehavior('tokenProtection')->consumeToken();
             Yii::$app->session->setFlash('success', 'Payroll processing has been cancelled successfully. All payroll data for the selected period has been stopped and will not be processed further.');

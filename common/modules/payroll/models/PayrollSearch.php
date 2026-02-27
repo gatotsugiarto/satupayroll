@@ -19,7 +19,7 @@ class PayrollSearch extends Payroll
         return [
             [['id', 'month', 'year', 'status_id', 'created_by', 'updated_by'], 'integer'],
             [['employee_id', 'period_code', 'reason', 'approved_at', 'created_at', 'updated_at'], 'safe'],
-            [['gross', 'total_deduction', 'thp', 'thr_accrual'], 'number'],
+            [['gross', 'pph21', 'total_deduction', 'thp', 'thr_accrual'], 'number'],
         ];
     }
 
@@ -74,6 +74,7 @@ class PayrollSearch extends Payroll
             'month' => $this->month,
             'year' => $this->year,
             'gross' => $this->gross,
+            'pph21' => $this->pph21,
             'total_deduction' => $this->total_deduction,
             'thp' => $this->thp,
             'thr_accrual' => $this->thr_accrual,

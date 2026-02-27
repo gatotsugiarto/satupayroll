@@ -304,10 +304,24 @@ class EmployeeUpload extends \yii\db\ActiveRecord
         // die;   
     }
 
+    /*
+    Rule:
+    1.  Marital_status_id
+    2.  Family_status_id
+    */
     public static function adjust_employee_pending_ptkp()
     {
-        $sql = "INSERT INTO employee_pending SELECT 0, e.id, e.e_number, eu.marital_status_id, eu.marital_status, eu.family_status_id, eu.family_status, eu.ptkp_id, eu.ptkp, DATE(CONCAT(YEAR(CURDATE()) + 1, '-01-01')), 'PTKP', 1, NOW(), 1, NOW(), 1 FROM employee e JOIN employee_upload eu ON eu.id = e.id WHERE (e.marital_status_id <> eu.marital_status_id OR e.family_status_id <> eu.family_status_id) AND NOT EXISTS (SELECT 1 FROM employee_pending ep WHERE ep.employee_id = e.id AND ep.status_id = 1 AND ep.pending_TYPE = 'PTKP')";
-        \Yii::$app->db->createCommand($sql)->execute();
+        $sql = "SELECT e.id FROM employee e JOIN employee_upload eu ON eu.id = e.id WHERE (e.marital_status_id <> eu.marital_status_id OR e.family_status_id <> eu.family_status_id) AND NOT EXISTS (SELECT 1 FROM employee_pending ep WHERE ep.employee_id = e.id AND ep.status_id = 1 AND ep.pending_type = 'PTKP')";
+
+        $employeeIds = Yii::$app->db->createCommand($sql)->queryColumn();
+
+        foreach ($employeeIds as $employee_id) {
+            $sql = "INSERT INTO employee_pending SELECT 0, e.id, e.e_number, eu.marital_status_id, eu.marital_status, eu.family_status_id, eu.family_status, eu.ptkp_id, eu.ptkp, DATE(CONCAT(YEAR(CURDATE()) + 1, '-01-01')), 'PTKP', 1, NOW(), 1, NOW(), 1 FROM employee e JOIN employee_upload eu ON e.id = $employee_id AND eu.id = e.id WHERE (e.marital_status_id <> eu.marital_status_id OR e.family_status_id <> eu.family_status_id) AND NOT EXISTS (SELECT 1 FROM employee_pending ep WHERE ep.employee_id = $employee_id AND ep.employee_id = e.id AND ep.status_id = 1 AND ep.pending_TYPE = 'PTKP')";
+            \Yii::$app->db->createCommand($sql)->execute();
+
+            $LoggableBehavior = new \common\components\behaviors\LoggableBehavior();
+            $LoggableBehavior->manualLog('insert', 'Pending employee', $employee_id, 1);
+        }
 
         return 1;
     }

@@ -77,7 +77,20 @@ $gridColumns = [
             'headerOptions' => ['class' => 'text-white bg-creative text-center'],
         ],
         [
-            'attribute' => 'remarks', 
+            'attribute' => 'remarks',
+            'format' => 'raw',
+            'value' => function ($model) {
+                return Html::a(Html::encode($model->remarks),
+                    'javascript:void(0);',
+                    [
+                        'class' => 'text-primary view-log',
+                        'data-url' => Url::to(['view', 'id' => $model->id]),
+                        'title' => 'View Details of ' . $model->record_id,
+                    ]
+                );
+            },
+            'headerOptions' => ['class' => 'text-white bg-creative text-center'],
+
             'headerOptions' => ['class' => 'text-white bg-creative text-center'],
         ],
         [
@@ -115,22 +128,22 @@ $gridColumns = [
             'attribute' => 'created_at', 
             'headerOptions' => ['class' => 'text-white bg-creative text-center'],
         ],
-        [
-            'attribute' => 'record_id',
-            'format' => 'raw',
-            'value' => function ($model) {
-                return Html::a(
-                    'Trx ID: '. Html::encode($model->record_id),
-                    'javascript:void(0);',
-                    [
-                        'class' => 'text-primary view-log',
-                        'data-url' => Url::to(['view', 'id' => $model->id]),
-                        'title' => 'View Details of ' . $model->record_id,
-                    ]
-                );
-            },
-            'headerOptions' => ['class' => 'text-white bg-creative text-center'],
-        ],
+        // [
+        //     'attribute' => 'record_id',
+        //     'format' => 'raw',
+        //     'value' => function ($model) {
+        //         return Html::a(
+        //             'Trx ID: '. Html::encode($model->record_id),
+        //             'javascript:void(0);',
+        //             [
+        //                 'class' => 'text-primary view-log',
+        //                 'data-url' => Url::to(['view', 'id' => $model->id]),
+        //                 'title' => 'View Details of ' . $model->record_id,
+        //             ]
+        //         );
+        //     },
+        //     'headerOptions' => ['class' => 'text-white bg-creative text-center'],
+        // ],
     ],
 ]) ?>
 
