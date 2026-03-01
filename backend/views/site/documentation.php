@@ -6,6 +6,33 @@ $baseUrl = Yii::$app->request->baseUrl;
 	html { 
 		scroll-behavior: smooth; 
 	}
+
+	/* submenu background sangat muda & clean */
+	.navbar.bg-warning .dropdown-menu {
+	    background-color: #fff3cd;
+	    border: 1px solid #ffe69c;
+	    border-radius: 6px;
+	    padding: 6px 0;
+	}
+
+	/* text normal */
+	.navbar.bg-warning .dropdown-menu .dropdown-item {
+	    color: #495057;
+	    font-weight: 500;
+	}
+
+	/* hover */
+	.navbar.bg-warning .dropdown-menu .dropdown-item:hover {
+	    background-color: #ffe69c;
+	    color: #212529;
+	}
+
+	/* active */
+	.navbar.bg-warning .dropdown-menu .dropdown-item:active {
+	    background-color: #ffc107;
+	    color: #212529;
+	}
+
 </style>
 
 <!-- Main Content -->
@@ -14,15 +41,33 @@ $baseUrl = Yii::$app->request->baseUrl;
     
 	<!-- Top Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-warning w-100">
-	  <div class="container-fluid">
-	    <div class="collapse navbar-collapse" id="navbarNav">
-	      <ul class="navbar-nav ms-auto">
+	  <ul class="navbar-nav">
 
-	        <li class="nav-item">
-	          <a class="nav-link text-white fw-bold" href="#dashboard">Dashboard</a>
-	        </li>
+	    <!-- DASHBOARD -->
+	    <li class="nav-item dropdown">
+	      <a class="nav-link dropdown-toggle text-white font-weight-bold" href="#" id="menuDashboard" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dashboard</a>
 
-	        <li class="nav-item">
+	      <div class="dropdown-menu">
+	        <a class="dropdown-item" href="#employer-payroll-cost">
+	          Employer Payroll Cost
+	        </a>
+	        <a class="dropdown-item" href="#employee-status">
+	          Employee Status
+	        </a>
+	        <a class="dropdown-item" href="#overtime">
+	          Overtime
+	        </a>
+	        <a class="dropdown-item" href="#take-home-pay">
+	          Take Home Pay
+	        </a>
+	        <a class="dropdown-item" href="#attendance-deduction">
+	          Attendance Deduction
+	        </a>
+	      </div>
+	    </li>
+
+	    <!-- USER MANAGEMENT -->
+	    <li class="nav-item">
 	          <a class="nav-link text-white fw-bold" href="#usermanagement">User Management</a>
 	        </li>
 
@@ -36,107 +81,66 @@ $baseUrl = Yii::$app->request->baseUrl;
 
 	        <li class="nav-item">
 	          <a class="nav-link text-white fw-bold" href="#logactivity">Log Activity</a>
-	        </li>
+	       </li>
 
-	      </ul>
-	    </div>
-	  </div>
+	  </ul>
 	</nav>
 
 
 
 	<!-- Documentation Content -->
 	<section class="col-md-12">
-	  <h2 id="dashboard">Payroll Dashboard Documentation</h2>
+	  <h2 id="dashboard"><strong>Payroll Dashboard Documentation</strong></h2>
 	  <p class="text-muted">
-	    This documentation provides detailed explanations of each dashboard component, including purpose, data sources, visualization methods, interpretation, and technical notes.
+	    This document provides a detailed overview of all payroll dashboard components, including their purpose, data sources, visualization, interpretation guidelines, and technical references.
 	  </p>
-	  <img src="<?=$baseUrl?>/img/documentation/dashboard.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+	  <img src="<?=$baseUrl?>/img/documentation/Satu-Payroll-Dashboard.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
 
 	  <!-- Employer Payroll Cost -->
-	  <h3 id="employer-payroll-cost">1. Employer Payroll Cost</h3>
-	  <img src="<?=$baseUrl?>/img/documentation/Employer-Payroll-Cost.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+	  <h3 id="employer-payroll-cost"><strong>1. Employer Payroll Cost</strong></h3>
+	  <h5><strong>Description</strong> The Employer Payroll Cost chart displays the total payroll expenses incurred by the employer for each payroll period. This includes all compensation and employer-paid contributions associated with employee salaries.</h5>
+	  <img src="<?=$baseUrl?>/img/documentation/Satu-Payroll-Employer-Payroll-Cost.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3" width="50%">
 	  <ul>
 	    <li><strong>Purpose:</strong> Displays the total payroll expenses borne by the company each month.</li>
 	    <li><strong>Data Source:</strong> Aggregated from base salary, allowances, deductions, and employer contributions (BPJS, tax, etc.).</li>
-	    <li><strong>Visualization:</strong> Monthly bar chart.</li>
-	    <li><strong>Interpretation:</strong> Stable values around ±65,000,000 in January and February 2026, providing a quick overview of monthly payroll consistency.</li>
-	    <li><strong>Technical Notes:</strong> 
-	      <ul>
-	        <li>Data should be pulled from the finalized payroll table (after deductions validation).</li>
-	        <li>Use <code>DECIMAL(15,2)</code> to avoid rounding errors.</li>
-	      </ul>
-	    </li>
 	  </ul>
 
 	  <!-- Employee Status -->
-	  <h3 id="employee-status">2. Employee Status</h3>
-	  <img src="<?=$baseUrl?>/img/documentation/Employee-Status.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+	  <h3 id="employee-status"><strong>2. Employee Status</strong></h3>
+	  <h5><strong>Description</strong> The Employee Status chart displays the distribution of employees based on their employment type for each payroll period. It provides visibility into workforce composition by showing how many employees are in Probation, PKWT (Fixed-Term Contract), and Permanent status.</h5>
+	  <img src="<?=$baseUrl?>/img/documentation/Satu-Payroll-Employee-Status.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3" width="50%">
 	  <ul>
 	    <li><strong>Purpose:</strong> Shows the distribution of employees by employment status.</li>
 	    <li><strong>Categories:</strong> Probation, PKWT (fixed-term contract), Permanent.</li>
-	    <li><strong>Visualization:</strong> Monthly bar chart.</li>
-	    <li><strong>Interpretation:</strong> Majority are Permanent employees (7 people), with smaller numbers in Probation and PKWT categories.</li>
-	    <li><strong>Technical Notes:</strong> 
-	      <ul>
-	        <li>Data sourced from the employee master table (<code>employee_status</code>).</li>
-	        <li>Ensure status values are validated and standardized.</li>
-	      </ul>
-	    </li>
 	  </ul>
 
 	  <!-- Overtime -->
-	  <h3 id="overtime">3. Overtime</h3>
-	  <img src="<?=$baseUrl?>/img/documentation/Overtime.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+	  <h3 id="overtime"><strong>3. Overtime</strong></h3>
+	  <h5><strong>Description</strong> The Overtime chart displays the total employee overtime recorded during each payroll period. It provides insight into overtime trends and helps evaluate additional labor costs incurred beyond regular working hours.</h5>
+	  
+	  <img src="<?=$baseUrl?>/img/documentation/Satu-Payroll-Overtime.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3" width="50%">
 	  <ul>
 	    <li><strong>Purpose:</strong> Displays overtime hours and compensation.</li>
 	    <li><strong>Data Source:</strong> Overtime timesheets combined with payroll overtime formula.</li>
-	    <li><strong>Visualization:</strong> Bar chart showing hours and compensation.</li>
-	    <li><strong>Interpretation:</strong> Overtime values are relatively low (&lt; 1.0 hours/compensation), indicating minimal overtime activity in January–February 2026.</li>
-	    <li><strong>Technical Notes:</strong> 
-	      <ul>
-	        <li>Overtime formula should follow regulations (e.g., 1.5x normal hourly rate).</li>
-	        <li>Store overtime hours as <code>DECIMAL(5,2)</code> for precision.</li>
-	      </ul>
-	    </li>
 	  </ul>
 
 	  <!-- Take Home Pay -->
-	  <h3 id="take-home-pay">4. Take Home Pay</h3>
-	  <img src="<?=$baseUrl?>/img/documentation/thp.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+	  <h3 id="take-home-pay"><strong>4. Take Home Pay</strong></h3>
+	  <h5><strong>Description</strong> The Take Home Pay chart shows the total net salary paid to employees after all earnings and deductions have been applied.</h5>
+	  <img src="<?=$baseUrl?>/img/documentation/Satu-Payroll-THP.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3" width="50%">
 	  <ul>
 	    <li><strong>Purpose:</strong> Displays the net salary employees receive after deductions.</li>
 	    <li><strong>Data Source:</strong> Final payroll (base salary + allowances – tax/BPJS deductions).</li>
-	    <li><strong>Visualization:</strong> Monthly bar chart.</li>
-	    <li><strong>Interpretation:</strong> Values range between 55,000,000 – 60,000,000, providing insight into net pay trends.</li>
-	    <li><strong>Technical Notes:</strong> 
-	      <ul>
-	        <li>Ensure PPh21 and BPJS deductions are calculated according to regulations.</li>
-	        <li>Store as <code>DECIMAL(15,2)</code> for consistent reporting.</li>
-	      </ul>
-	    </li>
 	  </ul>
 
 	  <!-- Attendance Deduction -->
-	  <h3 id="attendance-deduction">5. Attendance Deduction</h3>
-	  <img src="<?=$baseUrl?>/img/documentation/att-deduction.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3">
+	  <h3 id="attendance-deduction"><strong>5. Attendance Deduction</strong></h3>
+	  <h5><strong>Description</strong> The Attendance Deduction chart displays total salary deductions caused by attendance violations, such as late arrivals or other attendance-related penalties.</h5>
+	  
+	  <img src="<?=$baseUrl?>/img/documentation/Satu-Payroll-Attendance-Deduction.png" alt="Employer Payroll Cost Chart" class="img-fluid mb-3" width="50%">
 	  <ul>
 	    <li><strong>Purpose:</strong> Displays deductions applied due to late employee attendance.</li>
 	    <li><strong>Data Source:</strong> Attendance logs combined with payroll deduction rules.</li>
-	    <li><strong>Visualization:</strong> Line chart with shaded area showing monthly deduction values.</li>
-	    <li><strong>Interpretation:</strong> 
-	      <ul>
-	        <li>Deductions remain consistent at approximately 110,000 in January and February 2026.</li>
-	        <li>Highlights the financial impact of late arrivals and its stability across months.</li>
-	      </ul>
-	    </li>
-	    <li><strong>Technical Notes:</strong> 
-	      <ul>
-	        <li>Ensure attendance records are validated before applying deductions.</li>
-	        <li>Deduction formula should align with company HR policy and compliance standards.</li>
-	        <li>Store values as <code>DECIMAL(10,2)</code> for accuracy in payroll calculations.</li>
-	      </ul>
-	    </li>
 	  </ul>
 	</section>
 
