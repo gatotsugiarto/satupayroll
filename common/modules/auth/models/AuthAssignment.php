@@ -47,6 +47,21 @@ class AuthAssignment extends \yii\db\ActiveRecord
         ];
     }
 
+    public function buildRoleTree($roleName) {
+        $authManager = Yii::$app->authManager;
+        $children = $authManager->getChildren($roleName);
+        $tree = [
+            'text' => $roleName,
+            'children' => []
+        ];
+        foreach ($children as $child) {
+            $desc = $child->description ?: $child->name;
+            $tree['children'][] = $this->buildRoleTree($child->name, $authManager);
+            $tree['children'][count($tree['children'])-1]['text'] = $desc;
+        }
+        return $tree;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

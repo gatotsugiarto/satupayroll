@@ -165,9 +165,9 @@ $gridColumns = [
             'filterWidgetOptions' => [
                 'pluginOptions' => [
                     'allowClear' => true,
-                    'placeholder' => 'All Type',
+                    'placeholder' => 'Month',
                 ],
-                'options' => ['placeholder' => 'All Type'],
+                // 'options' => ['placeholder' => 'All Type'],
             ],
             'filterInputOptions' => ['class' => 'form-control'],
             'contentOptions' => ['class' => 'text-left'],
@@ -268,9 +268,9 @@ $gridColumns = [
             'filterWidgetOptions' => [
                 'pluginOptions' => [
                     'allowClear' => true,
-                    'placeholder' => 'All Status',
+                    'placeholder' => 'Status',
                 ],
-                'options' => ['placeholder' => 'All Status'],
+                // 'options' => ['placeholder' => 'All Status'],
             ],
             'filterInputOptions' => ['class' => 'form-control'],
             'contentOptions' => ['class' => 'text-center'],

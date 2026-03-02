@@ -51,11 +51,39 @@ class UserassignmentController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($item_name, $user_id)
+    public function actionView($item_name, $user_id, $description=null)
     {
+        $auth = Yii::$app->authManager;
+        $tree = $this->buildTree($item_name, $auth);
+
+        if (Yii::$app->request->isAjax) {
+            return $this->render('view', [
+                'model' => $this->findModel($item_name, $user_id),
+                'description' => $description,
+                'tree' => $tree,
+            ]);
+        }
+
         return $this->render('view', [
             'model' => $this->findModel($item_name, $user_id),
+            'description' => $description,
+            'tree' => $tree,
         ]);
+    }
+
+    private function buildTree($roleName, $authManager)
+    {
+        $children = $authManager->getChildren($roleName);
+        $node = [
+            'text' => $roleName,
+            'children' => []
+        ];
+        foreach ($children as $child) {
+            $desc = $child->description ?: $child->name;
+            $node['children'][] = $this->buildTree($child->name, $authManager);
+            $node['children'][count($node['children'])-1]['text'] = $desc;
+        }
+        return $node;
     }
 
     /**
@@ -111,6 +139,7 @@ class UserassignmentController extends Controller
 
         return $this->redirect(['index']);
     }
+
 
     /**
      * Finds the AuthAssignment model based on its primary key value.

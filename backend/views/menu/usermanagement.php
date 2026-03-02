@@ -10,6 +10,21 @@ $baseUrl = Yii::$app->request->baseUrl;
 </div>
 <div class="container py-5">
   <div class="row g-4">
+
+    <!-- change password -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <a href="javascript:void(0);" 
+         class="text-decoration-none changepassword-user"
+         data-url="<?= Url::to(['/menu/changepassword']) ?>">
+        <div class="card menu-card text-center p-4 h-100">
+          <div class="menu-icon mb-2">
+            <i class="nc-icon nc-key-25"></i>
+          </div>
+          <div class="menu-title fw-bold text-primary">Change Password</div>
+          <div class="menu-desc text-muted">Update your account password</div>
+        </div>
+      </a>
+    </div>
     
     <!-- Users -->
     <?php if (\Yii::$app->user->can('backend.auth.user.index') || \Yii::$app->user->can("root")) { ?>
@@ -85,21 +100,6 @@ $baseUrl = Yii::$app->request->baseUrl;
       </a>
     </div>
     <?php } ?>
-
-    <!-- change password -->
-    <div class="col-6 col-md-4 col-lg-3 mb-4">
-      <a href="javascript:void(0);" 
-         class="text-decoration-none changepassword-user"
-         data-url="<?= Url::to(['/menu/changepassword']) ?>">
-        <div class="card menu-card text-center p-4 h-100">
-          <div class="menu-icon mb-2">
-            <i class="nc-icon nc-key-25"></i>
-          </div>
-          <div class="menu-title fw-bold text-primary">Change Password</div>
-          <div class="menu-desc text-muted">Update your account password</div>
-        </div>
-      </a>
-    </div>
 
   </div>
 </div>

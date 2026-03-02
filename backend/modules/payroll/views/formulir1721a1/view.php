@@ -153,9 +153,20 @@ use yii\helpers\Html;
 </div>
 
 <div class="text-end mt-3">
+<?php if (Yii::$app->request->isAjax): ?>
+
     <?= Html::button('<i class="fa fa-times"></i> Close', [
         'class' => 'btn btn-outline-secondary',
         'data-dismiss' => 'modal',
         'style' => 'min-width:140px;',
     ]) ?>
+
+<?php else: ?>
+
+    <?= Html::a('<i class="fa fa-arrow-left"></i> Back', 'javascript:history.back()', [
+        'class' => 'btn btn-outline-secondary',
+        'style' => 'min-width:140px;',
+    ]) ?>
+
+<?php endif; ?>
 </div>

@@ -1,15 +1,5 @@
 <?php
-
 use yii\helpers\Html;
-use yii\widgets\DetailView;
-
-/* @var $this yii\web\View */
-/* @var $model common\modules\auth\models\UserAssignment */
-
-$this->title = 'Role Hierarchy';
-$this->params['breadcrumbs'][] = $this->title;
-\yii\web\YiiAsset::register($this);
-
 
 function renderTree($tree) {
     echo "<li class='mb-1'>";
@@ -27,7 +17,7 @@ function renderTree($tree) {
 
 <div class="mb-3">
     <h5 class="text-primary fw-bold page-title">
-        <i class="fa fa-building"></i>&nbsp;&nbsp;&nbsp;Role Hierarchy: <strong><span class="text-warning"><?= $description ?></span></strong>
+        <i class="fa fa-building"></i>&nbsp;&nbsp;&nbsp;Role Hierarchy: userAccess
     </h5>
     <p class="text-muted small mb-0">
         View and manage hierarchical roles and access permissions.
