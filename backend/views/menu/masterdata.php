@@ -8,24 +8,6 @@ $baseUrl = Yii::$app->request->baseUrl;
 <div class="container py-5">
   <div class="row g-4">
     
-    <!-- Payroll Profiles -->
-    <?php if (\Yii::$app->user->can('backend.master.payrollprofile.index') || \Yii::$app->user->can("root")) { ?>
-    <div class="col-6 col-md-4 col-lg-3 mb-4">
-      <a href="<?=$baseUrl ?>/master/payrollprofile/index" class="text-decoration-none">
-        <div class="card menu-card text-center p-4 h-100">
-          <div class="menu-icon mb-2">
-            <i class="nc-icon nc-compass-05"></i>
-          </div>
-          <div class="menu-title fw-bold text-primary">Payroll Profiles</div>
-          <div class="menu-desc text-muted">Payroll structure and employee salary configuration</div>
-        </div>
-      </a>
-    </div>
-    <?php
-    }
-    ?>
-
-
     <!-- Component -->
     <?php if (\Yii::$app->user->can('backend.master.payrollitem.index') || \Yii::$app->user->can("root")) { ?>
     <div class="col-6 col-md-4 col-lg-3 mb-4">
@@ -54,6 +36,23 @@ $baseUrl = Yii::$app->request->baseUrl;
           </div>
           <div class="menu-title fw-bold text-primary">Payroll Categories</div>
           <div class="menu-desc text-muted">Organize payroll components into structured categories</div>
+        </div>
+      </a>
+    </div>
+    <?php
+    }
+    ?>
+
+    <!-- Payroll Profiles -->
+    <?php if (\Yii::$app->user->can('backend.master.payrollprofile.index') || \Yii::$app->user->can("root")) { ?>
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <a href="<?=$baseUrl ?>/master/payrollprofile/index" class="text-decoration-none">
+        <div class="card menu-card text-center p-4 h-100">
+          <div class="menu-icon mb-2">
+            <i class="nc-icon nc-compass-05"></i>
+          </div>
+          <div class="menu-title fw-bold text-primary">Payroll Profiles</div>
+          <div class="menu-desc text-muted">Payroll structure and employee salary configuration</div>
         </div>
       </a>
     </div>

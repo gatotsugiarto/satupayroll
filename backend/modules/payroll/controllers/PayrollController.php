@@ -18,6 +18,7 @@ use Mpdf\Mpdf;
 
 use common\modules\master\models\UploadForm;
 use common\modules\master\models\Employee;
+use common\modules\master\models\ApplicationSetting;
 
 use common\modules\payroll\models\EmployeeUpload;
 use common\modules\payroll\models\ReportUpload;
@@ -574,16 +575,6 @@ class PayrollController extends Controller
     public function actionSlip($id=0)
     {
         $model = $this->findModel($id);
-        // $detailC = PayrollDetail::find()
-        // ->where([
-        //     'employee_id' => $model->employee_id, 
-        //     'period_code' => $model->period_code,
-        //     'slip_display' => 'Y',
-        //     'slip_position' => 'C',
-        // ])
-        // ->orderBy(['display_order' => SORT_ASC])
-        // ->all();
-
         $query = (new \yii\db\Query())
             ->select([
                 'pi.name AS item_name',
@@ -607,16 +598,6 @@ class PayrollController extends Controller
 
 
 
-        // $detailD = PayrollDetail::find()
-        // ->where([
-        //     'employee_id' => $model->employee_id, 
-        //     'period_code' => $model->period_code,
-        //     'slip_display' => 'Y',
-        //     'slip_position' => 'D',
-        // ])
-        // ->orderBy(['display_order' => SORT_ASC])
-        // ->all();
-
         $query = (new \yii\db\Query())
             ->select([
                 'pi.name AS item_name',
@@ -638,14 +619,6 @@ class PayrollController extends Controller
             ->orderBy(['pi.display_order' => SORT_ASC]);
         $detailD = $query->all();
 
-        // // Render partial 
-        // return $this->renderPartial('slip', [
-        //     'model' => $model,
-        //     'detailC' => $detailC,
-        //     'detailD' => $detailD,
-        // ]);
-        
-        
         // PDF
         $html = $this->renderPartial('slip', [
             'model' => $model,
@@ -658,18 +631,26 @@ class PayrollController extends Controller
         ]);
 
         // 🔐 Password PDF
+        $ApplicationSetting = ApplicationSetting::findOne(1);
+        $hr_default_password = $ApplicationSetting->hr_default_password;
         // if($action){
-            $mpdf->SetProtection(
-                ['print'],   // boleh print saja
-                '1234567',      // password buka PDF
-                '1234567'       // password owner
-            );
+            $mpdf->SetProtection(['print'], $hr_default_password, '1234567');
         // }
 
         // Output PDF ke browser
         $mpdf->WriteHTML($html);
         $filename = 'Slip_Gaji_'.$model->rmonth->month.'_'.$model->year.'_'.str_replace('.', '', $model->employee->e_number).'.pdf';
-        return $mpdf->Output($filename, 'D');    
+
+        // return $mpdf->Output($filename, 'D');
+        $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+        return \Yii::$app->response->sendContentAsFile(
+            $pdfContent,
+            $filename,
+            [
+                'mimeType' => 'application/pdf',
+                'inline' => false,
+            ]
+        );
     }
 
     /**

@@ -76,7 +76,7 @@ class ApplicationSetting extends ActiveRecord
             [['status_id', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['default_password'], 'string', 'max' => 150],
-            [['payroll_period'], 'string', 'max' => 255],
+            [['payroll_period', 'hr_default_password'], 'string', 'max' => 255],
         ];
     }
 
@@ -89,7 +89,8 @@ class ApplicationSetting extends ActiveRecord
             'id' => 'ID',
             'default_password' => 'Default Password',
             'payroll_period' => 'Payroll Period',
-            'status_id' => 'Status ID',
+            'hr_default_password' => 'Slip Password for HR',
+            'status_id' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',

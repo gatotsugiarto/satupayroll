@@ -76,6 +76,7 @@ class ApplicationSettingSearch extends ApplicationSetting
         ]);
 
         $query->andFilterWhere(['like', 'default_password', $this->default_password])
+            ->andFilterWhere(['like', 'hr_default_password', $this->hr_default_password])
             ->andFilterWhere(['like', 'payroll_period', $this->payroll_period]);
 
         return $dataProvider;

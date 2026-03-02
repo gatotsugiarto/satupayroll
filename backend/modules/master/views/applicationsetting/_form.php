@@ -48,6 +48,10 @@ $icon = $isNew ? 'fa-user-plus' : 'fa-edit';
             <div class="col-md-6">
                 <?= $form->field($model, 'payroll_period')->textInput(['maxlength' => true]) ?>
             </div>
+
+            <div class="col-md-6">
+                <?= $form->field($model, 'hr_default_password')->textInput(['maxlength' => true]) ?>
+            </div>
         </div>
 
         <div class="row">

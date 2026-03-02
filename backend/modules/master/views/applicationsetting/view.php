@@ -43,6 +43,18 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
 
 
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <span class="text-secondary small">Slip Password for HR</span><br>
+                <span class="fw-semibold">
+                    <?= Html::encode($model->hr_default_password) ?>
+                </span>
+            </div>
+
+            <div class="col-md-6"></div>
+        </div>
+
+
         <hr class="my-2">
 
         <div class="row mb-2 small">

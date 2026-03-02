@@ -662,7 +662,7 @@ class CalculateThr extends Component
     public static function PayrollCloseSalary($year, $month, $period_code, $status_id, $user_id)
     {
         // Insert Tunj THR Salary
-        $sql = "INSERT INTO salary SELECT 0, pdt.employee_id, pi.id, pdt.amount, $status_id AS status_id, 'WEB', 1, NULL, NOW(), $user_id, NOW(), $user_id FROM payroll_item pi INNER JOIN payroll_detail_thr pdt ON pdt.item_code = 'FIXED_INCOME' WHERE pi.tax_nature = 'TIDAK_TERATUR'";
+        $sql = "INSERT INTO salary SELECT 0, pdt.employee_id, pi.id, pdt.amount, 1 AS status_id, 'WEB', 1, NULL, NOW(), $user_id, NOW(), $user_id FROM payroll_item pi INNER JOIN payroll_detail_thr pdt ON pdt.item_code = 'FIXED_INCOME' WHERE pi.tax_nature = 'TIDAK_TERATUR'";
         \Yii::$app->db->createCommand($sql)->execute();
 
         // // Salary -> is_processed = 1 (Y), 2 = (N)

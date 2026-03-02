@@ -49,7 +49,7 @@ class OtherDoc extends Component
             $sql = "INSERT INTO bukti_potong_pph21 SELECT 
     0, e.id, p.month AS masa_pajak, p.year AS tahun_pajak, c.npwp AS npwp_perusahaan, c.company AS nama_perusahaan,
     CASE WHEN e.npwp_id IS NOT NULL THEN e.npwp_id ELSE e.e_number END AS npwp_nik_pegawai, e.fullname AS nama_pegawai,
-    CASE WHEN e.employee_status_id < 3 THEN 'TETAP' WHEN e.employee_status_id = 3 THEN 'TIDAK TETAP' ELSE 'BUKAN_PEGAWAI' END AS status_pegawai,
+    CASE WHEN e.employee_status_id < 3 THEN 'TETAP' WHEN e.employee_status_id = 3 THEN 'TIDAK_TETAP' ELSE 'BUKAN_PEGAWAI' END AS status_pegawai,
     '$kode_objek_pajak' AS kode_objek_pajak, e.ptkp AS status_ptkp,
     pd.amount AS penghasilan_bruto, 
     0 AS biaya_jabatan,
@@ -103,7 +103,7 @@ GROUP BY pd.employee_id";
         $sql = "INSERT INTO bukti_potong_pph21 SELECT 
 0, e.id, p.month AS masa_pajak, p.year AS tahun_pajak, c.npwp AS npwp_perusahaan, c.company AS nama_perusahaan,
 CASE WHEN e.npwp_id IS NOT NULL THEN e.npwp_id ELSE e.e_number END AS npwp_nik_pegawai, e.fullname AS nama_pegawai,
-CASE WHEN e.employee_status_id < 3 THEN 'TETAP' WHEN e.employee_status_id = 3 THEN 'TIDAK TETAP' ELSE 'BUKAN_PEGAWAI' END AS status_pegawai,
+CASE WHEN e.employee_status_id < 3 THEN 'TETAP' WHEN e.employee_status_id = 3 THEN 'TIDAK_TETAP' ELSE 'BUKAN_PEGAWAI' END AS status_pegawai,
 '$kode_objek_pajak' AS kode_objek_pajak, e.ptkp AS status_ptkp,
 pd.amount AS penghasilan_bruto, 
 0 AS biaya_jabatan,

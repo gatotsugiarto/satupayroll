@@ -90,6 +90,7 @@ class Payroll extends \yii\db\ActiveRecord
             [['period_code'], 'string', 'max' => 10],
             [['reason'], 'string', 'max' => 255],
             ['month', 'validateStatusCreate', 'on' => 'create'],
+            ['month', 'validateStatusThr', 'on' => 'create'],
             [['arr_employee_id'], 'required', 'on' => 'single'],
             ['month', 'validateStatusCreateSingle', 'on' => 'single'],
             ['month', 'validateApprove', 'on' => 'approve'],
@@ -103,6 +104,14 @@ class Payroll extends \yii\db\ActiveRecord
         $exists = PayrollDetail::find()->where(['status_id' => 1])->limit(1)->exists();
         if ($exists) {
             $this->addError('month', 'This payroll is awaiting Finance approval and cannot be processed while its status is Draft.');
+        }
+    }
+
+    public function validateStatusThr($attribute, $params)
+    {
+        $exists = PayrollThr::find()->where(['status_id' => 1])->limit(1)->exists();
+        if ($exists) {
+            $this->addError('month', 'Please approved the THR process before continuing.');
         }
     }
 
